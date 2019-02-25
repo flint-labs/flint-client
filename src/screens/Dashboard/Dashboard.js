@@ -1,21 +1,56 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { Component } from 'react';
+import {
+  View, Text, TouchableOpacity, Image,
+} from 'react-native';
 import styles from './style';
+import DoIt from './DoIt';
 
-const Dashboard = () => (
-  <View style={styles.container}>
-    <View style={styles.sloganContainer}>
-      <Text>대쉬보드</Text>
-    </View>
-    <View style={styles.progressContainer}>
-      <Text>허들뛰기</Text>
-    </View>
-    <View style={styles.doItContainer}>
-      <TouchableOpacity>
-        <Text>했다!</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-);
+const runIcon = require('../../../assets/images/Dashboard/run.png');
+const lineIcon = require('../../../assets/images/Dashboard/line.png');
+
+class Dashboard extends Component {
+  static navigationOptions = () => ({
+    headerTitle: (
+      <View>
+        <Text>Flint</Text>
+      </View>
+    ),
+  });
+
+  state = { modalVisible: false };
+
+  doItHandler = () => {
+    this.setState({
+      modalVisible: true,
+    });
+  };
+
+  hideModal = () => {
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  render() {
+    const { modalVisible } = this.state;
+    return (
+      <View style={styles.container}>
+        <DoIt modalVisible={modalVisible} hideModal={this.hideModal} />
+        <View style={styles.sloganContainer}>
+          <Text style={styles.sloganText}>내가 이번엔 살 진짜 꼭 뺀다.</Text>
+        </View>
+        <View style={styles.progressContainer}>
+          <Image style={styles.runImage} source={runIcon} />
+          <Image style={styles.lineImage} source={lineIcon} />
+        </View>
+        <View style={styles.doItContainer}>
+          <TouchableOpacity onPress={this.doItHandler}>
+            <Text style={styles.doItText}>했다!</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+}
 
 export default Dashboard;
