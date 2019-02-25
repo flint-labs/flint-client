@@ -8,11 +8,13 @@ import Dashboard from '../Dashboard';
 import History from '../History';
 import UserInfo from '../UserInfo';
 
+import Intro from './Intro';
+
 class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text> Home </Text>
+        <Intro />
       </View>
     );
   }
