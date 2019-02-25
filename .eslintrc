@@ -1,10 +1,11 @@
 {
- "parserOptions": {
-   "ecmaVersion": 2018
- },
- "env": {
-   "node": true,
-   "es6": true
- },
- "extends": "airbnb"
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "extends": "airbnb"
 }
