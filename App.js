@@ -13,10 +13,6 @@ const RootStack = createStackNavigator(
 
 const AppContainer = createAppContainer(RootStack);
 
-// eslint-disable-next-line react/prefer-stateless-function
-class App extends React.Component {
-  render() {
-    return <AppContainer />;
-  }
-}
+const App = () => <AppContainer />;
+
 export default App;
