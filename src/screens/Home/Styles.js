@@ -2,6 +2,11 @@ import { StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
+  indexContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
   },
@@ -16,11 +21,14 @@ const styles = StyleSheet.create({
   },
   challengeContainer: {
     flex: 1,
-    marginBottom: 10,
+    marginTop: 0,
+    marginBottom: 0,
   },
   userFeedback: {
     flex: 1,
-    backgroundColor: 'green',
+    backgroundColor: 'rgba(0,0,0,0)',
+    marginTop: 10,
+    height: 270,
   },
   categoryEntryImgContainer: {
     height: 150,
@@ -39,6 +47,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
+  },
+  feedbackContainer: {
+    marginTop: 10,
+    backgroundColor: 'rgba(0,0,0,0)',
+  },
+  feedbackEntryImgContainer: {
+    width: width - 60,
+    height: 180,
+  },
+  feedbackEntryImage: {
+    flex: 1,
+    resizeMode: 'contain',
+    marginHorizontal: 5,
   },
 });
 

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Dimensions,
-  ScrollView,
-  FlatList,
-} from 'react-native';
+import { View, Text, Image, FlatList } from 'react-native';
 
 import CategoryEntry from './CategoryEntry';
 import styles from './Styles';
@@ -24,48 +17,41 @@ const imageArray = [
   [category4, '식습관'],
 ];
 
-const { width } = Dimensions.get('window');
-
 const Intro = () => (
   <View style={styles.container}>
-    <ScrollView style={{ flex: 1, width }}>
-      <View style={styles.imgContainer}>
-        <View
+    <View style={styles.imgContainer}>
+      <View
+        style={{
+          position: 'relative',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Image source={introImage} style={styles.img} />
+        <Text
           style={{
-            position: 'relative',
-            alignItems: 'center',
-            justifyContent: 'center',
+            position: 'absolute',
+            color: 'white',
+            fontSize: 22,
           }}
         >
-          <Image source={introImage} style={styles.img} />
-          <Text
-            style={{
-              position: 'absolute',
-              color: 'white',
-              fontSize: 22,
-            }}
-          >
-            당신의 삶을 변화시켜 보세요
-          </Text>
-        </View>
+          당신의 삶을 변화시켜 보세요
+        </Text>
       </View>
-      <View style={styles.challengeContainer}>
-        <FlatList
-          data={imageArray}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={item => (
-            <CategoryEntry
-              img={imageArray[item.index][0]}
-              title={imageArray[item.index][1]}
-            />
-          )}
-          numColumns={2}
-        />
-      </View>
-      <View style={styles.userFeedback}>
-        <Text>피드백</Text>
-      </View>
-    </ScrollView>
+    </View>
+    <View style={styles.challengeContainer}>
+      <FlatList
+        data={imageArray}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={item => (
+          <CategoryEntry
+            img={imageArray[item.index][0]}
+            title={imageArray[item.index][1]}
+          />
+        )}
+        numColumns={2}
+      />
+    </View>
   </View>
 );
 

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { createBottomTabNavigator } from 'react-navigation';
 
@@ -9,16 +9,20 @@ import History from '../History';
 import UserInfo from '../UserInfo';
 
 import Intro from './Intro';
+import Feedback from './Feedback';
 
-class Home extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Intro />
-      </View>
-    );
-  }
-}
+import styles from './Styles';
+
+const { width } = Dimensions.get('window');
+
+const Home = () => (
+  <View style={styles.indexContainer}>
+    <ScrollView style={{ flex: 1, width }}>
+      <Intro />
+      <Feedback />
+    </ScrollView>
+  </View>
+);
 
 export default createBottomTabNavigator(
   {
@@ -98,11 +102,3 @@ export default createBottomTabNavigator(
     },
   },
 );
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
