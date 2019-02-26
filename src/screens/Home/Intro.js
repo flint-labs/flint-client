@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, FlatList } from 'react-native';
+import { View, Text, Image, FlatList, ImageBackground } from 'react-native';
 
 import CategoryEntry from './CategoryEntry';
 import styles from './Styles';
@@ -20,24 +20,17 @@ const imageArray = [
 const Intro = () => (
   <View style={styles.container}>
     <View style={styles.imgContainer}>
-      <View
-        style={{
-          position: 'relative',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Image source={introImage} style={styles.img} />
-        <Text
-          style={{
-            position: 'absolute',
-            color: 'white',
-            fontSize: 22,
-          }}
+      <ImageBackground source={introImage} style={styles.img}>
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
         >
-          당신의 삶을 변화시켜 보세요
-        </Text>
-      </View>
+          <Text
+            style={{ fontFamily: 'Fontrust', fontSize: 65, color: 'white' }}
+          >
+            Change Your Life
+          </Text>
+        </View>
+      </ImageBackground>
     </View>
     <View style={styles.challengeContainer}>
       <FlatList

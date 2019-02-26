@@ -17,36 +17,39 @@ const renderItem = item => {
   );
 };
 const Feedback = () => (
-  <ImageBackground
-    source={require('../../../assets/images/Home/background.png')}
-    style={{ width, height: 300 }}
-  >
-    <View style={styles.userFeedback}>
-      <Text
-        style={{
-          fontSize: 30,
-          fontWeight: '500',
-          color: 'white',
-          marginLeft: 20,
-          marginTop: 10,
-          alignSelf: 'center',
-        }}
-      >
-        우리들의 이야기
-      </Text>
-      <View style={styles.feedbackContainer}>
-        <Carousel
-          swipeThreshold={5}
-          data={targetArray}
-          renderItem={renderItem}
-          sliderWidth={width}
-          itemWidth={width * 0.8}
-          // layoutCardOffset={20}
-          sliderHeight={270}
-        />
+  <View style={{ marginTop: 20, marginBottom: 30 }}>
+    <ImageBackground
+      source={require('../../../assets/images/Home/background.png')}
+      style={{ width, height: 300 }}
+    >
+      <View style={styles.userFeedback}>
+        <Text
+          style={{
+            fontSize: 30,
+            fontWeight: '500',
+            color: 'white',
+            marginLeft: 20,
+            marginBottom: 15,
+            alignSelf: 'center',
+            fontFamily: 'Fontrust',
+          }}
+        >
+          Our Story
+        </Text>
+        <View style={styles.feedbackContainer}>
+          <Carousel
+            swipeThreshold={5}
+            data={targetArray}
+            renderItem={renderItem}
+            sliderWidth={width}
+            itemWidth={width * 0.8}
+            // layoutCardOffset={20}
+            sliderHeight={270}
+          />
+        </View>
       </View>
-    </View>
-  </ImageBackground>
+    </ImageBackground>
+  </View>
 );
 
 export default Feedback;
