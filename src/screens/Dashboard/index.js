@@ -1,28 +1,54 @@
 import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
+import PropTypes from 'prop-types';
 import Dashboard from './Dashboard';
-import DoIt from './DoIt';
+import Select from './Select';
+// import DoIt from './DoIt';
 
-const component = () => <Dashboard />;
+class component extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const { params = {} } = navigation.state;
+    return {
+      headerTitle: (
+        <TouchableOpacity onPress={() => params.handleModal()}>
+          <Text>제목</Text>
+        </TouchableOpacity>
+      ),
+    };
+  };
 
-export default createStackNavigator(
-  {
-    component: {
-      screen: component,
-      navigationOptions: {
-        headerTitle: (
-          <TouchableOpacity>
-            <Text>제목</Text>
-          </TouchableOpacity>
-        ),
-      },
-    },
-    Dashboard: {
-      screen: Dashboard,
-    },
-  },
-  {
-    mode: 'modal',
-  },
-);
+  state = { modalVisible: false };
+
+  componentDidMount = () => {
+    const { navigation } = this.props;
+    navigation.setParams({
+      handleModal: this.changeModalVisible,
+    });
+  };
+
+  hideModal = () => {
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  changeModalVisible = () => {
+    this.setState({
+      modalVisible: true,
+    });
+  };
+
+  render() {
+    const { modalVisible } = this.state;
+    return modalVisible ? <Select hideModal={this.hideModal} /> : <Dashboard />;
+  }
+}
+
+component.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
+
+export default createStackNavigator({ component });
