@@ -7,15 +7,10 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  textInput: {
-    borderBottomColor: '#333',
-    borderBottomWidth: 1,
-    marginBottom: 15,
-    marginLeft: 10,
-  },
-  inputContainer: {
+  container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     flexDirection: 'row',
