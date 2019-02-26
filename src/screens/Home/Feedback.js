@@ -9,7 +9,6 @@ const { width } = Dimensions.get('window');
 const targetArray = [1, 2, 3, 4];
 
 const renderItem = item => {
-  console.log(item);
   return (
     <View style={styles.feedbackEntry}>
       <FeedbackEntry index={item.index} />
