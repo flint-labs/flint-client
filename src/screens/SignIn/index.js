@@ -5,7 +5,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { renderRegisterButton, renderIcon } from './SignIn';
-import Input from './Input';
+import { AuthInput, OrangeButton } from '../../components';
 import styles from './styles';
 
 class Authentication extends Component {
@@ -19,7 +19,7 @@ class Authentication extends Component {
   }
 
   renderEmailInput = email => (
-    <Input
+    <AuthInput
       state={email}
       setState={text => this.setState({ email: text })}
       renderIcon={() => renderIcon({ name: 'ios-mail' })}
@@ -33,10 +33,10 @@ class Authentication extends Component {
   )
 
   renderPasswordInput = password => (
-    <Input
+    <AuthInput
       state={password}
       setState={text => this.setState({ password: text })}
-      renderIcon={() => renderIcon({ name: 'ios-lock', style: { paddingRight: 4, paddingLeft: 4 } })}
+      renderIcon={() => renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })}
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',
         secureTextEntry: true,
@@ -63,7 +63,7 @@ class Authentication extends Component {
           }}
         >
           <View style={styles.container}>
-            <View style={{ flex: 4, justifyContent: 'flex-end' }}>
+            <View style={{ flex: 3, justifyContent: 'flex-end' }}>
               <Text style={styles.header}>Sign In</Text>
             </View>
             <View style={{ flex: 1 }} />
@@ -73,6 +73,7 @@ class Authentication extends Component {
                 {this.renderPasswordInput(password)}
               </View>
               {renderRegisterButton()}
+              <OrangeButton text="Sign in" />
             </View>
           </View>
         </KeyboardAwareScrollView>
