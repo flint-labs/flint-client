@@ -6,13 +6,9 @@ import styles from './style';
 import DoIt from './DoIt';
 
 const runIcon = require('../../../assets/images/Dashboard/run.png');
-const lineIcon = require('../../../assets/images/Dashboard/line.png');
+// const lineIcon = require('../../../assets/images/Dashboard/line.png');
 
 class Dashboard extends Component {
-  static navigationOptions = {
-    title: 'Home',
-  };
-
   state = { modalVisible: false };
 
   doItHandler = () => {
@@ -37,11 +33,16 @@ class Dashboard extends Component {
         </View>
         <View style={styles.progressContainer}>
           <Image style={styles.runImage} source={runIcon} />
-          <Image style={styles.lineImage} source={lineIcon} />
+          <View style={{ flex: 0.1, flexDirection: 'row', margin: '5%' }}>
+            <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
+            <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
+            <View style={{ flex: 1, backgroundColor: 'red', margin: '0.5%' }} />
+            <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
+          </View>
         </View>
         <View style={styles.doItContainer}>
-          <TouchableOpacity onPress={this.doItHandler}>
-            <Text style={styles.doItText}>했다!</Text>
+          <TouchableOpacity onPress={this.doItHandler} style={styles.submitBtn}>
+            <Text style={styles.submitText}>했다!</Text>
           </TouchableOpacity>
         </View>
       </View>
