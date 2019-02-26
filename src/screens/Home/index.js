@@ -24,9 +24,7 @@ export default createBottomTabNavigator(
       screen: Home,
       navigationOptions: {
         tabBarLable: 'HOME',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-cafe" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
         header: {
           visible: false,
         },
@@ -36,9 +34,7 @@ export default createBottomTabNavigator(
       screen: Referee,
       navigationOptions: {
         tabBarLable: 'Referee',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-cafe" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
         header: {
           visible: false,
         },
@@ -48,9 +44,7 @@ export default createBottomTabNavigator(
       screen: Dashboard,
       navigationOptions: {
         tabBarLable: 'Dashboard',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-cafe" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
         header: {
           visible: false,
         },
@@ -60,9 +54,7 @@ export default createBottomTabNavigator(
       screen: History,
       navigationOptions: {
         tabBarLable: 'History',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-cafe" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
         header: {
           visible: false,
         },
@@ -72,9 +64,7 @@ export default createBottomTabNavigator(
       screen: UserInfo,
       navigationOptions: {
         tabBarLable: 'UserInfo',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-cafe" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
         header: {
           visible: false,
         },

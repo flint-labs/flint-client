@@ -19,13 +19,14 @@ const styles = StyleSheet.create({
   modalTextInput: {
     width: '90%',
     height: '40%',
-    borderWidth: 0.5,
-    borderColor: '#dcdcdc',
+    // borderWidth: 0.5,
+    // borderColor: '#dcdcdc',
     justifyContent: 'center',
     flex: 1,
+    fontSize: 15,
     // backgroundColor: 'red',
   },
-  imageRefBtn: { flex: 1, /* backgroundColor: 'blue', */ justifyContent: 'center' },
+  imageRefBtn: { flex: 1, justifyContent: 'center' },
   modalTextInputContainer: {
     flex: 2,
     // backgroundColor: '#ff6600',

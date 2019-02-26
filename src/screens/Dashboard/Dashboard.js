@@ -9,13 +9,9 @@ const runIcon = require('../../../assets/images/Dashboard/run.png');
 const lineIcon = require('../../../assets/images/Dashboard/line.png');
 
 class Dashboard extends Component {
-  static navigationOptions = () => ({
-    headerTitle: (
-      <View>
-        <Text>Flint</Text>
-      </View>
-    ),
-  });
+  static navigationOptions = {
+    title: 'Home',
+  };
 
   state = { modalVisible: false };
 
