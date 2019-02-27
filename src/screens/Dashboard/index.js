@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Dashboard from './Dashboard';
 import Select from './Select';
 // import DoIt from './DoIt';
@@ -12,7 +13,10 @@ class component extends React.Component {
     return {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleModal()}>
-          <Text>제목</Text>
+          <Text style={{ fontSize: 20 }}>
+            {'제목 '}
+            <Icon name="ios-arrow-dropdown" size={20} />
+          </Text>
         </TouchableOpacity>
       ),
     };
