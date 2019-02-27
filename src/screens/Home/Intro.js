@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, FlatList, ImageBackground } from 'react-native';
+import { View, Text, FlatList, ImageBackground } from 'react-native';
 
 import CategoryEntry from './CategoryEntry';
 import styles from './Styles';
@@ -17,7 +17,7 @@ const imageArray = [
   [category4, '식습관'],
 ];
 
-const Intro = () => (
+const Intro = ({ goToScreen }) => (
   <View style={styles.container}>
     <View style={styles.imgContainer}>
       <ImageBackground source={introImage} style={styles.img}>
@@ -40,6 +40,7 @@ const Intro = () => (
           <CategoryEntry
             img={imageArray[item.index][0]}
             title={imageArray[item.index][1]}
+            goToScreen={goToScreen}
           />
         )}
         numColumns={2}
