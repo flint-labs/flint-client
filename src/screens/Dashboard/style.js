@@ -2,20 +2,20 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  sloganContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  sloganContainer: { flex: 0.3, justifyContent: 'center', alignItems: 'center' },
   progressContainer: {
-    flex: 1,
+    flex: 0.3,
     alignItems: 'center',
   },
   doItContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
+    flex: 0.3,
+    // justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: '5%',
   },
   doItText: { fontSize: 30 },
-  sloganText: { fontSize: 30 },
-  runImage: { width: '10%', height: '20%' },
+  sloganText: { fontSize: 25 },
+  runImage: { width: 30, height: 30 },
   lineImage: { width: '80%', height: '15%' },
   modalTextInput: {
     width: '90%',
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#ff6600',
     width: '95%',
-    height: '27%',
+    flex: 1,
     borderRadius: 5,
     shadowOffset: { width: 5, height: 5 },
     shadowColor: '#dcdcdc',
@@ -46,6 +46,13 @@ const styles = StyleSheet.create({
     height: '27%',
   },
   submitText: { fontSize: 20, color: 'white', fontWeight: 'bold' },
+  reportEntryContainer: {
+    height: 80,
+    borderBottomColor: '#dcdcdc',
+    borderBottomWidth: 0.5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 });
 
 export default styles;
