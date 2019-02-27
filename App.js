@@ -1,6 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Font } from 'expo';
+import { View, Text } from 'react-native';
 
 import Home from './src/screens/Home';
 import Referee from './src/screens/Referee';
@@ -14,35 +16,45 @@ const Root = createBottomTabNavigator(
       screen: Home,
       navigationOptions: {
         tabBarLable: 'HOME',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-home" color={tintColor} size={24} />
+        ),
       },
     },
     Referee: {
       screen: Referee,
       navigationOptions: {
         tabBarLable: 'Referee',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-megaphone" color={tintColor} size={24} />
+        ),
       },
     },
     Dashboard: {
       screen: Dashboard,
       navigationOptions: {
         tabBarLable: 'Dashboard',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-bicycle" color={tintColor} size={24} />
+        ),
       },
     },
     History: {
       screen: History,
       navigationOptions: {
         tabBarLable: 'History',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-ribbon" color={tintColor} size={24} />
+        ),
       },
     },
     UserInfo: {
       screen: UserInfo,
       navigationOptions: {
         tabBarLable: 'UserInfo',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-cafe" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-person" color={tintColor} size={24} />
+        ),
       },
     },
   },
@@ -66,8 +78,25 @@ const AppContainer = createAppContainer(Root);
 
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends React.Component {
+  state = {
+    isLoad: false,
+  };
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      Fontrust: require('./assets/fonts/Fontrust.ttf'),
+    });
+    this.setState({ isLoad: true });
+  }
+
   render() {
-    return <AppContainer />;
+    return this.state.isLoad ? (
+      <AppContainer />
+    ) : (
+      <View>
+        <Text>Loading</Text>
+      </View>
+    );
   }
 }
 export default App;

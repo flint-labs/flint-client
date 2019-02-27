@@ -21,17 +21,19 @@ const styles = StyleSheet.create({
   },
   challengeContainer: {
     flex: 1,
-    marginTop: 0,
+    marginTop: 10,
     marginBottom: 0,
   },
   userFeedback: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0)',
     marginTop: 10,
+    marginBottom: 20,
     height: 270,
+    justifyContent: 'center',
   },
   categoryEntryImgContainer: {
-    height: 150,
+    height: 100,
     width: width / 2 - 15,
     marginLeft: 10,
     marginTop: 10,
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
   categoryEntryImageBlur: {
     backgroundColor: 'rgba(0,0,0,0.5)',
     width: width / 2 - 15,
-    height: 150,
+    height: 100,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
