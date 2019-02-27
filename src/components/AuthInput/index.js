@@ -5,7 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import styles from './styles';
 
-const renderInput = ({
+const AuthInput = ({
   state, setState, renderIcon, customProps,
 }) => (
   <View style={styles.input}>
@@ -14,14 +14,17 @@ const renderInput = ({
       style={styles.inputElement}
       onChangeText={text => setState(text)}
       blurOnSubmit={false}
-      value={state}
+      value={state.toString()}
       {...customProps}
     />
   </View>
 );
 
-renderInput.propTypes = {
-  state: PropTypes.string.isRequired,
+AuthInput.propTypes = {
+  state: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   setState: PropTypes.func.isRequired,
   renderIcon: PropTypes.func.isRequired,
   customProps: PropTypes.shape({
@@ -34,8 +37,8 @@ renderInput.propTypes = {
   }),
 };
 
-renderInput.defaultProps = {
+AuthInput.defaultProps = {
   customProps: {},
 };
 
-export default renderInput;
+export default AuthInput;
