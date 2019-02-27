@@ -11,7 +11,10 @@ import styles from './Styles';
 const { width } = Dimensions.get('window');
 
 class Home extends Component {
-  goToScreen = screenName => this.props.navigation.navigate(screenName);
+  goToScreen = screenName => {
+    const { navigation } = this.props;
+    navigation.navigate(screenName);
+  };
 
   render = () => (
     <SafeAreaView style={{ flex: 1 }}>
