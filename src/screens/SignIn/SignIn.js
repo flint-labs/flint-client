@@ -10,12 +10,13 @@ const { registerButtonBox } = styles;
 
 export const renderRegisterButton = () => (
   <View style={registerButtonBox}>
-    <Text>
-  Flint 회원이 아니신가요?
+    <Text style={{ color: '#333' }}>
+      Flint 회원이 아니신가요?
     </Text>
     <TouchableOpacity>
-      <Text style={{ fontWeight: 'bold' }}> 지금 가입하세요 🎉</Text>
+      <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}> 지금 가입하세요</Text>
     </TouchableOpacity>
+    <Text>🎉</Text>
   </View>
 );
 
