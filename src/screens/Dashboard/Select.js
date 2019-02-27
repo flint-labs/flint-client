@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  TouchableOpacity, Text, FlatList, SafeAreaView, View,
+  TouchableOpacity, Text, FlatList, View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modal';
@@ -13,8 +13,8 @@ const fakeData = [
 ];
 
 const Select = ({ hideModal }) => (
-  <Modal isVisible animationIn="slideInDown">
-    <View style={{ flex: 1, backgroundColor: 'rgb(100,0,0, 0.1)' }}>
+  <Modal isVisible animationIn="slideInDown" transparent backdropOpacity={0.3} scrollOffset={45}>
+    <View style={{ flex: 1 }}>
       {/* <SafeAreaView style={{ flex: 1, alignItems: 'center' }}> */}
       <View
         style={{
@@ -22,7 +22,6 @@ const Select = ({ hideModal }) => (
           backgroundColor: 'white',
           // alignItems: 'center',
           // justifyContent: 'center',
-          borderRadius: 5,
           width: '100%',
         }}
       >

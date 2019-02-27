@@ -9,8 +9,9 @@ const styles = StyleSheet.create({
   },
   doItContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    marginBottom: '5%',
   },
   doItText: { fontSize: 30 },
   sloganText: { fontSize: 30 },
