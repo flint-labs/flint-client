@@ -7,6 +7,7 @@ import {
   Picker,
   TextInput,
   Dimensions,
+  TouchableOpacity,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +19,24 @@ const { width } = Dimensions.get('window');
 const thisYear = new Date().getFullYear();
 
 class ChallengeSetting extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            marginLeft: 10,
+            alignItems: 'center',
+          }}
+          onPress={navigation.getParam('handleBackButton') || navigation.goBack}
+        >
+          <Icon name="ios-arrow-round-back" size={35} />
+        </TouchableOpacity>
+      ),
+      gesturesEnabled: false,
+    };
+  };
+
   state = {
     page: 0,
     title: '',
@@ -38,6 +57,22 @@ class ChallengeSetting extends Component {
   scrollToInput(node) {
     this.scroll.props.scrollToFocusedInput(node);
   }
+
+  handleBackButton = () => {
+    const { page } = this.state;
+    const {
+      navigation: { goBack },
+    } = this.props;
+    if (page > 0) this.setState({ page: page - 1 });
+    else goBack();
+  };
+
+  componentDidMount = () => {
+    const { navigation } = this.props;
+    navigation.setParams({
+      handleBackButton: this.handleBackButton,
+    });
+  };
 
   numberWithCommas = x => {
     const temp = x.split(',').join('');
@@ -91,12 +126,11 @@ class ChallengeSetting extends Component {
           <Text />
         ) : this.state.isOnGoing ? (
           <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-            {' '}
-            {`꾸준한 도전입니다.\n ex) 매일 30분씩 운동하기`}{' '}
+            {`꾸준한 도전입니다.\n ex) 매일 30분씩 운동하기`}
           </Text>
         ) : (
           <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-            {`한번에 이룰 수 있는 도전입니다.\n ex) 3월 중에 대청소 하기`}{' '}
+            {`한번에 이룰 수 있는 도전입니다.\n ex) 3월 중에 대청소 하기`}
           </Text>
         )}
       </View>
@@ -374,6 +408,21 @@ class ChallengeSetting extends Component {
     </View>
   );
 
+  renderStartChallengePart = () => (
+    <View>
+      <View
+        style={{
+          alignItems: 'center',
+        }}
+      >
+        <Text style={{ fontSize: 40, fontFamily: 'Fontrust' }}>
+          {' '}
+          Change Your Life
+        </Text>
+      </View>
+    </View>
+  );
+
   render = () => {
     const {
       title,
@@ -388,7 +437,6 @@ class ChallengeSetting extends Component {
     } = this.state;
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        {/*
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           contentContainerStyle={{ flex: 1 }}
@@ -398,33 +446,35 @@ class ChallengeSetting extends Component {
             this.scroll = ref;
           }}
         >
-      */}
-        <View
-          style={{
-            flex: 1,
-            alignContent: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          {page === 0 && this.renderIsOnGoing()}
-          {page === 1 && this.renderTitleInputPart(title)}
-          {page === 2 && this.renderPeriodSelectPart(week)}
-          {page === 3 &&
-            this.renderStartAtPart(startYear, startMonth, startDay)}
-          {page === 4 && this.renderCheckingPeriodPart(checkingPeriod)}
-          {page === 5 && this.renderAmountPart(amount)}
-          {page === 6 && this.renderSloganPart(slogan)}
+          <View
+            style={{
+              flex: 1,
+              alignContent: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {page === 0 && this.renderIsOnGoing()}
+            {page === 1 && this.renderTitleInputPart(title)}
+            {page === 2 && this.renderPeriodSelectPart(week)}
+            {page === 3 &&
+              this.renderStartAtPart(startYear, startMonth, startDay)}
+            {page === 4 && this.renderCheckingPeriodPart(checkingPeriod)}
+            {page === 5 && this.renderAmountPart(amount)}
+            {page === 6 && this.renderSloganPart(slogan)}
+            {page === 7 && this.renderStartChallengePart()}
 
-          <View style={{ alignItems: 'center' }}>
-            <OrangeButton
-              text="Next"
-              onPress={() => {
-                this.setState({ page: page + 1 });
-              }}
-            />
+            <View style={{ alignItems: 'center' }}>
+              <OrangeButton
+                text={page === 7 ? 'Start' : 'Next'}
+                onPress={() => {
+                  page < 7
+                    ? this.setState({ page: page + 1 })
+                    : this.props.navigation.navigate('Dashboard');
+                }}
+              />
+            </View>
           </View>
-        </View>
-        {/*</KeyboardAwareScrollView>*/}
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     );
   };
