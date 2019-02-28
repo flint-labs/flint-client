@@ -1,21 +1,40 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import {
+  View, Text, Image, ImageBackground,
+} from 'react-native';
 import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './style';
 
 const img = require('../../../assets/images/Home/cate2.jpg');
 
 const ReportEntry = ({ data }) => (
-  <View style={styles.reportEntryContainer}>
-    <View style={{ flex: 0.3 }}>
-      <Image source={img} style={{ width: 100, height: 70 }} />
+  <ImageBackground
+    source={img}
+    style={{
+      flex: 1,
+      resizeMode: 'contain',
+      // margin: 5,
+      justifyContent: 'center',
+      padding: 20,
+    }}
+    imageStyle={{ borderRadius: 5 }}
+    blurRadius={4}
+  >
+    <Text
+      style={{
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 20,
+      }}
+    >
+      {data.title}
+    </Text>
+    <Text style={{ color: 'white', fontSize: 20 }}>{data.description}</Text>
+    <View style={{ alignItems: 'flex-end' }}>
+      <Icon name="ios-checkmark-circle" size={20} style={{ color: 'white' }} />
     </View>
-    <View style={{ flex: 0.7 }}>
-      <Text style={{ fontWeight: 'bold' }}>{data.title}</Text>
-      <Text>{data.description}</Text>
-      <Text>{data.state}</Text>
-    </View>
-  </View>
+  </ImageBackground>
 );
 
 ReportEntry.propTypes = {

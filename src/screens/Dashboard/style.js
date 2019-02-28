@@ -1,20 +1,22 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  sloganContainer: { flex: 0.3, justifyContent: 'center', alignItems: 'center' },
+  sloganContainer: { flex: 0.2, justifyContent: 'center', alignItems: 'center' },
   progressContainer: {
     flex: 0.3,
     alignItems: 'center',
   },
   doItContainer: {
     flex: 0.3,
-    // justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: '5%',
+    marginBottom: height * 0.01,
   },
   doItText: { fontSize: 30 },
-  sloganText: { fontSize: 25 },
+  sloganText: { fontSize: 20, fontWeight: 'bold' },
   runImage: { width: 30, height: 30 },
   lineImage: { width: '80%', height: '15%' },
   modalTextInput: {
@@ -52,6 +54,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  button: {
+    padding: 8,
+  },
+  buttonText: {
+    fontSize: 17,
+    color: '#007AFF',
+  },
+  subView: {
+    position: 'absolute',
+    top: -200,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    height: 200,
+    borderRadius: 5,
   },
 });
 
