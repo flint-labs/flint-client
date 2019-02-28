@@ -14,7 +14,7 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   inputElement: {
-    fontWeight: 'bold',
+    fontSize: 17,
     width: width * 0.55,
     paddingLeft: 10,
   },
