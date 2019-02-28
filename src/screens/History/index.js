@@ -1,22 +1,13 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+// import { View, Text, StyleSheet } from 'react-native';
+import { createStackNavigator } from 'react-navigation';
+import History from './History';
 
-class History extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text> History </Text>
-      </View>
-    );
-  }
-}
+const component = () => <History />;
 
-export default History;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+export default createStackNavigator({
+  component: {
+    screen: component,
+    navigationOptions: { headerTitle: 'History' },
   },
 });

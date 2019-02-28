@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, ImageBackground } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, ImageBackground } from 'react-native';
+import PropTypes from 'prop-types';
 import styles from './Styles';
 
 const category1 = require('../../../assets/images/Home/cate1.jpg');
@@ -19,5 +19,9 @@ const FeedbackEntry = ({ index }) => (
     />
   </View>
 );
+
+FeedbackEntry.propTypes = {
+  index: PropTypes.number.isRequired,
+};
 
 export default FeedbackEntry;
