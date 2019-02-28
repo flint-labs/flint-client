@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
 import styles from './style';
+import { OrangeButton } from '../../components';
 
 const cameraImage = require('../../../assets/images/Dashboard/camera.png');
 
@@ -53,9 +54,10 @@ class DoIt extends React.Component {
             </TouchableOpacity>
           </View>
           <View style={styles.submitBtnContainer}>
-            <TouchableOpacity onPress={this.submitBtnHandler} style={styles.submitBtn}>
+            {/* <TouchableOpacity onPress={this.submitBtnHandler} style={styles.submitBtn}>
               <Text style={styles.submitText}>제출</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+            <OrangeButton text="제출" onPress={this.submitBtnHandler} />
           </View>
           <View style={{ flex: 1 }} />
         </View>
