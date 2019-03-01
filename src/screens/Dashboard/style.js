@@ -71,6 +71,13 @@ const styles = StyleSheet.create({
     height: 200,
     borderRadius: 5,
   },
+  ChallengeListButton: {
+    height: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 10,
+    paddingHorizontal: '5%',
+  },
 });
 
 export default styles;
