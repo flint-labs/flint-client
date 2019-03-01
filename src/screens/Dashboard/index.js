@@ -1,16 +1,16 @@
 import React from 'react';
-import {
-  Text, TouchableOpacity, Animated, View, Dimensions, ImageBackground,
-} from 'react-native';
+import { Text, TouchableOpacity, Animated } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 import Dashboard from './Dashboard';
 // import Select from './Select';
 // import DoIt from './DoIt';
 
-const { width, height } = Dimensions.get('window');
 let isHidden = true;
+// const { width, height } = Dimensions.get('window');
+const baseUrl = 'http://13.209.19.196:3000';
 
 class component extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -27,7 +27,7 @@ class component extends React.Component {
     };
   };
 
-  state = { bounceValue: new Animated.Value(0) };
+  state = { bounceValue: new Animated.Value(0), challenges: null, isLoaded: false };
 
   toggleSubView = () => {
     const { bounceValue } = this.state;
@@ -46,27 +46,37 @@ class component extends React.Component {
   };
 
   componentDidMount = () => {
+    axios
+      .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
+      .then((res) => {
+        this.setState({ challenges: res.data.challenges, isLoaded: true });
+      })
+      .catch(err => console.log(err));
     const { navigation } = this.props;
     navigation.setParams({
       handleBottomModal: this.toggleSubView,
     });
   };
 
-  // hideModal = () => {
-  //   this.setState({
-  //     modalVisible: false,
-  //   });
-  // };
-
-  // changeModalVisible = () => {
-  //   this.setState({
-  //     modalVisible: true,
-  //   });
-  // };
+  handleChallenges = (challenges) => {
+    this.setState({ challenges });
+  };
 
   render() {
-    const { bounceValue } = this.state;
-    return <Dashboard bounceValue={bounceValue} toggleSubView={this.toggleSubView} />;
+    const { bounceValue, challenges, isLoaded } = this.state;
+    if (isLoaded) {
+      return challenges.length ? (
+        <Dashboard
+          bounceValue={bounceValue}
+          toggleSubView={this.toggleSubView}
+          challenges={challenges}
+          handleChallenges={this.handleChallenges}
+        />
+      ) : (
+        <Text>새로운 도전을 시작하세요!</Text>
+      );
+    }
+    return <Text>Loading</Text>;
   }
 }
 

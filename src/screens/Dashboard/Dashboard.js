@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View, Text, TouchableOpacity, Image, FlatList, Dimensions, Animated,
+  View, Text, Image, Dimensions, Animated, AsyncStorage,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
+import PropTypes from 'prop-types';
 import styles from './style';
 import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 import Select from './Select';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const runIcon = require('../../../assets/images/Dashboard/run.png');
 
 const fakeData = [
@@ -32,11 +33,18 @@ const fakeData = [
 class Dashboard extends Component {
   state = {
     modalVisible: false,
-    isHidden: this.props.isHidden,
+    recentChallenge: null,
+    // isHidden: this.props.isHidden,
   };
 
-  componentDidMount = () => {
-    console.log(this.props.isHidden);
+  componentDidMount = async () => {
+    // console.log(this.props.isHidden);
+    const { challenges } = this.props;
+    const asyncRecentChallengeId = await AsyncStorage.getItem('recentChallengeId');
+    const asyncRecentChallenge = challenges.filter(
+      el => el.id.toString() === asyncRecentChallengeId,
+    )[0];
+    this.setState({ recentChallenge: asyncRecentChallenge || challenges[0] });
   };
 
   doItHandler = () => {
@@ -45,25 +53,39 @@ class Dashboard extends Component {
     });
   };
 
-  hideModal = () => {
+  toggleModal = () => {
+    const { modalVisible } = this.state;
     this.setState({
-      modalVisible: false,
+      modalVisible: !modalVisible,
     });
   };
 
+  handleRecentChallenge = (challenge) => {
+    this.setState({ recentChallenge: challenge });
+  };
+
   render() {
-    const { modalVisible } = this.state;
-    const { bounceValue, toggleSubView } = this.props;
-    return (
+    const { modalVisible, recentChallenge } = this.state;
+    const {
+      bounceValue, toggleSubView, handleChallenges, challenges,
+    } = this.props;
+
+    return recentChallenge ? (
       <View style={styles.container}>
         <Animated.View
           style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
         >
-          <Select toggleSubView={toggleSubView} />
+          <Select
+            toggleSubView={toggleSubView}
+            handleChallenges={handleChallenges}
+            challenges={challenges}
+            handleRecentChallenge={this.handleRecentChallenge}
+            recentChallenge={recentChallenge}
+          />
         </Animated.View>
-        <DoIt modalVisible={modalVisible} hideModal={this.hideModal} />
+        <DoIt modalVisible={modalVisible} toggleModal={this.toggleModal} />
         <View style={[styles.sloganContainer]}>
-          <Text style={styles.sloganText}>내가 이번엔 살 진짜 꼭 뺀다.</Text>
+          <Text style={styles.sloganText}>{recentChallenge.slogan}</Text>
         </View>
         <View style={[styles.progressContainer]}>
           <Image style={styles.runImage} source={runIcon} />
@@ -95,8 +117,24 @@ class Dashboard extends Component {
           <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
         </View>
       </View>
+    ) : (
+      <Text>Loading</Text>
     );
   }
 }
+
+Dashboard.propTypes = {
+  bounceValue: PropTypes.shape({
+    _value: PropTypes.number.isRequired,
+  }).isRequired,
+  toggleSubView: PropTypes.func.isRequired,
+  challenges: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      slogan: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+  handleChallenges: PropTypes.func.isRequired,
+};
 
 export default Dashboard;
