@@ -532,7 +532,7 @@ class ChallengeSetting extends Component {
     </View>
   );
 
-  handleChallengeSettingSubmit = () => {
+  handleChallengeSettingSubmit = async () => {
     const challenge = { ...this.state };
     delete challenge.page;
     delete challenge.isFree;
@@ -547,8 +547,9 @@ class ChallengeSetting extends Component {
     const result = {};
 
     for (const value of check) {
-      if (!value) {
+      if (value === '') {
         Alert.alert('⚠️\n입력하지 않은 항목이 있습니다.');
+        console.log(challenge);
         return false;
       }
     }
@@ -556,14 +557,14 @@ class ChallengeSetting extends Component {
     challKey.forEach((ele, idx) => {
       result[ele] = check[idx];
     });
-    // try {
-    //   await axios.post(
-    //     'http://127.0.0.1:3000/api/challengeSetting/setting',
-    //     result,
-    //   );
-    // } catch (err) {
-    //   Alert.alert(err.message);
-    // }
+    result.referee = this.state.referee;
+
+    try {
+      await axios.post('http://127.0.0.1:3000/api/challenges/setting', result);
+    } catch (err) {
+      Alert.alert(err.message);
+      return false;
+    }
 
     return true;
   };
@@ -575,14 +576,14 @@ class ChallengeSetting extends Component {
     if (isReferee) {
       result = this.renderRefereeIdInputPart();
     } else if (isSolo) {
-      result = this.renderPeriodSelectPart(checkingPeriod);
+      result = this.renderCheckingPeriodPart(checkingPeriod);
     } else {
       result = <Text />;
     }
     return result;
   };
 
-  buttonHandler = () => {
+  buttonHandler = async () => {
     const { page, isReferee } = this.state;
     const { navigation } = this.props;
     if (page < 8) {
@@ -591,7 +592,7 @@ class ChallengeSetting extends Component {
       } else {
         this.setState({ page: page + 1 });
       }
-    } else if (this.handleChallengeSettingSubmit()) {
+    } else if (await this.handleChallengeSettingSubmit()) {
       navigation.navigate('Dashboard');
     }
   };
