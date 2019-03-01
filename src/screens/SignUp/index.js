@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-  Text, View, SafeAreaView, findNodeHandle, Picker, Dimensions, BackHandler, Alert, Button,
+  Text, View, SafeAreaView, findNodeHandle, Picker,
+  Dimensions, BackHandler, Alert, TouchableOpacity,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,9 +19,19 @@ const BASE_URL = 'http://13.209.19.196:3000';
 class SignUp extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Sign Up',
-    tabBarVisible: false,
+    gesturesEnable: false,
     headerLeft: (
-      <Button title="Back" onPress={navigation.getParam('handleBackButton') || navigation.goBack} />
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          marginLeft: 10,
+          paddingRight: 30,
+          alignItems: 'center',
+        }}
+        onPress={navigation.getParam('handleBackButton') || navigation.goBack}
+      >
+        <Icon name="ios-arrow-round-back" size={35} />
+      </TouchableOpacity>
     ),
   });
 
@@ -82,11 +93,12 @@ class SignUp extends Component {
     try {
       const { email, password } = this.state;
       const { nickname, gender, birth } = this.state;
+      const { navigation: { goBack } } = this.props;
       const user = {
         email, password, nickname, gender, birth,
       };
       await axios.post(`${BASE_URL}/api/users/signUp`, { user });
-      Alert.alert('회원가입을 축하합니다 🎉');
+      Alert.alert('회원가입 성공', '회원가입을 축하합니다 🎉', [{ text: 'OK', onPress: goBack }]);
     } catch (error) {
       const { data } = error.response;
       Alert.alert(`⚠️\n${data}`);
@@ -223,7 +235,7 @@ class SignUp extends Component {
           setState={text => this.setState({ nickname: text })}
           renderIcon={() => this.renderIcon({ name: 'ios-person', style: { paddingLeft: 2 } })}
           customProps={{
-            placeholder: '닉네임을 입력해주세요.',
+            placeholder: '닉네임을 정해주세요.',
             onSubmitEditing: () => {
               if (this.isValidAll()) {
                 this.setState({ page: 1 });
@@ -320,11 +332,8 @@ class SignUp extends Component {
         break;
       case 2:
         text = 'Sign Up';
-        onPress = () => {
-          const { navigation: { goBack } } = this.props;
-          this.handleSignupButton();
-          goBack();
-        }; break;
+        onPress = this.handleSignupButton;
+        break;
       default:
         return null;
     }
@@ -352,11 +361,11 @@ class SignUp extends Component {
           }}
         >
           <View style={styles.container}>
-            <View style={{ flex: 6, justifyContent: 'flex-end' }}>
+            <View style={{ flex: 4, justifyContent: 'flex-end' }}>
               <Text style={styles.header}>{this.renderHeaders(page)}</Text>
             </View>
             <View style={{ flex: 1 }} />
-            <View style={{ flex: 18 }}>
+            <View style={{ flex: 24 }}>
               <View style={{ alignItems: 'center' }}>
                 {this.renderInputs(page).map(input => input)}
               </View>
