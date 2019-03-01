@@ -1,5 +1,10 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { createStackNavigator } from 'react-navigation';
+import PropTypes from 'prop-types';
+
+import SignIn from '../SignIn';
+import SignUp from '../SignUp';
 import styles from './styles';
 
 const {
@@ -7,7 +12,7 @@ const {
   adBoxInner, userInfoEntry,
 } = styles;
 
-const userInfo = () => (
+const userInfo = ({ navigation }) => (
   <View style={{ flex: 1, justifyContent: 'space-between' }}>
     <View style={userInfoArea}>
       <Text style={userInfoEntry}>walli@gmail.com</Text>
@@ -25,6 +30,7 @@ const userInfo = () => (
     </View>
     <TouchableOpacity
       style={adBoxOuter}
+      onPress={() => navigation.navigate('SignIn')}
     >
       <View style={adBoxInner}>
         <Text>Hello World</Text>
@@ -33,4 +39,20 @@ const userInfo = () => (
   </View>
 );
 
-export default userInfo;
+userInfo.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};
+
+export default createStackNavigator({
+  userInfo: {
+    screen: userInfo,
+  },
+  SignIn: {
+    screen: SignIn,
+  },
+  SignUp: {
+    screen: SignUp,
+  },
+});
