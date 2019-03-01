@@ -6,6 +6,7 @@ import Intro from './Intro';
 import Feedback from './Feedback';
 
 import ChallengeSetting from '../ChallengeSetting';
+
 import styles from './Styles';
 
 const { width } = Dimensions.get('window');
@@ -14,6 +15,11 @@ class Home extends Component {
   goToScreen = screenName => {
     const { navigation } = this.props;
     navigation.navigate(screenName);
+  };
+
+  componentDidMount = () => {
+    const { navigation } = this.props;
+    navigation.addListener('didFocus', () => navigation.popToTop());
   };
 
   render = () => (
