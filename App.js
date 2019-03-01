@@ -16,45 +16,35 @@ const Root = createBottomTabNavigator(
       screen: Home,
       navigationOptions: {
         tabBarLable: 'HOME',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-home" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-home" color={tintColor} size={24} />,
       },
     },
     Referee: {
       screen: Referee,
       navigationOptions: {
         tabBarLable: 'Referee',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-megaphone" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-megaphone" color={tintColor} size={24} />,
       },
     },
     Dashboard: {
       screen: Dashboard,
       navigationOptions: {
         tabBarLable: 'Dashboard',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-bicycle" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-bicycle" color={tintColor} size={24} />,
       },
     },
     History: {
       screen: History,
       navigationOptions: {
         tabBarLable: 'History',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-ribbon" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-ribbon" color={tintColor} size={24} />,
       },
     },
     UserInfo: {
       screen: UserInfo,
       navigationOptions: {
         tabBarLable: 'UserInfo',
-        tabBarIcon: ({ tintColor }) => (
-          <Icon name="ios-person" color={tintColor} size={24} />
-        ),
+        tabBarIcon: ({ tintColor }) => <Icon name="ios-person" color={tintColor} size={24} />,
       },
     },
   },
