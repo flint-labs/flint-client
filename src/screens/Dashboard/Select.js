@@ -11,12 +11,6 @@ const baseUrl = 'http://13.209.19.196:3000';
 // import Modal from 'react-native-modal';
 
 const { width } = Dimensions.get('window');
-// const fakeData = [
-//   { title: '감자깎기' },
-//   { title: '아침 6시 일어나기' },
-//   { title: '태권도 꼭 가기' },
-//   { title: '헬스하기' },
-// ];
 
 const Select = ({
   toggleSubView,

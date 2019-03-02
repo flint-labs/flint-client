@@ -91,14 +91,6 @@ class Dashboard extends Component {
         </View>
         <View style={[styles.progressContainer]}>
           <Image style={styles.runImage} source={runIcon} />
-          {/* <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              margin: '5%',
-              backgroundColor: 'black',
-            }}
-          > */}
           <Progress.Bar progress={0.3} width={width * 0.8} color="#ff6600" />
           {/* <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
             <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />

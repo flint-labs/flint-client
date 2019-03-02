@@ -7,11 +7,8 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Dashboard from './Dashboard';
-// import Select from './Select';
-// import DoIt from './DoIt';
 
 let isHidden = true;
-// const { width, height } = Dimensions.get('window');
 const baseUrl = 'http://13.209.19.196:3000';
 
 class component extends React.Component {
