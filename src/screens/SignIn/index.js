@@ -50,6 +50,7 @@ class SignIn extends Component {
   handleSignInbutton = async () => {
     try {
       const { email, password } = this.state;
+      if (email === '' || password === '') return Alert.alert('모든 정보를 입력해주세요!');
       const { navigation: { goBack } } = this.props;
       const { headers, data } = await axios.get(`${BASE_URL}/oauth/signIn`, { headers: { email, password } });
       const accessToken = headers['x-access-token'];
@@ -57,12 +58,12 @@ class SignIn extends Component {
       await AsyncStorage.setItem('userInfo', JSON.stringify(data.user));
       await AsyncStorage.setItem('accessToken', accessToken);
       await SecureStore.setItemAsync('refreshToken', refreshToken);
-      Alert.alert('로그인 성공!', `${data.user.nickname}님 환영합니다 🤗`, [
+      return Alert.alert('로그인 성공!', `${data.user.nickname}님 환영합니다 🤗`, [
         { text: 'OK', onPress: () => goBack() },
       ]);
     } catch (error) {
       const { data } = error.response;
-      Alert.alert(`⚠️\n${data}`);
+      return Alert.alert(`⚠️\n${data}`);
     }
   }
 
@@ -104,10 +105,11 @@ class SignIn extends Component {
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',
         secureTextEntry: true,
+        onSubmitEditing: this.handleSignInbutton,
+        onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
         ref: (input) => {
           this.secondTextInput = input;
         },
-        onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
       }}
     />
   )
@@ -121,7 +123,7 @@ class SignIn extends Component {
           contentContainerStyle={{ flex: 1 }}
           scrollEnabled={false}
           enableAutomaticScroll
-          extraHeight={180}
+          extraHeight={280}
           innerRef={(ref) => {
             this.scroll = ref;
           }}
