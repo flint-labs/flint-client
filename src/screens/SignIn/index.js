@@ -1,18 +1,36 @@
 import React, { Component } from 'react';
 import {
-  Text, View, SafeAreaView, findNodeHandle, TouchableOpacity,
+  Text, View, SafeAreaView, findNodeHandle,
+  TouchableOpacity, Alert, AsyncStorage,
 } from 'react-native';
+import { SecureStore } from 'expo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 import { AuthInput, OrangeButton } from '../../components';
 import styles from './styles';
 
+const BASE_URL = 'http://13.209.19.196:3000';
+
 class SignIn extends Component {
-  static navigationOptions = ({
+  static navigationOptions = ({ navigation }) => ({
     tabBarVisible: false,
     title: 'Sign In',
+    headerLeft: (
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          marginLeft: 10,
+          paddingRight: 30,
+          alignItems: 'center',
+        }}
+        onPress={() => navigation.goBack()}
+      >
+        <Icon name="ios-arrow-round-back" size={35} />
+      </TouchableOpacity>
+    ),
   });
 
   state = {
@@ -25,8 +43,27 @@ class SignIn extends Component {
     navigate(screen);
   }
 
-  scrollToInput(node) {
+  scrollToInput = (node) => {
     this.scroll.props.scrollToFocusedInput(node);
+  }
+
+  handleSignInbutton = async () => {
+    try {
+      const { email, password } = this.state;
+      const { navigation: { goBack } } = this.props;
+      const { headers, data } = await axios.get(`${BASE_URL}/oauth/signIn`, { headers: { email, password } });
+      const accessToken = headers['x-access-token'];
+      const refreshToken = headers['x-refresh-token'];
+      await AsyncStorage.setItem('userInfo', JSON.stringify(data.user));
+      await AsyncStorage.setItem('accessToken', accessToken);
+      await SecureStore.setItemAsync('refreshToken', refreshToken);
+      Alert.alert('로그인 성공!', `${data.user.nickname}님 환영합니다 🤗`, [
+        { text: 'OK', onPress: () => goBack() },
+      ]);
+    } catch (error) {
+      const { data } = error.response;
+      Alert.alert(`⚠️\n${data}`);
+    }
   }
 
   renderIcon = ({ name, style }) => (
@@ -90,17 +127,14 @@ class SignIn extends Component {
           }}
         >
           <View style={styles.container}>
-            <View style={{ flex: 3, justifyContent: 'flex-end' }}>
-              {/* <Text style={styles.header}>환영합니다 🤗</Text> */}
-            </View>
-            {/* <View style={{ flex: 1 }} /> */}
-            <View style={{ flex: 8 }}>
+            <View style={{ flex: 3 }} />
+            <View style={{ flex: 9 }}>
               <View style={{ alignItems: 'center' }}>
                 {this.renderEmailInput(email)}
                 {this.renderPasswordInput(password)}
               </View>
               {this.renderRegisterButton()}
-              <OrangeButton text="Sign in" />
+              <OrangeButton text="Sign in" onPress={this.handleSignInbutton} />
             </View>
           </View>
         </KeyboardAwareScrollView>
