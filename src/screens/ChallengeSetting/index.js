@@ -9,11 +9,13 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  AsyncStorage,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
+import { StackActions } from 'react-navigation';
 
 import { AuthInput, OrangeButton } from '../../components';
 
@@ -56,13 +58,71 @@ class ChallengeSetting extends Component {
     referee: '',
     isValid: false,
     checkingPeriod: 1,
-    // category: null,
+    category: this.props.navigation.getParam('category'),
     amount: '',
     isFree: false,
     // description: '',
     isOnGoing: true,
     isOneShot: false,
     slogan: '',
+    charities: [],
+    selectCharity: '',
+    selectUser: '',
+    isValidUser: false,
+    isFriend: false,
+    isCompany: true,
+  };
+
+  componentDidMount = async () => {
+    const { navigation } = this.props;
+
+    navigation.setParams({
+      handleBackButton: this.handleBackButton,
+    });
+
+    try {
+      const charities = await axios.get(
+        'http://127.0.0.1:3000/api/challenges/charities',
+      );
+
+      this.setState({ charities: charities.data });
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  componentDidUpdate = async () => {
+    const { page, referee, isValid, selectUser, isValidUser } = this.state;
+
+    if (page === 4 && referee !== '') {
+      try {
+        const {
+          data: { isExist },
+        } = await axios.get(
+          `http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
+        );
+        if (isExist !== isValid) {
+          this.setState({ isValid: isExist });
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
+
+    if (page === 7 && selectUser !== '') {
+      try {
+        const {
+          data: { isExist },
+        } = await axios.get(
+          `http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
+        );
+        if (isExist !== isValidUser) {
+          this.setState({ isValidUser: isExist });
+        }
+      } catch (err) {
+        throw err;
+      }
+    }
   };
 
   scrollToInput(node) {
@@ -76,14 +136,6 @@ class ChallengeSetting extends Component {
     } = this.props;
     if (page > 0) this.setState({ page: page - 1 });
     else goBack();
-  };
-
-  componentDidMount = () => {
-    const { navigation } = this.props;
-
-    navigation.setParams({
-      handleBackButton: this.handleBackButton,
-    });
   };
 
   numberWithCommas = x => {
@@ -273,7 +325,7 @@ class ChallengeSetting extends Component {
   );
 
   renderModePart = () => {
-    const { isReferee, isSolo } = this.state;
+    const { isReferee, isSolo, isValid, referee } = this.state;
 
     return (
       <View>
@@ -314,85 +366,46 @@ class ChallengeSetting extends Component {
           />
         </View>
         <View style={{ alignItems: 'center', marginTop: 10 }}>
-          {!isSolo && !isReferee ? (
-            <Text />
-          ) : isSolo ? (
+          {isSolo ? (
             <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
               {'스스로 진행 상황을 체크합니다.'}
             </Text>
           ) : (
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-              {'심판으로 등록된 사용자가 체크합니다.'}
-            </Text>
+            <View>
+              <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                {'심판으로 등록된 사용자가 체크합니다.'}
+              </Text>
+              <TextInput
+                style={{
+                  width: width * 0.7,
+                  fontSize: 25,
+                  marginTop: 40,
+                  paddingBottom: 5,
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#333',
+                }}
+                onChangeText={text => this.setState({ referee: text })}
+                blurOnSubmit={false}
+                value={referee}
+                returnKeyType="next"
+                placeholder="심판 아이디"
+                // onSubmitEditing: () => this.secondTextInput.focus(),
+                // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+              />
+              {isValid ? (
+                <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
+                  훌륭한 심판이십니다.
+                </Text>
+              ) : (
+                <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
+                  등록되지않은 아이디 입니다.
+                </Text>
+              )}
+            </View>
           )}
         </View>
       </View>
     );
-  };
-
-  renderRefereeIdInputPart = referee => {
-    const { isValid } = this.state;
-    return (
-      <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 20 }}> 📝심판의 아이디를 적어주세요.📝</Text>
-        </View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <TextInput
-            style={{
-              width: width * 0.7,
-              fontSize: 25,
-              marginTop: 40,
-              paddingBottom: 5,
-              borderBottomWidth: 1,
-              borderBottomColor: '#333',
-            }}
-            onChangeText={text => this.setState({ referee: text })}
-            blurOnSubmit={false}
-            value={referee}
-            returnKeyType="next"
-            // onSubmitEditing: () => this.secondTextInput.focus(),
-            // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
-          />
-          {isValid ? (
-            <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
-              훌륭한 심판이십니다.
-            </Text>
-          ) : (
-            <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
-              등록되지않은 아이디 입니다.
-            </Text>
-          )}
-        </View>
-      </View>
-    );
-  };
-
-  componentDidUpdate = async () => {
-    const { page, referee, isValid } = this.state;
-
-    if (page === 5) {
-      try {
-        const {
-          data: { isExist },
-        } = await axios.get(
-          `http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
-        );
-        if (isExist !== isValid) {
-          this.setState({ isValid: isExist });
-        }
-      } catch (err) {
-        throw err;
-      }
-    }
   };
 
   renderCheckingPeriodPart = checkingPeriod => (
@@ -517,6 +530,115 @@ class ChallengeSetting extends Component {
     </View>
   );
 
+  renderReceipientPart = () => {
+    const {
+      isFriend,
+      isCompany,
+      selectCharity,
+      isValidUser,
+      selectUser,
+      charities,
+    } = this.state;
+    return (
+      <View>
+        <View
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ fontSize: 20 }}>
+            💸만약 실패한다면 누구에게 보낼까요?💸
+          </Text>
+        </View>
+        <View
+          style={{
+            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginTop: 30,
+          }}
+        >
+          <CheckBox
+            title="친구"
+            checked={isFriend}
+            onPress={() =>
+              this.setState({
+                isFriend: !isFriend,
+                isCompany: isFriend,
+              })
+            }
+          />
+          <CheckBox
+            title="자선단체"
+            checked={isCompany}
+            onPress={() =>
+              this.setState({
+                isCompany: !isCompany,
+                isFriend: isCompany,
+              })
+            }
+          />
+        </View>
+        <View style={{ alignItems: 'center', marginTop: 10 }}>
+          {isFriend ? (
+            <View>
+              <TextInput
+                style={{
+                  width: width * 0.7,
+                  fontSize: 25,
+                  marginTop: 40,
+                  paddingBottom: 5,
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#333',
+                }}
+                onChangeText={text => this.setState({ selectUser: text })}
+                blurOnSubmit={false}
+                value={selectUser}
+                returnKeyType="next"
+                // onSubmitEditing: () => this.secondTextInput.focus(),
+                // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+              />
+              {isValidUser ? (
+                <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
+                  유효한 아이디 입니다.
+                </Text>
+              ) : (
+                <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
+                  등록되지않은 아이디 입니다.
+                </Text>
+              )}
+            </View>
+          ) : (
+            <View
+              style={{
+                alignItems: 'center',
+              }}
+            >
+              <Picker
+                selectedValue={selectCharity}
+                style={{ width: width * 0.7 }}
+                onValueChange={itemValue =>
+                  this.setState({ selectCharity: itemValue })
+                }
+              >
+                {charities.map(ele => {
+                  const value = ele;
+                  return (
+                    <Picker.Item
+                      key={value.name}
+                      label={value.name}
+                      value={value.id}
+                    />
+                  );
+                })}
+              </Picker>
+            </View>
+          )}
+        </View>
+      </View>
+    );
+  };
+
   renderStartChallengePart = () => (
     <View>
       <View
@@ -541,10 +663,23 @@ class ChallengeSetting extends Component {
     delete challenge.isReferee;
     delete challenge.isValid;
     delete challenge.referee;
+    delete challenge.charities;
+    delete challenge.isValidUser;
+    delete challenge.isFriend;
+    delete challenge.isCompany;
+    delete challenge.selectUser;
+    delete challenge.selectCharity;
 
     const check = Object.values(challenge);
     const challKey = Object.keys(challenge);
     const result = {};
+    let accessToken;
+
+    const selectCharity = this.state.selectCharity || false;
+    const selectUser = this.state.selectUser || false;
+
+    result.selectCharity = selectCharity;
+    result.selectUser = selectUser;
 
     for (const value of check) {
       if (value === '') {
@@ -560,6 +695,14 @@ class ChallengeSetting extends Component {
     result.referee = this.state.referee;
 
     try {
+      // accessToken = await AsyncStorage.getItem('access');
+      // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
+      result.userId = 10;
+    } catch (err) {
+      Alert.alert('AsyncStorage error');
+    }
+
+    try {
       await axios.post('http://127.0.0.1:3000/api/challenges/setting', result);
     } catch (err) {
       Alert.alert(err.message);
@@ -569,29 +712,15 @@ class ChallengeSetting extends Component {
     return true;
   };
 
-  renderSwitcher = () => {
-    const { page, isReferee, isSolo, checkingPeriod } = this.state;
-    let result;
-
-    if (isReferee) {
-      result = this.renderRefereeIdInputPart();
-    } else if (isSolo) {
-      result = this.renderCheckingPeriodPart(checkingPeriod);
-    } else {
-      result = <Text />;
-    }
-    return result;
-  };
-
   buttonHandler = async () => {
     const { page, isReferee } = this.state;
     const { navigation } = this.props;
-    if (page < 8) {
-      if (page === 5 && isReferee) {
-        this.setState({ isReferee: false, isSolo: true, page: 5 });
-      } else {
-        this.setState({ page: page + 1 });
-      }
+    if (page < 9) {
+      // if (page === 5 && isReferee) {
+      //   this.setState({ isReferee: false, isSolo: true, page: 5 });
+      // } else {
+      this.setState({ page: page + 1 });
+      // }
     } else if (await this.handleChallengeSettingSubmit()) {
       navigation.navigate('Dashboard');
     }
@@ -610,6 +739,7 @@ class ChallengeSetting extends Component {
       slogan,
     } = this.state;
     const { navigation } = this.props;
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAwareScrollView
@@ -634,14 +764,15 @@ class ChallengeSetting extends Component {
             {page === 3 &&
               this.renderStartAtPart(startYear, startMonth, startDay)}
             {page === 4 && this.renderModePart()}
-            {page === 5 && this.renderSwitcher()}
+            {page === 5 && this.renderCheckingPeriodPart(checkingPeriod)}
             {page === 6 && this.renderAmountPart(amount)}
-            {page === 7 && this.renderSloganPart(slogan)}
-            {page === 8 && this.renderStartChallengePart()}
+            {page === 7 && this.renderReceipientPart()}
+            {page === 8 && this.renderSloganPart(slogan)}
+            {page === 9 && this.renderStartChallengePart()}
 
             <View style={{ alignItems: 'center' }}>
               <OrangeButton
-                text={page === 8 ? 'Start' : 'Next'}
+                text={page === 9 ? 'Start' : 'Next'}
                 onPress={() => this.buttonHandler()}
               />
             </View>

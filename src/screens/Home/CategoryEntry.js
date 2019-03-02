@@ -4,7 +4,7 @@ import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import styles from './Styles';
 
 const CategoryEntry = ({ img, title, goToScreen }) => (
-  <TouchableOpacity onPress={() => goToScreen('ChallengeSetting')}>
+  <TouchableOpacity onPress={() => goToScreen('ChallengeSetting', title)}>
     <View style={styles.categoryEntryImgContainer}>
       <ImageBackground
         source={img}

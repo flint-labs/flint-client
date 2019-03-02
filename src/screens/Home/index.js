@@ -12,9 +12,9 @@ import styles from './Styles';
 const { width } = Dimensions.get('window');
 
 class Home extends Component {
-  goToScreen = screenName => {
+  goToScreen = (screenName, cate) => {
     const { navigation } = this.props;
-    navigation.navigate(screenName);
+    navigation.navigate(screenName, { category: cate });
   };
 
   componentDidMount = () => {
@@ -55,5 +55,8 @@ export default createStackNavigator(
   },
   {
     initialRouteName: 'Home',
+    navigationOptions: ({ navigation: { state } }) => ({
+      tabBarVisible: !(state.index > 0),
+    }),
   },
 );
