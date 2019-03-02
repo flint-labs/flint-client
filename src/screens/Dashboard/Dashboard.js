@@ -137,6 +137,7 @@ Dashboard.propTypes = {
     }).isRequired,
   ).isRequired,
   handleChallenges: PropTypes.func.isRequired,
+  handleDashboardTitle: PropTypes.func.isRequired,
 };
 
 export default Dashboard;

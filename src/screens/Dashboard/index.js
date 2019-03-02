@@ -29,7 +29,12 @@ class component extends React.Component {
     };
   };
 
-  state = { bounceValue: new Animated.Value(0), challenges: null, isLoaded: false };
+  state = {
+    bounceValue: new Animated.Value(0),
+    challenges: null,
+    isLoaded: false,
+    recentChallenge: null,
+  };
 
   toggleSubView = () => {
     const { bounceValue } = this.state;
@@ -48,22 +53,23 @@ class component extends React.Component {
   };
 
   componentDidMount = async () => {
-    await AsyncStorage.removeItem('recentChallenge');
-    axios
+    // await AsyncStorage.removeItem('recentChallenge');
+    await axios // await 사용해야 밑에서 challenges 사용가능
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
       .then(async (res) => {
         this.setState({ challenges: res.data.challenges, isLoaded: true });
-        const { navigation } = this.props;
-        console.log(res.data.challenges[0]);
-        navigation.setParams({
-          handleBottomModal: this.toggleSubView,
-          dashboardTitle: JSON.parse(await AsyncStorage.getItem('recentChallenge'))
-            ? JSON.parse(await AsyncStorage.getItem('recentChallenge')).title
-            : res.data.challenges[0].title,
-        });
       })
       .catch(err => console.log(err));
-    console.log(this.state.challenges);
+    const { navigation } = this.props;
+    const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+    await this.setState({
+      recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+    });
+    const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+    navigation.setParams({
+      handleBottomModal: this.toggleSubView,
+      dashboardTitle: recentChallenge.title,
+    });
   };
 
   handleDashboardTitle = (title) => {
