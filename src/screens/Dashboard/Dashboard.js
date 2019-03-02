@@ -40,10 +40,7 @@ class Dashboard extends Component {
   componentDidMount = async () => {
     // console.log(this.props.isHidden);
     const { challenges } = this.props;
-    const asyncRecentChallengeId = await AsyncStorage.getItem('recentChallengeId');
-    const asyncRecentChallenge = challenges.filter(
-      el => el.id.toString() === asyncRecentChallengeId,
-    )[0];
+    const asyncRecentChallenge = JSON.parse(await AsyncStorage.getItem('recentChallenge'));
     this.setState({ recentChallenge: asyncRecentChallenge || challenges[0] });
   };
 
@@ -67,7 +64,11 @@ class Dashboard extends Component {
   render() {
     const { modalVisible, recentChallenge } = this.state;
     const {
-      bounceValue, toggleSubView, handleChallenges, challenges,
+      bounceValue,
+      toggleSubView,
+      handleChallenges,
+      challenges,
+      handleDashboardTitle,
     } = this.props;
 
     return recentChallenge ? (
@@ -81,6 +82,7 @@ class Dashboard extends Component {
             challenges={challenges}
             handleRecentChallenge={this.handleRecentChallenge}
             recentChallenge={recentChallenge}
+            handleDashboardTitle={handleDashboardTitle}
           />
         </Animated.View>
         <DoIt modalVisible={modalVisible} toggleModal={this.toggleModal} />

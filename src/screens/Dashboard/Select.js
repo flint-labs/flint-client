@@ -24,17 +24,21 @@ const Select = ({
   challenges,
   handleRecentChallenge,
   recentChallenge,
+  handleDashboardTitle,
 }) => {
   const handleChallengeListButton = async (item) => {
+    // item은 최근 challenge
     axios
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
       .then((res) => {
         handleChallenges(res.data.challenges);
       })
       .catch(err => console.log(err));
-    await AsyncStorage.setItem('recentChallengeId', item.id.toString());
-    handleRecentChallenge(challenges.filter(el => el.id === item.id)[0]);
+    await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
+    // console.log(JSON.stringify(item));
+    handleRecentChallenge(item);
     toggleSubView();
+    handleDashboardTitle(item.title);
   };
 
   return (
@@ -73,6 +77,7 @@ Select.propTypes = {
     }).isRequired,
   ).isRequired,
   recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
+  handleDashboardTitle: PropTypes.func.isRequired,
 };
 
 export default Select;

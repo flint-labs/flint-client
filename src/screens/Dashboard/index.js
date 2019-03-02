@@ -1,5 +1,7 @@
 import React from 'react';
-import { Text, TouchableOpacity, Animated } from 'react-native';
+import {
+  Text, TouchableOpacity, Animated, AsyncStorage,
+} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,7 +21,7 @@ class component extends React.Component {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleBottomModal()}>
           <Text style={{ fontSize: 20 }}>
-            {'제목 '}
+            {params.dashboardTitle ? `${params.dashboardTitle} ` : ' '}
             <Icon name="ios-arrow-dropdown" size={20} />
           </Text>
         </TouchableOpacity>
@@ -45,17 +47,28 @@ class component extends React.Component {
     isHidden = !isHidden;
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    await AsyncStorage.removeItem('recentChallenge');
     axios
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
-      .then((res) => {
+      .then(async (res) => {
         this.setState({ challenges: res.data.challenges, isLoaded: true });
+        const { navigation } = this.props;
+        console.log(res.data.challenges[0]);
+        navigation.setParams({
+          handleBottomModal: this.toggleSubView,
+          dashboardTitle: JSON.parse(await AsyncStorage.getItem('recentChallenge'))
+            ? JSON.parse(await AsyncStorage.getItem('recentChallenge')).title
+            : res.data.challenges[0].title,
+        });
       })
       .catch(err => console.log(err));
+    console.log(this.state.challenges);
+  };
+
+  handleDashboardTitle = (title) => {
     const { navigation } = this.props;
-    navigation.setParams({
-      handleBottomModal: this.toggleSubView,
-    });
+    navigation.setParams({ dashboardTitle: title });
   };
 
   handleChallenges = (challenges) => {
@@ -71,6 +84,7 @@ class component extends React.Component {
           toggleSubView={this.toggleSubView}
           challenges={challenges}
           handleChallenges={this.handleChallenges}
+          handleDashboardTitle={this.handleDashboardTitle}
         />
       ) : (
         <Text>새로운 도전을 시작하세요!</Text>
