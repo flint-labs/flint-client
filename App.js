@@ -16,35 +16,45 @@ const Root = createBottomTabNavigator(
       screen: Home,
       navigationOptions: {
         tabBarLable: 'HOME',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-home" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-home" color={tintColor} size={24} />
+        ),
       },
     },
     Referee: {
       screen: Referee,
       navigationOptions: {
         tabBarLable: 'Referee',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-megaphone" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-megaphone" color={tintColor} size={24} />
+        ),
       },
     },
     Dashboard: {
       screen: Dashboard,
       navigationOptions: {
         tabBarLable: 'Dashboard',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-bicycle" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-bicycle" color={tintColor} size={24} />
+        ),
       },
     },
     History: {
       screen: History,
       navigationOptions: {
         tabBarLable: 'History',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-ribbon" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-ribbon" color={tintColor} size={24} />
+        ),
       },
     },
     UserInfo: {
       screen: UserInfo,
       navigationOptions: {
         tabBarLable: 'UserInfo',
-        tabBarIcon: ({ tintColor }) => <Icon name="ios-person" color={tintColor} size={24} />,
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="ios-person" color={tintColor} size={24} />
+        ),
       },
     },
   },
@@ -65,22 +75,23 @@ const Root = createBottomTabNavigator(
 );
 
 const AppContainer = createAppContainer(Root);
-
+const Fontrust = require('./assets/fonts/Fontrust.ttf');
 // eslint-disable-next-line react/prefer-stateless-function
 class App extends React.Component {
   state = {
-    isLoad: false,
+    isLoaded: false,
   };
 
   async componentDidMount() {
     await Font.loadAsync({
-      Fontrust: require('./assets/fonts/Fontrust.ttf'),
+      Fontrust,
     });
-    this.setState({ isLoad: true });
+    this.setState({ isLoaded: true });
   }
 
   render() {
-    return this.state.isLoad ? (
+    const { isLoaded } = this.state;
+    return isLoaded ? (
       <AppContainer />
     ) : (
       <View>
