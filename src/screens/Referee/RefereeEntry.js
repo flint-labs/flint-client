@@ -6,8 +6,13 @@ import styles from './Styles';
 
 const fakeImage = require('../../../assets/images/Home/cate1.jpg');
 
-const RefereeEntry = ({ data }) => (
-  <TouchableOpacity onPress={() => console.log('click Referee entry')}>
+const RefereeEntry = ({ data, modal }) => (
+  <TouchableOpacity
+    onPress={() => {
+      console.log('click');
+      modal();
+    }}
+  >
     <View style={styles.refereeEntry}>
       <View style={styles.imageContainer}>
         <Image
