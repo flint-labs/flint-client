@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  View, Text, Image, ImageBackground,
-} from 'react-native';
+import { View, Text, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './style';
@@ -11,25 +9,11 @@ const img = require('../../../assets/images/Home/cate2.jpg');
 const ReportEntry = ({ data }) => (
   <ImageBackground
     source={img}
-    style={{
-      flex: 1,
-      resizeMode: 'contain',
-      // margin: 5,
-      justifyContent: 'center',
-      padding: 20,
-    }}
+    style={styles.reportEntryBackgroundImg}
     imageStyle={{ borderRadius: 5 }}
     blurRadius={4}
   >
-    <Text
-      style={{
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 20,
-      }}
-    >
-      {data.title}
-    </Text>
+    <Text style={styles.reportEntryTitle}>{data.title}</Text>
     <Text style={{ color: 'white', fontSize: 20 }}>{data.description}</Text>
     <View style={{ alignItems: 'flex-end' }}>
       <Icon name="ios-checkmark-circle" size={20} style={{ color: 'white' }} />
