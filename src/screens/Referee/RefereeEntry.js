@@ -9,8 +9,7 @@ const fakeImage = require('../../../assets/images/Home/cate1.jpg');
 const RefereeEntry = ({ data, modal }) => (
   <TouchableOpacity
     onPress={() => {
-      console.log('click');
-      modal();
+      modal(fakeImage, data.description);
     }}
   >
     <View style={styles.refereeEntry}>
