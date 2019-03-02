@@ -78,6 +78,17 @@ const styles = StyleSheet.create({
     margin: 10,
     paddingHorizontal: '5%',
   },
+  reportEntryBackgroundImg: {
+    flex: 1,
+    resizeMode: 'contain',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  reportEntryTitle: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
 });
 
 export default styles;
