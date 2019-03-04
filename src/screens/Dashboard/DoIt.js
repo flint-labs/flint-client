@@ -6,9 +6,11 @@ import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 import styles from './style';
 import { OrangeButton } from '../../components';
 
+const baseUrl = 'http://13.209.19.196:3000';
 const cameraImage = require('../../../assets/images/Dashboard/camera.png');
 
 class DoIt extends React.Component {
@@ -16,9 +18,18 @@ class DoIt extends React.Component {
     headerTitle: <Image source={cameraImage} style={{ width: 30, height: 30 }} />,
   });
 
+  state = { text: null };
+
   submitBtnHandler = () => {
     // console.log(modalVisible, hideModal);
-    const { toggleModal } = this.props;
+    const { toggleModal, recentChallenge } = this.props;
+    const { text } = this.state;
+    axios.post(`${baseUrl}/api/reports/postReport`, {
+      image: '',
+      isConfirmed: 'pending',
+      description: text,
+      challengeId: recentChallenge.id,
+    });
     Alert.alert('제출되었습니다.', null, [
       {
         text: 'OK',
@@ -52,6 +63,7 @@ class DoIt extends React.Component {
                 multiline
                 autoFocus
                 blurOnSubmit
+                onChangeText={text => this.setState({ text })}
               />
             </View>
             <View style={{ flex: 1, marginLeft: '5%' }}>
@@ -73,6 +85,7 @@ class DoIt extends React.Component {
 DoIt.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
+  recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
 }; // 꼭 필요하면 isRequired 써주기
 
 export default DoIt;
