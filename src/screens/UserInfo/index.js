@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import {
   View, Text, TouchableOpacity, AsyncStorage, Alert,
 } from 'react-native';
-import { createStackNavigator, withNavigationFocus, NavigationEvents } from 'react-navigation';
+import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 
+import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
 import SignUp from '../SignUp';
 import styles from './styles';
 
-const BASE_URL = 'http://13.209.19.196:3000';
 const { redButton, userInfoArea, userInfoEntry } = styles;
 
 class UserInfo extends Component {
@@ -32,8 +31,7 @@ class UserInfo extends Component {
       if (!userInfo) return;
       const { id } = JSON.parse(userInfo);
       if (!id) return;
-      const { accessToken } = await AsyncStorage.getItem('accessToken');
-      const { data: { user } } = await axios.get(`${BASE_URL}/api/users/${id}`, { headers: { accessToken } });
+      const { data: { user } } = await sendRequest('get', `/api/users/${id}`);
       if (user) this.setState({ user });
     } catch (error) {
       Alert.alert(error.message);
@@ -119,7 +117,10 @@ UserInfo.propTypes = {
 
 const userInfoNavigator = createStackNavigator({
   userInfo: {
-    screen: withNavigationFocus(UserInfo),
+    screen: UserInfo,
+    navigationOptions: ({ navigation }) => ({
+      title: 'My Page',
+    }),
   },
   SignIn: {
     screen: SignIn,
