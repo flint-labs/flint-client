@@ -10,6 +10,7 @@ import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 import Select from './Select';
+import { sendRequest } from '../../modules/sendRequest';
 
 const { width } = Dimensions.get('window');
 const runIcon = require('../../../assets/images/Dashboard/run.png');
@@ -42,6 +43,7 @@ class Dashboard extends Component {
     const { challenges } = this.props;
     const asyncRecentChallenge = JSON.parse(await AsyncStorage.getItem('recentChallenge'));
     this.setState({ recentChallenge: asyncRecentChallenge || challenges[0] });
+    this.calculateProgress();
   };
 
   doItHandler = () => {
@@ -57,8 +59,21 @@ class Dashboard extends Component {
     });
   };
 
-  handleRecentChallenge = (challenge) => {
+  handleRecentChallenge = challenge => {
     this.setState({ recentChallenge: challenge });
+  };
+
+  calculateProgress = async () => {
+    const { recentChallenge } = this.state;
+    const weeks = recentChallenge.endAt - recentChallenge.startAt;
+    const response = await sendRequest(
+      'get',
+      `/api/reports/getReports/${recentChallenge.id}`,
+      null,
+      null,
+    );
+    console.log('im reports', response);
+    // {response.data}
   };
 
   render() {

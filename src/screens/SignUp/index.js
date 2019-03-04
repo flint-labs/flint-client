@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import {
-  Text, View, SafeAreaView, findNodeHandle, Picker,
-  Dimensions, BackHandler, Alert, TouchableOpacity,
+  Text,
+  View,
+  SafeAreaView,
+  findNodeHandle,
+  Picker,
+  Dimensions,
+  BackHandler,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -88,9 +95,15 @@ class SignUp extends Component {
     try {
       const { email, password } = this.state;
       const { nickname, gender, birth } = this.state;
-      const { navigation: { goBack } } = this.props;
+      const {
+        navigation: { goBack },
+      } = this.props;
       const user = {
-        email, password, nickname, gender, birth,
+        email,
+        password,
+        nickname,
+        gender,
+        birth,
       };
       await axios.post(`${BASE_URL}/api/users/signUp`, { user });
       Alert.alert('회원가입 성공', '회원가입을 축하합니다 🎉', [{ text: 'OK', onPress: goBack }]);
@@ -98,11 +111,13 @@ class SignUp extends Component {
       const { data } = error.response;
       Alert.alert(`⚠️\n${data}`);
     }
-  }
+  };
 
   handleBackButton = () => {
     const { page } = this.state;
-    const { navigation: { goBack } } = this.props;
+    const {
+      navigation: { goBack },
+    } = this.props;
     if (page > 0) this.setState({ page: page - 1 });
     else goBack();
   };
@@ -110,12 +125,12 @@ class SignUp extends Component {
   checkEmailDuplication = async email => {
     const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkEmail/${email}`);
     return isExist;
-  }
+  };
 
   checkNicknameDuplication = async nickname => {
     const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkNickname/${nickname}`);
     return isExist;
-  }
+  };
 
   scrollToInput(node) {
     this.scroll.props.scrollToFocusedInput(node);
@@ -249,7 +264,7 @@ class SignUp extends Component {
         }
       </View>
     );
-  }
+  };
 
   renderBirthPicker = birth => (
     <Picker
@@ -320,7 +335,8 @@ class SignUp extends Component {
           if (this.isValidAll()) {
             this.setState({ page: page + 1 });
           } else this.setState({ showWarning: true });
-        }; break;
+        };
+        break;
       case 1:
         text = 'Next';
         onPress = () => this.setState({ page: page + 1 });
@@ -339,7 +355,8 @@ class SignUp extends Component {
     const { page, showWarning } = this.state;
     if (page === 0 && showWarning && !this.isValidAll()) {
       return <Text style={styles.warning}>모든 항목을 정확히 입력해주세요 :(</Text>;
-    } return null;
+    }
+    return null;
   };
 
   render = () => {

@@ -10,14 +10,18 @@ import {
   TouchableOpacity,
   Alert,
   AsyncStorage,
+  YellowBox
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
 import { StackActions } from 'react-navigation';
-
 import { AuthInput, OrangeButton } from '../../components';
+
+YellowBox.ignoreWarnings([
+  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
 
 const { width } = Dimensions.get('window');
 const thisYear = new Date().getFullYear();
@@ -99,7 +103,7 @@ class ChallengeSetting extends Component {
         const {
           data: { isExist },
         } = await axios.get(
-          `http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
+          `http://http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
         );
         if (isExist !== isValid) {
           this.setState({ isValid: isExist });
@@ -114,7 +118,7 @@ class ChallengeSetting extends Component {
         const {
           data: { isExist },
         } = await axios.get(
-          `http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
+          `http://http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
         );
         if (isExist !== isValidUser) {
           this.setState({ isValidUser: isExist });
@@ -703,7 +707,7 @@ class ChallengeSetting extends Component {
     }
 
     try {
-      await axios.post('13.209.19.196:3000/api/challenges/setting', result);
+      await axios.post('http://13.209.19.196:3000/api/challenges/setting', result);
     } catch (err) {
       Alert.alert(err.message);
       return false;
