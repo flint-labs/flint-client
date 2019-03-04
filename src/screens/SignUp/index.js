@@ -20,7 +20,7 @@ import { AuthInput, OrangeButton } from '../../components';
 import styles from './styles';
 
 const { width: WIDTH } = Dimensions.get('window');
-const thisYear = new Date().getFullYear();
+const THIS_YEAR = new Date().getFullYear();
 const BASE_URL = 'http://13.209.19.196:3000';
 
 class SignUp extends Component {
@@ -29,12 +29,7 @@ class SignUp extends Component {
     gesturesEnabled: false,
     headerLeft: (
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          marginLeft: 10,
-          paddingRight: 30,
-          alignItems: 'center',
-        }}
+        style={styles.headerButton}
         onPress={navigation.getParam('handleBackButton') || navigation.goBack}
       >
         <Icon name="ios-arrow-round-back" size={35} />
@@ -52,7 +47,7 @@ class SignUp extends Component {
     nicknameDuplication: false,
     showWarning: false,
     gender: 'man',
-    birth: thisYear,
+    birth: THIS_YEAR,
     // location: '',
   };
 
@@ -128,16 +123,12 @@ class SignUp extends Component {
   };
 
   checkEmailDuplication = async email => {
-    const {
-      data: { isExist },
-    } = await axios.get(`${BASE_URL}/api/users/checkEmail/${email}`);
+    const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkEmail/${email}`);
     return isExist;
   };
 
   checkNicknameDuplication = async nickname => {
-    const {
-      data: { isExist },
-    } = await axios.get(`${BASE_URL}/api/users/checkNickname/${nickname}`);
+    const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkNickname/${nickname}`);
     return isExist;
   };
 
@@ -283,7 +274,7 @@ class SignUp extends Component {
       onValueChange={itemValue => this.setState({ birth: itemValue })}
     >
       {new Array(120).fill(null).map((el, index) => {
-        const value = (thisYear - index).toString();
+        const value = (THIS_YEAR - index).toString();
         return <Picker.Item key={value} label={value} value={value} />;
       })}
     </Picker>

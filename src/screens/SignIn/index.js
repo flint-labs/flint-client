@@ -25,12 +25,7 @@ class SignIn extends Component {
     title: 'Sign In',
     headerLeft: (
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          marginLeft: 10,
-          paddingRight: 30,
-          alignItems: 'center',
-        }}
+        style={styles.headerButton}
         onPress={() => navigation.goBack()}
       >
         <Icon name="ios-arrow-round-back" size={35} />
@@ -44,9 +39,7 @@ class SignIn extends Component {
   };
 
   goToScreen = screen => {
-    const {
-      navigation: { navigate },
-    } = this.props;
+    const { navigation: { navigate } } = this.props;
     navigate(screen);
   };
 
@@ -57,8 +50,7 @@ class SignIn extends Component {
   handleSignInbutton = async () => {
     try {
       const { email, password } = this.state;
-      if (email === '' || password === '')
-        return Alert.alert('모든 정보를 입력해주세요!');
+      if (email === '' || password === '') { return Alert.alert('모든 정보를 입력해주세요!'); }
       const {
         navigation: { goBack },
       } = this.props;
@@ -81,9 +73,8 @@ class SignIn extends Component {
         [{ text: 'OK', onPress: () => goBack() }],
       );
     } catch (error) {
-      // const { data } = error.response;
-      console.log(error);
-      // return Alert.alert(`⚠️\n${data}`);
+      const { data } = error.response;
+      return Alert.alert(`⚠️\n${data}`);
     }
   };
 
@@ -122,8 +113,7 @@ class SignIn extends Component {
     <AuthInput
       state={password}
       setState={text => this.setState({ password: text })}
-      renderIcon={() =>
-        this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
+      renderIcon={() => this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
       }
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',

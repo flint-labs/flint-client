@@ -21,4 +21,10 @@ export default StyleSheet.create({
     paddingBottom: 2,
     marginBottom: 10,
   },
+  headerButton: {
+    flexDirection: 'row',
+    marginLeft: 10,
+    paddingRight: 30,
+    alignItems: 'center',
+  },
 });

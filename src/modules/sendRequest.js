@@ -13,11 +13,11 @@ const BASE_URL = 'http://13.209.19.196:3000';
  * @param {object} setBody Example : `{ challenge }`, 없으면 `null`
  */
 const sendRequest = async (method, endPoint, setHeaders, setBody) => {
-  const setHeader = (token) => {
+  const setHeader = token => {
     if (setHeaders) return Object.asign(setHeaders, { 'x-access-token': token });
     return { 'x-access-token': token };
   };
-  const request = (token) => {
+  const request = token => {
     const params = [`${BASE_URL}${endPoint}`, setBody, { headers: setHeader(token) }];
     if (method === 'get' || method === 'delete') params.splice(1, 1);
     return axios[method](...params);
