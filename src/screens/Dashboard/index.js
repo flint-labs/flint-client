@@ -1,15 +1,14 @@
 import React from 'react';
-import { Text, TouchableOpacity, Animated } from 'react-native';
+import {
+  Text, TouchableOpacity, Animated, AsyncStorage,
+} from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Dashboard from './Dashboard';
-// import Select from './Select';
-// import DoIt from './DoIt';
 
 let isHidden = true;
-// const { width, height } = Dimensions.get('window');
 const baseUrl = 'http://13.209.19.196:3000';
 
 class component extends React.Component {
@@ -19,7 +18,7 @@ class component extends React.Component {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleBottomModal()}>
           <Text style={{ fontSize: 20 }}>
-            {'제목 '}
+            {params.dashboardTitle ? `${params.dashboardTitle} ` : ' '}
             <Icon name="ios-arrow-dropdown" size={20} />
           </Text>
         </TouchableOpacity>
@@ -27,7 +26,12 @@ class component extends React.Component {
     };
   };
 
-  state = { bounceValue: new Animated.Value(0), challenges: null, isLoaded: false };
+  state = {
+    bounceValue: new Animated.Value(0),
+    challenges: null,
+    isLoaded: false,
+    recentChallenge: null,
+  };
 
   toggleSubView = () => {
     const { bounceValue } = this.state;
@@ -45,17 +49,29 @@ class component extends React.Component {
     isHidden = !isHidden;
   };
 
-  componentDidMount = () => {
-    axios
+  componentDidMount = async () => {
+    // await AsyncStorage.removeItem('recentChallenge');
+    await axios // await 사용해야 밑에서 challenges 사용가능
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
-      .then((res) => {
+      .then(async (res) => {
         this.setState({ challenges: res.data.challenges, isLoaded: true });
       })
       .catch(err => console.log(err));
     const { navigation } = this.props;
+    const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+    await this.setState({
+      recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+    });
+    const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     navigation.setParams({
       handleBottomModal: this.toggleSubView,
+      dashboardTitle: recentChallenge.title,
     });
+  };
+
+  handleDashboardTitle = (title) => {
+    const { navigation } = this.props;
+    navigation.setParams({ dashboardTitle: title });
   };
 
   handleChallenges = (challenges) => {
@@ -71,6 +87,7 @@ class component extends React.Component {
           toggleSubView={this.toggleSubView}
           challenges={challenges}
           handleChallenges={this.handleChallenges}
+          handleDashboardTitle={this.handleDashboardTitle}
         />
       ) : (
         <Text>새로운 도전을 시작하세요!</Text>

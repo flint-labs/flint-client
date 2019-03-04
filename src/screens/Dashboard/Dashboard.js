@@ -40,10 +40,7 @@ class Dashboard extends Component {
   componentDidMount = async () => {
     // console.log(this.props.isHidden);
     const { challenges } = this.props;
-    const asyncRecentChallengeId = await AsyncStorage.getItem('recentChallengeId');
-    const asyncRecentChallenge = challenges.filter(
-      el => el.id.toString() === asyncRecentChallengeId,
-    )[0];
+    const asyncRecentChallenge = JSON.parse(await AsyncStorage.getItem('recentChallenge'));
     this.setState({ recentChallenge: asyncRecentChallenge || challenges[0] });
   };
 
@@ -67,7 +64,11 @@ class Dashboard extends Component {
   render() {
     const { modalVisible, recentChallenge } = this.state;
     const {
-      bounceValue, toggleSubView, handleChallenges, challenges,
+      bounceValue,
+      toggleSubView,
+      handleChallenges,
+      challenges,
+      handleDashboardTitle,
     } = this.props;
 
     return recentChallenge ? (
@@ -81,6 +82,7 @@ class Dashboard extends Component {
             challenges={challenges}
             handleRecentChallenge={this.handleRecentChallenge}
             recentChallenge={recentChallenge}
+            handleDashboardTitle={handleDashboardTitle}
           />
         </Animated.View>
         <DoIt modalVisible={modalVisible} toggleModal={this.toggleModal} />
@@ -89,14 +91,6 @@ class Dashboard extends Component {
         </View>
         <View style={[styles.progressContainer]}>
           <Image style={styles.runImage} source={runIcon} />
-          {/* <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              margin: '5%',
-              backgroundColor: 'black',
-            }}
-          > */}
           <Progress.Bar progress={0.3} width={width * 0.8} color="#ff6600" />
           {/* <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
             <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
@@ -135,6 +129,7 @@ Dashboard.propTypes = {
     }).isRequired,
   ).isRequired,
   handleChallenges: PropTypes.func.isRequired,
+  handleDashboardTitle: PropTypes.func.isRequired,
 };
 
 export default Dashboard;
