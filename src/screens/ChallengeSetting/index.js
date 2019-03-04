@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   Alert,
   AsyncStorage,
-  YellowBox
+  YellowBox,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,7 +20,7 @@ import { StackActions } from 'react-navigation';
 import { AuthInput, OrangeButton } from '../../components';
 
 YellowBox.ignoreWarnings([
-  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
 ]);
 
 const { width } = Dimensions.get('window');
@@ -103,7 +103,7 @@ class ChallengeSetting extends Component {
         const {
           data: { isExist },
         } = await axios.get(
-          `http://http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
+          `http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
         );
         if (isExist !== isValid) {
           this.setState({ isValid: isExist });
@@ -118,7 +118,7 @@ class ChallengeSetting extends Component {
         const {
           data: { isExist },
         } = await axios.get(
-          `http://http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
+          `http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
         );
         if (isExist !== isValidUser) {
           this.setState({ isValidUser: isExist });
@@ -699,15 +699,18 @@ class ChallengeSetting extends Component {
     result.referee = this.state.referee;
 
     try {
-      // accessToken = await AsyncStorage.getItem('access');
-      // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
-      result.userId = 7; //temp id
+      accessToken = await AsyncStorage.getItem('accessToken');
+      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+      result.userId = id;
     } catch (err) {
       Alert.alert('AsyncStorage error');
     }
 
     try {
-      await axios.post('http://13.209.19.196:3000/api/challenges/setting', result);
+      await axios.post(
+        'http://13.209.19.196:3000/api/challenges/setting',
+        result,
+      );
     } catch (err) {
       Alert.alert(err.message);
       return false;

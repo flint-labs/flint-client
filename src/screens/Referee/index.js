@@ -34,8 +34,8 @@ class Referee extends Component {
 
   componentDidMount = async () => {
     const { reqData } = this.state;
-    // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
-    socket.on(8, data => {
+    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+    socket.on(id, data => {
       console.log(data);
       this.setState({ reqData: [data, ...reqData] });
     });
