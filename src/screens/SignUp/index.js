@@ -1,7 +1,14 @@
 import React, { Component } from 'react';
 import {
-  Text, View, SafeAreaView, findNodeHandle, Picker,
-  Dimensions, BackHandler, Alert, TouchableOpacity,
+  Text,
+  View,
+  SafeAreaView,
+  findNodeHandle,
+  Picker,
+  Dimensions,
+  BackHandler,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,7 +20,7 @@ import { AuthInput, OrangeButton } from '../../components';
 import styles from './styles';
 
 const { width: WIDTH } = Dimensions.get('window');
-const thisYear = new Date().getFullYear();
+const THIS_YEAR = new Date().getFullYear();
 const BASE_URL = 'http://13.209.19.196:3000';
 
 class SignUp extends Component {
@@ -22,12 +29,7 @@ class SignUp extends Component {
     gesturesEnabled: false,
     headerLeft: (
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          marginLeft: 10,
-          paddingRight: 30,
-          alignItems: 'center',
-        }}
+        style={styles.headerButton}
         onPress={navigation.getParam('handleBackButton') || navigation.goBack}
       >
         <Icon name="ios-arrow-round-back" size={35} />
@@ -45,7 +47,7 @@ class SignUp extends Component {
     nicknameDuplication: false,
     showWarning: false,
     gender: 'man',
-    birth: thisYear,
+    birth: THIS_YEAR,
     // location: '',
   };
 
@@ -93,9 +95,15 @@ class SignUp extends Component {
     try {
       const { email, password } = this.state;
       const { nickname, gender, birth } = this.state;
-      const { navigation: { goBack } } = this.props;
+      const {
+        navigation: { goBack },
+      } = this.props;
       const user = {
-        email, password, nickname, gender, birth,
+        email,
+        password,
+        nickname,
+        gender,
+        birth,
       };
       await axios.post(`${BASE_URL}/api/users/signUp`, { user });
       Alert.alert('회원가입 성공', '회원가입을 축하합니다 🎉', [{ text: 'OK', onPress: goBack }]);
@@ -103,24 +111,26 @@ class SignUp extends Component {
       const { data } = error.response;
       Alert.alert(`⚠️\n${data}`);
     }
-  }
+  };
 
   handleBackButton = () => {
     const { page } = this.state;
-    const { navigation: { goBack } } = this.props;
+    const {
+      navigation: { goBack },
+    } = this.props;
     if (page > 0) this.setState({ page: page - 1 });
     else goBack();
   };
 
-  checkEmailDuplication = async (email) => {
+  checkEmailDuplication = async email => {
     const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkEmail/${email}`);
     return isExist;
-  }
+  };
 
-  checkNicknameDuplication = async (nickname) => {
+  checkNicknameDuplication = async nickname => {
     const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkNickname/${nickname}`);
     return isExist;
-  }
+  };
 
   scrollToInput(node) {
     this.scroll.props.scrollToFocusedInput(node);
@@ -128,7 +138,7 @@ class SignUp extends Component {
 
   renderIcon = ({ name, style }) => <Icon name={name} size={20} color="#333" style={style} />;
 
-  renderEmailInput = (email) => {
+  renderEmailInput = email => {
     const { validations } = this;
     const { emailDuplication } = this.state;
     const isValid = emailCheck(email);
@@ -146,7 +156,7 @@ class SignUp extends Component {
             placeholder: '이메일을 입력해주세요.',
             returnKeyType: 'next',
             onSubmitEditing: () => this.secondTextInput.focus(),
-            ref: (input) => {
+            ref: input => {
               this.firstTextInput = input;
             },
             onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
@@ -161,7 +171,7 @@ class SignUp extends Component {
     );
   };
 
-  renderPasswordInput = (password) => {
+  renderPasswordInput = password => {
     const { validations } = this;
     const isValid = passwordCheck(password);
     if (validations.password !== isValid) validations.password = isValid;
@@ -179,7 +189,7 @@ class SignUp extends Component {
             secureTextEntry: true,
             returnKeyType: 'next',
             onSubmitEditing: () => this.thirdTextInput.focus(),
-            ref: (input) => {
+            ref: input => {
               this.secondTextInput = input;
             },
             onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
@@ -210,7 +220,7 @@ class SignUp extends Component {
             secureTextEntry: true,
             returnKeyType: 'next',
             onSubmitEditing: () => this.fourthTextInput.focus(),
-            ref: (input) => {
+            ref: input => {
               this.thirdTextInput = input;
             },
             onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
@@ -225,7 +235,7 @@ class SignUp extends Component {
     );
   };
 
-  renderNameInput = (nickname) => {
+  renderNameInput = nickname => {
     const { nicknameDuplication } = this.state;
     const message = nicknameDuplication ? '이미 사용된 닉네임이에요 :(' : '좋은 닉네임이에요!';
     return (
@@ -241,7 +251,7 @@ class SignUp extends Component {
                 this.setState({ page: 1 });
               } else this.setState({ showWarning: true });
             },
-            ref: (input) => {
+            ref: input => {
               this.fourthTextInput = input;
             },
             onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
@@ -254,7 +264,7 @@ class SignUp extends Component {
         }
       </View>
     );
-  }
+  };
 
   renderBirthPicker = birth => (
     <Picker
@@ -264,7 +274,7 @@ class SignUp extends Component {
       onValueChange={itemValue => this.setState({ birth: itemValue })}
     >
       {new Array(120).fill(null).map((el, index) => {
-        const value = (thisYear - index).toString();
+        const value = (THIS_YEAR - index).toString();
         return <Picker.Item key={value} label={value} value={value} />;
       })}
     </Picker>
@@ -282,7 +292,7 @@ class SignUp extends Component {
     </Picker>
   );
 
-  renderInputs = (page) => {
+  renderInputs = page => {
     const { nickname, birth, gender } = this.state;
     const { email, password, confirm } = this.state;
     switch (page) {
@@ -302,7 +312,7 @@ class SignUp extends Component {
     }
   };
 
-  renderHeaders = (page) => {
+  renderHeaders = page => {
     switch (page) {
       case 0:
         return '🤗환영합니다🤗';
@@ -315,7 +325,7 @@ class SignUp extends Component {
     }
   };
 
-  renderButton = (page) => {
+  renderButton = page => {
     let text;
     let onPress;
     switch (page) {
@@ -325,7 +335,8 @@ class SignUp extends Component {
           if (this.isValidAll()) {
             this.setState({ page: page + 1 });
           } else this.setState({ showWarning: true });
-        }; break;
+        };
+        break;
       case 1:
         text = 'Next';
         onPress = () => this.setState({ page: page + 1 });
@@ -344,7 +355,8 @@ class SignUp extends Component {
     const { page, showWarning } = this.state;
     if (page === 0 && showWarning && !this.isValidAll()) {
       return <Text style={styles.warning}>모든 항목을 정확히 입력해주세요 :(</Text>;
-    } return null;
+    }
+    return null;
   };
 
   render = () => {
@@ -356,7 +368,7 @@ class SignUp extends Component {
           contentContainerStyle={{ flex: 1 }}
           enableAutomaticScroll
           extraHeight={180}
-          innerRef={(ref) => {
+          innerRef={ref => {
             this.scroll = ref;
           }}
         >
