@@ -76,7 +76,7 @@ const Root = createBottomTabNavigator(
 
 const AppContainer = createAppContainer(Root);
 const Fontrust = require('./assets/fonts/Fontrust.ttf');
-// eslint-disable-next-line react/prefer-stateless-function
+
 class App extends React.Component {
   state = {
     isLoaded: false,

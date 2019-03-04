@@ -12,6 +12,6 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "jsx-a11y/accessible-emoji": "off",
     "arrow-parens": [2,"as-needed"],
-    "no-restricted-syntax": ["error","ForInStatement"],
+    "no-restricted-syntax": ["error","ForInStatement"]
   }
 }
