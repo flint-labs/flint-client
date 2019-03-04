@@ -20,7 +20,7 @@ const Select = ({
   recentChallenge,
   handleDashboardTitle,
 }) => {
-  const handleChallengeListButton = async (item) => {
+  const handleChallengeListButton = async item => {
     // item은 최근 challenge
     axios
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)

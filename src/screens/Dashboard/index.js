@@ -31,6 +31,7 @@ class component extends React.Component {
     challenges: null,
     isLoaded: false,
     recentChallenge: null,
+    user: null,
   };
 
   toggleSubView = () => {
@@ -50,23 +51,27 @@ class component extends React.Component {
   };
 
   componentDidMount = async () => {
+    this.setState({ user: await AsyncStorage.getItem('userInfo') });
     // await AsyncStorage.removeItem('recentChallenge');
-    await axios // await 사용해야 밑에서 challenges 사용가능
-      .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
-      .then(async (res) => {
-        this.setState({ challenges: res.data.challenges, isLoaded: true });
-      })
-      .catch(err => console.log(err));
-    const { navigation } = this.props;
-    const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    await this.setState({
-      recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
-    });
-    const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    navigation.setParams({
-      handleBottomModal: this.toggleSubView,
-      dashboardTitle: recentChallenge.title,
-    });
+    const { user } = this.state;
+    if (user) {
+      await axios // await 사용해야 밑에서 challenges 사용가능
+        .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
+        .then(async (res) => {
+          this.setState({ challenges: res.data.challenges, isLoaded: true });
+        })
+        .catch(err => console.log(err));
+      const { navigation } = this.props;
+      const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      await this.setState({
+        recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+      });
+      const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      navigation.setParams({
+        handleBottomModal: this.toggleSubView,
+        dashboardTitle: recentChallenge.title,
+      });
+    }
   };
 
   handleDashboardTitle = (title) => {
@@ -79,21 +84,26 @@ class component extends React.Component {
   };
 
   render() {
-    const { bounceValue, challenges, isLoaded } = this.state;
-    if (isLoaded) {
-      return challenges.length ? (
-        <Dashboard
-          bounceValue={bounceValue}
-          toggleSubView={this.toggleSubView}
-          challenges={challenges}
-          handleChallenges={this.handleChallenges}
-          handleDashboardTitle={this.handleDashboardTitle}
-        />
-      ) : (
-        <Text>새로운 도전을 시작하세요!</Text>
-      );
+    const {
+      bounceValue, challenges, isLoaded, user,
+    } = this.state;
+    if (user) {
+      if (isLoaded) {
+        return challenges.length ? (
+          <Dashboard
+            bounceValue={bounceValue}
+            toggleSubView={this.toggleSubView}
+            challenges={challenges}
+            handleChallenges={this.handleChallenges}
+            handleDashboardTitle={this.handleDashboardTitle}
+          />
+        ) : (
+          <Text>새로운 도전을 시작하세요!</Text>
+        );
+      }
+      return <Text>Loading</Text>;
     }
-    return <Text>Loading</Text>;
+    return <Text>로그인을 먼저 해주세요</Text>;
   }
 }
 

@@ -85,7 +85,11 @@ class Dashboard extends Component {
             handleDashboardTitle={handleDashboardTitle}
           />
         </Animated.View>
-        <DoIt modalVisible={modalVisible} toggleModal={this.toggleModal} />
+        <DoIt
+          modalVisible={modalVisible}
+          toggleModal={this.toggleModal}
+          recentChallenge={recentChallenge}
+        />
         <View style={[styles.sloganContainer]}>
           <Text style={styles.sloganText}>{recentChallenge.slogan}</Text>
         </View>
