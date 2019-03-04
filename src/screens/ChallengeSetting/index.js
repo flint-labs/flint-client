@@ -82,7 +82,7 @@ class ChallengeSetting extends Component {
 
     try {
       const charities = await axios.get(
-        'http://127.0.0.1:3000/api/challenges/charities',
+        'http://13.209.19.196:3000/api/challenges/charities',
       );
 
       this.setState({ charities: charities.data });
@@ -697,13 +697,13 @@ class ChallengeSetting extends Component {
     try {
       // accessToken = await AsyncStorage.getItem('access');
       // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
-      result.userId = 10;
+      result.userId = 7; //temp id
     } catch (err) {
       Alert.alert('AsyncStorage error');
     }
 
     try {
-      await axios.post('http://127.0.0.1:3000/api/challenges/setting', result);
+      await axios.post('13.209.19.196:3000/api/challenges/setting', result);
     } catch (err) {
       Alert.alert(err.message);
       return false;
@@ -713,14 +713,10 @@ class ChallengeSetting extends Component {
   };
 
   buttonHandler = async () => {
-    const { page, isReferee } = this.state;
+    const { page } = this.state;
     const { navigation } = this.props;
     if (page < 9) {
-      // if (page === 5 && isReferee) {
-      //   this.setState({ isReferee: false, isSolo: true, page: 5 });
-      // } else {
       this.setState({ page: page + 1 });
-      // }
     } else if (await this.handleChallengeSettingSubmit()) {
       navigation.navigate('Dashboard');
     }
