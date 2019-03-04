@@ -52,7 +52,6 @@ class component extends React.Component {
   componentDidMount = async () => {
     // await AsyncStorage.removeItem('recentChallenge');
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-    console.log('나는 id', id);
     const response = await axios // await 사용해야 밑에서 challenges 사용가능
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`);
     this.setState({ challenges: response.data.challenges, isLoaded: true });
