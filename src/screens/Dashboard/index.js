@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  Text, TouchableOpacity, Animated, AsyncStorage,
-} from 'react-native';
+import { Text, TouchableOpacity, Animated, AsyncStorage } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -53,14 +51,16 @@ class component extends React.Component {
     // await AsyncStorage.removeItem('recentChallenge');
     await axios // await 사용해야 밑에서 challenges 사용가능
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
-      .then(async (res) => {
-        this.setState({ challenges: res.data.challenges, isLoaded: true });
-      })
+      .then(async res =>
+        this.setState({ challenges: res.data.challenges, isLoaded: true }),
+      )
       .catch(err => console.log(err));
     const { navigation } = this.props;
     const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     await this.setState({
-      recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+      recentChallenge:
+        JSON.parse(await AsyncStorage.getItem('recentChallenge')) ||
+        challenges[0],
     });
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     navigation.setParams({
@@ -69,12 +69,12 @@ class component extends React.Component {
     });
   };
 
-  handleDashboardTitle = (title) => {
+  handleDashboardTitle = title => {
     const { navigation } = this.props;
     navigation.setParams({ dashboardTitle: title });
   };
 
-  handleChallenges = (challenges) => {
+  handleChallenges = challenges => {
     this.setState({ challenges });
   };
 
