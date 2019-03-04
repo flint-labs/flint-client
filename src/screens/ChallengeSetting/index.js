@@ -694,16 +694,20 @@ class ChallengeSetting extends Component {
     });
     result.referee = this.state.referee;
 
-    try {
-      // accessToken = await AsyncStorage.getItem('access');
-      // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
-      result.userId = 7; //temp id
-    } catch (err) {
-      Alert.alert('AsyncStorage error');
-    }
+    result.userId = 7; //temp id
+    // try {
+    //   // accessToken = await AsyncStorage.getItem('access');
+    //   // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
+    // } catch (err) {
+    //   Alert.alert('AsyncStorage error');
+    // }
 
     try {
-      await axios.post('13.209.19.196:3000/api/challenges/setting', result);
+      const resultReq = await axios.post(
+        'http://13.209.19.196:3000/api/challenges/setting',
+        result,
+      );
+      console.log(resultReq);
     } catch (err) {
       Alert.alert(err.message);
       return false;

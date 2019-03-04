@@ -79,6 +79,7 @@ class component extends React.Component {
   };
 
   render() {
+    console.log('여기까지 옴');
     const { bounceValue, challenges, isLoaded } = this.state;
     if (isLoaded) {
       return challenges.length ? (
