@@ -103,7 +103,7 @@ class ChallengeSetting extends Component {
         const {
           data: { isExist },
         } = await axios.get(
-          `http://http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
+          `http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
         );
         if (isExist !== isValid) {
           this.setState({ isValid: isExist });
@@ -118,7 +118,7 @@ class ChallengeSetting extends Component {
         const {
           data: { isExist },
         } = await axios.get(
-          `http://http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
+          `http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
         );
         if (isExist !== isValidUser) {
           this.setState({ isValidUser: isExist });
@@ -698,13 +698,13 @@ class ChallengeSetting extends Component {
     });
     result.referee = this.state.referee;
 
-    result.userId = 7; //temp id
-    // try {
-    //   // accessToken = await AsyncStorage.getItem('access');
-    //   // const { id } = JSON.parse(await AsyncStorage.getItem('user'));
-    // } catch (err) {
-    //   Alert.alert('AsyncStorage error');
-    // }
+    try {
+      accessToken = await AsyncStorage.getItem('accessToken');
+      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+      result.userId = id;
+    } catch (err) {
+      Alert.alert('AsyncStorage error');
+    }
 
     try {
       await axios.post(
