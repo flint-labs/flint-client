@@ -70,6 +70,11 @@ class SignIn extends Component {
       await AsyncStorage.setItem('userInfo', JSON.stringify(data.user));
       await AsyncStorage.setItem('accessToken', accessToken);
       await SecureStore.setItemAsync('refreshToken', refreshToken);
+
+      await SecureStore.setItemAsync(
+        'keyChain',
+        JSON.stringify({ email, password }),
+      );
       return Alert.alert(
         '로그인 성공!',
         `${data.user.nickname}님 환영합니다 🤗`,

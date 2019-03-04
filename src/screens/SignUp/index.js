@@ -19,7 +19,7 @@ const BASE_URL = 'http://13.209.19.196:3000';
 class SignUp extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Sign Up',
-    gesturesEnable: false,
+    gesturesEnabled: false,
     headerLeft: (
       <TouchableOpacity
         style={{
