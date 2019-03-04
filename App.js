@@ -94,7 +94,7 @@ class App extends React.Component {
     return isLoaded ? (
       <AppContainer />
     ) : (
-      <View>
+      <View style={{ flex: 1 }}>
         <Text>Loading</Text>
       </View>
     );

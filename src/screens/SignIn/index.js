@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Text, View, SafeAreaView, findNodeHandle,
-  TouchableOpacity, Alert, AsyncStorage,
+  Text,
+  View,
+  SafeAreaView,
+  findNodeHandle,
+  TouchableOpacity,
+  Alert,
+  AsyncStorage,
 } from 'react-native';
 import { SecureStore } from 'expo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -36,36 +41,46 @@ class SignIn extends Component {
   state = {
     email: '',
     password: '',
-  }
+  };
 
-  goToScreen = (screen) => {
-    const { navigation: { navigate } } = this.props;
+  goToScreen = screen => {
+    const {
+      navigation: { navigate },
+    } = this.props;
     navigate(screen);
-  }
+  };
 
-  scrollToInput = (node) => {
+  scrollToInput = node => {
     this.scroll.props.scrollToFocusedInput(node);
-  }
+  };
 
   handleSignInbutton = async () => {
     try {
       const { email, password } = this.state;
-      if (email === '' || password === '') return Alert.alert('모든 정보를 입력해주세요!');
-      const { navigation: { goBack } } = this.props;
-      const { headers, data } = await axios.get(`${BASE_URL}/oauth/signIn`, { headers: { email, password } });
+      if (email === '' || password === '')
+        return Alert.alert('모든 정보를 입력해주세요!');
+      const {
+        navigation: { goBack },
+      } = this.props;
+      const { headers, data } = await axios.get(`${BASE_URL}/oauth/signIn`, {
+        headers: { email, password },
+      });
       const accessToken = headers['x-access-token'];
       const refreshToken = headers['x-refresh-token'];
       await AsyncStorage.setItem('userInfo', JSON.stringify(data.user));
       await AsyncStorage.setItem('accessToken', accessToken);
       await SecureStore.setItemAsync('refreshToken', refreshToken);
-      return Alert.alert('로그인 성공!', `${data.user.nickname}님 환영합니다 🤗`, [
-        { text: 'OK', onPress: () => goBack() },
-      ]);
+      return Alert.alert(
+        '로그인 성공!',
+        `${data.user.nickname}님 환영합니다 🤗`,
+        [{ text: 'OK', onPress: () => goBack() }],
+      );
     } catch (error) {
-      const { data } = error.response;
-      return Alert.alert(`⚠️\n${data}`);
+      // const { data } = error.response;
+      console.log(error);
+      // return Alert.alert(`⚠️\n${data}`);
     }
-  }
+  };
 
   renderIcon = ({ name, style }) => (
     <Icon name={name} size={20} color="#333" style={style} />
@@ -73,11 +88,12 @@ class SignIn extends Component {
 
   renderRegisterButton = () => (
     <View style={styles.registerButtonBox}>
-      <Text style={{ color: '#333' }}>
-        Flint 회원이 아니신가요?
-      </Text>
+      <Text style={{ color: '#333' }}>Flint 회원이 아니신가요?</Text>
       <TouchableOpacity onPress={() => this.goToScreen('SignUp')}>
-        <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}> 지금 가입하세요</Text>
+        <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
+          {' '}
+          지금 가입하세요
+        </Text>
       </TouchableOpacity>
       <Text>🎉</Text>
     </View>
@@ -95,24 +111,26 @@ class SignIn extends Component {
         onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
       }}
     />
-  )
+  );
 
   renderPasswordInput = password => (
     <AuthInput
       state={password}
       setState={text => this.setState({ password: text })}
-      renderIcon={() => this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })}
+      renderIcon={() =>
+        this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
+      }
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',
         secureTextEntry: true,
         onSubmitEditing: this.handleSignInbutton,
         onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
-        ref: (input) => {
+        ref: input => {
           this.secondTextInput = input;
         },
       }}
     />
-  )
+  );
 
   render = () => {
     const { email, password } = this.state;
@@ -124,7 +142,7 @@ class SignIn extends Component {
           scrollEnabled={false}
           enableAutomaticScroll
           extraHeight={280}
-          innerRef={(ref) => {
+          innerRef={ref => {
             this.scroll = ref;
           }}
         >
@@ -142,7 +160,7 @@ class SignIn extends Component {
         </KeyboardAwareScrollView>
       </SafeAreaView>
     );
-  }
+  };
 }
 
 SignIn.propTypes = {
