@@ -5,12 +5,13 @@ import {
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import styles from './style';
 import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 import Select from './Select';
-import { sendRequest } from '../../modules/sendRequest';
+import sendRequest from '../../modules/sendRequest';
 
 const { width } = Dimensions.get('window');
 const runIcon = require('../../../assets/images/Dashboard/run.png');
@@ -35,6 +36,7 @@ class Dashboard extends Component {
   state = {
     modalVisible: false,
     recentChallenge: null,
+    reports: null,
     // isHidden: this.props.isHidden,
   };
 
@@ -66,14 +68,9 @@ class Dashboard extends Component {
   calculateProgress = async () => {
     const { recentChallenge } = this.state;
     const weeks = recentChallenge.endAt - recentChallenge.startAt;
-    const response = await sendRequest(
-      'get',
-      `/api/reports/getReports/${recentChallenge.id}`,
-      null,
-      null,
-    );
-    console.log('im reports', response);
-    // {response.data}
+    const response = await axios.get(`/api/reports/getReports/${recentChallenge.id}`);
+    // console.log('im reports', response);
+    this.setState({ reports: response.data.reports });
   };
 
   render() {
