@@ -32,6 +32,8 @@ class component extends React.Component {
     isLoaded: false,
     recentChallenge: null,
     user: null,
+    reports: null,
+    progress: null,
   };
 
   toggleSubView = () => {
@@ -51,36 +53,61 @@ class component extends React.Component {
   };
 
   componentDidMount = async () => {
-    this.setState({ user: await AsyncStorage.getItem('userInfo') });
+    this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
     // await AsyncStorage.removeItem('recentChallenge');
-    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+    const { user } = this.state;
     const response = await axios // await 사용해야 밑에서 challenges 사용가능
-      .get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`);
-    this.setState({ challenges: response.data.challenges, isLoaded: true });
+      .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
+    this.setState({ challenges: response.data.challenges });
     const { navigation } = this.props;
     const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    await this.setState({
+    this.setState({
       recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
     });
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+    const res = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
+    this.setState({ reports: res.data.reports });
+    this.setState({ progress: await this.calculateProgress() });
     navigation.setParams({
       handleBottomModal: this.toggleSubView,
       dashboardTitle: recentChallenge.title,
     });
+    this.setState({ isLoaded: true });
   };
 
-  handleDashboardTitle = title => {
+  handleRecentChallenge = async challenge => {
+    this.setState({ isLoaded: false });
     const { navigation } = this.props;
-    navigation.setParams({ dashboardTitle: title });
+    this.setState({ recentChallenge: { ...challenge } });
+    const { recentChallenge } = this.state;
+    const response = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
+    this.setState({ reports: response.data.reports });
+    this.setState({ progress: await this.calculateProgress() });
+    navigation.setParams({ dashboardTitle: recentChallenge.title });
+    this.setState({ isLoaded: true });
   };
 
   handleChallenges = challenges => {
     this.setState({ challenges });
   };
 
+  calculateProgress = async () => {
+    const { recentChallenge, reports } = this.state;
+    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
+    const result = await (reports.filter(el => el.isConfirmed === '1').length
+      / (week * recentChallenge.checkingPeriod));
+    return result;
+  };
+
   render() {
     const {
-      bounceValue, challenges, isLoaded, user,
+      bounceValue,
+      challenges,
+      isLoaded,
+      user,
+      recentChallenge,
+      reports,
+      progress,
     } = this.state;
     if (user) {
       if (isLoaded) {
@@ -89,8 +116,11 @@ class component extends React.Component {
             bounceValue={bounceValue}
             toggleSubView={this.toggleSubView}
             challenges={challenges}
+            recentChallenge={recentChallenge}
             handleChallenges={this.handleChallenges}
-            handleDashboardTitle={this.handleDashboardTitle}
+            handleRecentChallenge={this.handleRecentChallenge}
+            reports={reports}
+            progress={progress}
           />
         ) : (
           <Text>새로운 도전을 시작하세요!</Text>

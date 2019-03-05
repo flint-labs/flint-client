@@ -8,8 +8,6 @@ import axios from 'axios';
 import styles from './style';
 
 const baseUrl = 'http://13.209.19.196:3000';
-// import Modal from 'react-native-modal';
-
 const { width } = Dimensions.get('window');
 
 const Select = ({
@@ -18,11 +16,10 @@ const Select = ({
   challenges,
   handleRecentChallenge,
   recentChallenge,
-  handleDashboardTitle,
 }) => {
   const handleChallengeListButton = async item => {
     // item은 최근 challenge
-    const { id } = await AsyncStorage.getItem('userInfo');
+    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     axios
       .get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`)
       .then(res => {
@@ -30,10 +27,8 @@ const Select = ({
       })
       .catch(err => console.log(err));
     await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
-    // console.log(JSON.stringify(item));
     handleRecentChallenge(item);
     toggleSubView();
-    handleDashboardTitle(item.title);
   };
 
   return (
@@ -72,7 +67,6 @@ Select.propTypes = {
     }).isRequired,
   ).isRequired,
   recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
-  handleDashboardTitle: PropTypes.func.isRequired,
 };
 
 export default Select;
