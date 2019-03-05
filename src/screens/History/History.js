@@ -1,66 +1,56 @@
 import React, { Component } from 'react';
-import { SafeAreaView, View, FlatList, Dimensions, Text } from 'react-native';
-import { Overlay } from 'react-native-elements';
-// import { createStackNavigator } from 'react-navigation';
+import { SafeAreaView, View, FlatList, Text, AsyncStorage } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
+import axios from 'axios';
 import HistoryEntry from './HistoryEntry';
 import styles from './style';
 
-const fakeData = [
-  {
-    title: '살 15키로 빼기',
-    period: 8,
-    state: false,
-    id: 'a1',
-  },
-  {
-    title: '살 15키로 빼기',
-    period: 8,
-    state: true,
-    id: '12',
-  },
-  {
-    title: '살 15키로 빼기',
-    period: 8,
-    state: false,
-    id: '011',
-  },
-  {
-    title: '살 15키로 빼기',
-    period: 8,
-    state: false,
-    id: '081',
-  },
-  {
-    title: '살 15키로 빼기',
-    period: 8,
-    state: true,
-    id: '091',
-  },
-  {
-    title: '살 15키로 빼기',
-    period: 8,
-    state: true,
-    id: '0101',
-  },
-];
-
 class History extends Component {
+  state = {
+    completeList: [],
+    isLoading: false,
+  };
+
+  handleWillFocus = async () => {
+    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+
+    try {
+      const { data } = await axios.get(
+        `http://127.0.0.1:3000/api/history/completeList/${id}`,
+      );
+      this.setState({ isLoading: true, completeList: data });
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   render = () => {
+    const { completeList, isLoading } = this.state;
+    const { switchScreen } = this.props;
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <FlatList
-            data={fakeData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={itemData => (
-              <HistoryEntry
-                data={itemData.item}
-                handlePress={this.props.switchScreen}
+      <View style={{ flex: 1 }}>
+        <NavigationEvents onWillFocus={this.handleWillFocus} />
+        {isLoading ? (
+          <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.container}>
+              <FlatList
+                data={completeList}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={itemData => (
+                  <HistoryEntry
+                    data={itemData.item}
+                    handlePress={switchScreen}
+                  />
+                )}
               />
-            )}
-          />
-        </View>
-      </SafeAreaView>
+            </View>
+          </SafeAreaView>
+        ) : (
+          <View>
+            <Text>Loading</Text>
+          </View>
+        )}
+      </View>
     );
   };
 }
