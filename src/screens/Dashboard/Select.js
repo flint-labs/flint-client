@@ -32,7 +32,12 @@ const Select = ({
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View
+      style={{
+        flex: 1,
+        // backgroundColor: 'red',
+      }}
+    >
       <FlatList
         data={challenges}
         renderItem={({ item }) => (
