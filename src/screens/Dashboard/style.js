@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   reportEntryTitle: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     fontSize: 20,
   },

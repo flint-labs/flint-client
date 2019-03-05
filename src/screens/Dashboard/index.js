@@ -31,6 +31,7 @@ class component extends React.Component {
     challenges: null,
     isLoaded: false,
     recentChallenge: null,
+    user: null,
   };
 
   toggleSubView = () => {
@@ -50,6 +51,7 @@ class component extends React.Component {
   };
 
   componentDidMount = async () => {
+    this.setState({ user: await AsyncStorage.getItem('userInfo') });
     // await AsyncStorage.removeItem('recentChallenge');
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     const response = await axios // await 사용해야 밑에서 challenges 사용가능
@@ -77,22 +79,26 @@ class component extends React.Component {
   };
 
   render() {
-    console.log('여기까지 옴');
-    const { bounceValue, challenges, isLoaded } = this.state;
-    if (isLoaded) {
-      return challenges.length ? (
-        <Dashboard
-          bounceValue={bounceValue}
-          toggleSubView={this.toggleSubView}
-          challenges={challenges}
-          handleChallenges={this.handleChallenges}
-          handleDashboardTitle={this.handleDashboardTitle}
-        />
-      ) : (
-        <Text>새로운 도전을 시작하세요!</Text>
-      );
+    const {
+      bounceValue, challenges, isLoaded, user,
+    } = this.state;
+    if (user) {
+      if (isLoaded) {
+        return challenges.length ? (
+          <Dashboard
+            bounceValue={bounceValue}
+            toggleSubView={this.toggleSubView}
+            challenges={challenges}
+            handleChallenges={this.handleChallenges}
+            handleDashboardTitle={this.handleDashboardTitle}
+          />
+        ) : (
+          <Text>새로운 도전을 시작하세요!</Text>
+        );
+      }
+      return <Text>Loading</Text>;
     }
-    return <Text>Loading</Text>;
+    return <Text>로그인을 먼저 해주세요</Text>;
   }
 }
 
