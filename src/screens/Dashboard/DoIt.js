@@ -25,7 +25,7 @@ class DoIt extends React.Component {
     // console.log(modalVisible, hideModal);
     const { toggleModal, recentChallenge } = this.props;
     const { text, photo } = this.state;
-    if (text && photo) {
+    if (text.length <= 50 && photo) {
       axios.post(`${baseUrl}/api/reports/postReport`, {
         image: photo,
         isConfirmed: 'pending',
@@ -41,6 +41,8 @@ class DoIt extends React.Component {
           },
         },
       ]);
+    } else if (text.length > 50) {
+      Alert.alert('50자 이내로 작성해주세요');
     } else {
       Alert.alert('내용과 사진을 채워주세요');
     }
@@ -75,7 +77,7 @@ class DoIt extends React.Component {
             <View style={styles.modalTextInputContainer}>
               <TextInput
                 style={styles.modalTextInput}
-                placeholder="챌린지에 대한 일지를 남겨주세요"
+                placeholder={'도전에 대한 일지를 남겨주세요\n( 50자 이내 )'}
                 multiline
                 autoFocus
                 blurOnSubmit

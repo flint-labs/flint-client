@@ -68,8 +68,10 @@ class component extends React.Component {
     const res = await axios.get(
       `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
     );
-    this.setState({ reports: res.data.reports.reverse() });
-    this.setState({ progress: await this.calculateProgress() });
+    let { reports } = res.data;
+    reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+    this.setState({ reports: reports.reverse() });
+    this.setState({ progress: await this.calculateProgress() <= 1 ? await this.calculateProgress() : 1 });
     navigation.setParams({
       handleBottomModal: this.toggleSubView,
       dashboardTitle: recentChallenge.title,
@@ -89,8 +91,10 @@ class component extends React.Component {
     const response = await axios.get(
       `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
     );
-    this.setState({ reports: response.data.reports.reverse() });
-    this.setState({ progress: await this.calculateProgress() });
+    let { reports } = response.data;
+    reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+    this.setState({ reports: reports.reverse() });
+    this.setState({ progress: await this.calculateProgress() <= 1 ? await this.calculateProgress() : 1 });
     navigation.setParams({ dashboardTitle: recentChallenge.title });
     this.setState({ isLoaded: true });
   };

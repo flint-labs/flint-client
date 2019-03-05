@@ -82,12 +82,12 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'contain',
     justifyContent: 'center',
-    padding: 20,
   },
   reportEntryTitle: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: 20,
+    color: 'white',
+    fontStyle: 'italic',
+    fontSize: 25,
+    // flex: 1,
   },
 });
 
