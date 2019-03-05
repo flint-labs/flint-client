@@ -65,7 +65,9 @@ class component extends React.Component {
       recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
     });
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    const res = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
+    const res = await axios.get(
+      `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
+    );
     this.setState({ reports: res.data.reports });
     this.setState({ progress: await this.calculateProgress() });
     navigation.setParams({
@@ -80,7 +82,9 @@ class component extends React.Component {
     const { navigation } = this.props;
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
-    const response = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
+    const response = await axios.get(
+      `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
+    );
     this.setState({ reports: response.data.reports });
     this.setState({ progress: await this.calculateProgress() });
     navigation.setParams({ dashboardTitle: recentChallenge.title });
