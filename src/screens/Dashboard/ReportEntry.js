@@ -15,7 +15,7 @@ const ReportEntry = ({ data }) => (
     <Text style={{ color: 'black', fontSize: 20 }}>{data.description}</Text>
     <View style={{ alignItems: 'flex-end' }}>
       <Icon
-        name={data.isConfirmed === 'true' ? 'ios-checkmark-circle' : 'ios-close-circle'}
+        name={data.isConfirmed === '1' ? 'ios-checkmark-circle' : 'ios-close-circle'}
         size={20}
         style={{ color: 'black' }}
       />
