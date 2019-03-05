@@ -25,21 +25,25 @@ class DoIt extends React.Component {
     // console.log(modalVisible, hideModal);
     const { toggleModal, recentChallenge } = this.props;
     const { text, photo } = this.state;
-    axios.post(`${baseUrl}/api/reports/postReport`, {
-      image: photo,
-      isConfirmed: 'pending',
-      description: text,
-      challengeId: recentChallenge.id,
-    });
-    Alert.alert('제출되었습니다.', null, [
-      {
-        text: 'OK',
-        onPress: () => {
-          toggleModal();
-          this.setState({ photo: null });
+    if (text && photo) {
+      axios.post(`${baseUrl}/api/reports/postReport`, {
+        image: photo,
+        isConfirmed: 'pending',
+        description: text,
+        challengeId: recentChallenge.id,
+      });
+      Alert.alert('제출되었습니다.', null, [
+        {
+          text: 'OK',
+          onPress: () => {
+            toggleModal();
+            this.setState({ photo: null });
+          },
         },
-      },
-    ]);
+      ]);
+    } else {
+      Alert.alert('내용과 사진을 채워주세요');
+    }
   };
 
   selectPicture = async () => {

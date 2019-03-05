@@ -53,6 +53,8 @@ class Dashboard extends Component {
       reports,
       progress,
     } = this.props;
+    const reverseReports = reports.reverse();
+    console.log('선재님이 원하는 곳',reverseReports);
     if (isLoaded) {
       // if (recentChallenge.state === 'inProgress') {
       return (
@@ -91,12 +93,14 @@ class Dashboard extends Component {
           </View>
           <Carousel
             layout="stack"
+            inverted
             swipeThreshold={5}
-            data={reports}
+            data={reverseReports}
             renderItem={({ item }) => <ReportEntry data={item} />}
             sliderWidth={width}
             itemWidth={width * 0.8}
             sliderHeight={270}
+            style={{ transform: [{ scaleY: -1 }] }}
           />
           <View style={[styles.doItContainer]}>
             <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
