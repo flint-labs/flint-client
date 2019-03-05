@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
+import { ImagePicker, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -18,14 +19,14 @@ class DoIt extends React.Component {
     headerTitle: <Image source={cameraImage} style={{ width: 30, height: 30 }} />,
   });
 
-  state = { text: null };
+  state = { text: null, photo: null };
 
   submitBtnHandler = () => {
     // console.log(modalVisible, hideModal);
     const { toggleModal, recentChallenge } = this.props;
-    const { text } = this.state;
+    const { text, photo } = this.state;
     axios.post(`${baseUrl}/api/reports/postReport`, {
-      image: '',
+      image: photo,
       isConfirmed: 'pending',
       description: text,
       challengeId: recentChallenge.id,
@@ -38,6 +39,15 @@ class DoIt extends React.Component {
         },
       },
     ]);
+  };
+
+  selectPicture = async () => {
+    await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
+      aspect: [4,3],
+      allowsEditing: true,
+    });
+    if (!cancelled) this.setState({ photo: uri });
   };
 
   render() {
@@ -67,7 +77,7 @@ class DoIt extends React.Component {
               />
             </View>
             <View style={{ flex: 1, marginLeft: '5%' }}>
-              <TouchableOpacity style={styles.imageRefBtn}>
+              <TouchableOpacity style={styles.imageRefBtn} onPress={this.selectPicture}>
                 <Image source={cameraImage} style={{ width: 80, height: 80 }} />
               </TouchableOpacity>
             </View>
