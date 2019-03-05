@@ -11,14 +11,42 @@ const ReportEntry = ({ data }) => (
     imageStyle={{ borderRadius: 5 }}
     blurRadius={4}
   >
-    <Text style={styles.reportEntryTitle}>번째 기록</Text>
-    <Text style={{ color: 'black', fontSize: 20 }}>{data.description}</Text>
-    <View style={{ alignItems: 'flex-end' }}>
-      <Icon
-        name={data.isConfirmed === '1' ? 'ios-checkmark-circle' : 'ios-close-circle'}
-        size={20}
-        style={{ color: 'black' }}
-      />
+    <View
+      style={{
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        flex: 1,
+        borderRadius: 5,
+        padding: 15,
+        justifyContent: 'center',
+      }}
+    >
+      <View style={{ flex: 1, justifyContent: 'center', fontStyle: 'italic' }}>
+        <Text style={styles.reportEntryTitle}>{`${data.index}th Report`}</Text>
+      </View>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 20,
+          }}
+        >
+          {data.description}
+        </Text>
+      </View>
+
+      <View
+        style={{
+          alignItems: 'flex-end',
+          flex: 1,
+          justifyContent: 'center',
+        }}
+      >
+        <Icon
+          name={data.isConfirmed === '1' ? 'ios-checkmark-circle' : 'ios-close-circle'}
+          size={30}
+          style={{ color: 'white' }}
+        />
+      </View>
     </View>
   </ImageBackground>
 );

@@ -25,26 +25,33 @@ class DoIt extends React.Component {
     // console.log(modalVisible, hideModal);
     const { toggleModal, recentChallenge } = this.props;
     const { text, photo } = this.state;
-    axios.post(`${baseUrl}/api/reports/postReport`, {
-      image: photo,
-      isConfirmed: 'pending',
-      description: text,
-      challengeId: recentChallenge.id,
-    });
-    Alert.alert('제출되었습니다.', null, [
-      {
-        text: 'OK',
-        onPress: () => {
-          toggleModal();
+    if (text.length <= 50 && photo) {
+      axios.post(`${baseUrl}/api/reports/postReport`, {
+        image: photo,
+        isConfirmed: 'pending',
+        description: text,
+        challengeId: recentChallenge.id,
+      });
+      Alert.alert('제출되었습니다.', null, [
+        {
+          text: 'OK',
+          onPress: () => {
+            toggleModal();
+            this.setState({ photo: null });
+          },
         },
-      },
-    ]);
+      ]);
+    } else if (text.length > 50) {
+      Alert.alert('50자 이내로 작성해주세요');
+    } else {
+      Alert.alert('내용과 사진을 채워주세요');
+    }
   };
 
   selectPicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
     const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
-      aspect: [4,3],
+      aspect: [4, 3],
       allowsEditing: true,
     });
     if (!cancelled) this.setState({ photo: uri });
@@ -52,6 +59,7 @@ class DoIt extends React.Component {
 
   render() {
     const { modalVisible, toggleModal } = this.props;
+    const { photo } = this.state;
     return (
       <SafeAreaView>
         <Modal
@@ -69,7 +77,7 @@ class DoIt extends React.Component {
             <View style={styles.modalTextInputContainer}>
               <TextInput
                 style={styles.modalTextInput}
-                placeholder="챌린지에 대한 일지를 남겨주세요"
+                placeholder={'도전에 대한 일지를 남겨주세요\n( 50자 이내 )'}
                 multiline
                 autoFocus
                 blurOnSubmit
@@ -78,7 +86,10 @@ class DoIt extends React.Component {
             </View>
             <View style={{ flex: 1, marginLeft: '5%' }}>
               <TouchableOpacity style={styles.imageRefBtn} onPress={this.selectPicture}>
-                <Image source={cameraImage} style={{ width: 80, height: 80 }} />
+                <Image
+                  source={photo ? { uri: photo } : cameraImage}
+                  style={{ width: 80, height: 80 }}
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.submitBtnContainer}>

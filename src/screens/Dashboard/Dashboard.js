@@ -91,12 +91,14 @@ class Dashboard extends Component {
           </View>
           <Carousel
             layout="stack"
+            inverted
             swipeThreshold={5}
             data={reports}
             renderItem={({ item }) => <ReportEntry data={item} />}
             sliderWidth={width}
             itemWidth={width * 0.8}
             sliderHeight={270}
+            style={{ transform: [{ scaleY: -1 }] }}
           />
           <View style={[styles.doItContainer]}>
             <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
