@@ -36,6 +36,7 @@ class DoIt extends React.Component {
         text: 'OK',
         onPress: () => {
           toggleModal();
+          this.setState({ photo: null });
         },
       },
     ]);
@@ -44,7 +45,7 @@ class DoIt extends React.Component {
   selectPicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
     const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
-      aspect: [4,3],
+      aspect: [4, 3],
       allowsEditing: true,
     });
     if (!cancelled) this.setState({ photo: uri });
@@ -52,6 +53,7 @@ class DoIt extends React.Component {
 
   render() {
     const { modalVisible, toggleModal } = this.props;
+    const { photo } = this.state;
     return (
       <SafeAreaView>
         <Modal
@@ -78,7 +80,10 @@ class DoIt extends React.Component {
             </View>
             <View style={{ flex: 1, marginLeft: '5%' }}>
               <TouchableOpacity style={styles.imageRefBtn} onPress={this.selectPicture}>
-                <Image source={cameraImage} style={{ width: 80, height: 80 }} />
+                <Image
+                  source={photo ? { uri: photo } : cameraImage}
+                  style={{ width: 80, height: 80 }}
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.submitBtnContainer}>
