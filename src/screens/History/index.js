@@ -1,13 +1,31 @@
-import React from 'react';
-// import { View, Text, StyleSheet } from 'react-native';
+import React, { Component } from 'react';
 import { createStackNavigator } from 'react-navigation';
 import History from './History';
+import HistoryDetail from './HistoryDetail';
 
-const component = () => <History />;
+class component extends Component {
+  goToScreen = (screenName, data) => {
+    const { navigation } = this.props;
+    navigation.navigate(screenName, { detail: data });
+  };
 
-export default createStackNavigator({
-  component: {
-    screen: component,
-    navigationOptions: { headerTitle: 'History' },
+  render = () => <History switchScreen={this.goToScreen} />;
+}
+
+export default createStackNavigator(
+  {
+    component: {
+      screen: component,
+      navigationOptions: { headerTitle: 'History' },
+    },
+
+    HistoryDetail: {
+      screen: HistoryDetail,
+    },
   },
-});
+  {
+    navigationOptions: ({ navigation: { state } }) => ({
+      tabBarVisible: !(state.index > 0),
+    }),
+  },
+);
