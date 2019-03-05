@@ -22,8 +22,9 @@ const Select = ({
 }) => {
   const handleChallengeListButton = async item => {
     // item은 최근 challenge
+    const { id } = await AsyncStorage.getItem('userInfo');
     axios
-      .get(`${baseUrl}/api/challenges/getInProgressChallenges/1`)
+      .get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`)
       .then(res => {
         handleChallenges(res.data.challenges);
       })

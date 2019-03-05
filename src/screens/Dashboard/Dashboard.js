@@ -11,32 +11,20 @@ import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 import Select from './Select';
-import sendRequest from '../../modules/sendRequest';
+// import sendRequest from '../../modules/sendRequest';
 
 const { width } = Dimensions.get('window');
 const runIcon = require('../../../assets/images/Dashboard/run.png');
 
-const fakeData = [
-  { title: '5일째', description: '헬스를 다녀오고 식단조절했음', state: '통과' },
-  {
-    title: '4일째',
-    description: '무엇무엇을 했고 밥을 무었을 먹었고 가나다르를 했음',
-    state: '통과',
-  },
-  {
-    title: '3일째',
-    description: '무엇무엇을 했고 밥을 상파울로를 먹었고 김간디를 했음',
-    state: '미통과',
-  },
-  { title: '2일째', description: '노트북과 체크인을 하고 줄넘기를 함', state: '통과' },
-  { title: '1일째', description: '헬스를 다녀오고 식단조절했음', state: '통과' },
-];
+const baseUrl = 'http://13.209.19.196:3000';
 
 class Dashboard extends Component {
   state = {
     modalVisible: false,
     recentChallenge: null,
     reports: null,
+    isLoaded: false,
+    progress: null,
     // isHidden: this.props.isHidden,
   };
 
@@ -45,7 +33,15 @@ class Dashboard extends Component {
     const { challenges } = this.props;
     const asyncRecentChallenge = JSON.parse(await AsyncStorage.getItem('recentChallenge'));
     this.setState({ recentChallenge: asyncRecentChallenge || challenges[0] });
-    this.calculateProgress();
+    const { recentChallenge } = this.state;
+    const response = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
+    // console.log(recentChallenge.id);
+    // console.log(JSON.stringify(response));
+    this.setState({ reports: response.data.reports });
+    this.setState({ progress: await this.calculateProgress() });
+    this.setState({ isLoaded: true });
+    // console.log('확인');
+    // this.calculateProgress();
   };
 
   doItHandler = () => {
@@ -66,15 +62,21 @@ class Dashboard extends Component {
   };
 
   calculateProgress = async () => {
-    const { recentChallenge } = this.state;
-    const weeks = recentChallenge.endAt - recentChallenge.startAt;
-    const response = await axios.get(`/api/reports/getReports/${recentChallenge.id}`);
-    // console.log('im reports', response);
-    this.setState({ reports: response.data.reports });
+    const { recentChallenge, reports } = this.state;
+    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
+    // console.log(
+    //   ,
+    // );
+    const result = await (reports.filter(el => el.isConfirmed === 'true').length
+      / (week * recentChallenge.checkingPeriod));
+    // console.log(result);
+    return result;
   };
 
   render() {
-    const { modalVisible, recentChallenge } = this.state;
+    const {
+      modalVisible, recentChallenge, reports, isLoaded, progress,
+    } = this.state;
     const {
       bounceValue,
       toggleSubView,
@@ -82,54 +84,62 @@ class Dashboard extends Component {
       challenges,
       handleDashboardTitle,
     } = this.props;
-
-    return recentChallenge ? (
-      <View style={styles.container}>
-        <Animated.View
-          style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
-        >
-          <Select
-            toggleSubView={toggleSubView}
-            handleChallenges={handleChallenges}
-            challenges={challenges}
-            handleRecentChallenge={this.handleRecentChallenge}
+    console.log(bounceValue);
+    if (isLoaded) {
+      // if (recentChallenge.state === 'inProgress') {
+      return (
+        <View style={styles.container}>
+          <Animated.View
+            style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
+          >
+            <Select
+              toggleSubView={toggleSubView}
+              handleChallenges={handleChallenges}
+              challenges={challenges}
+              handleRecentChallenge={this.handleRecentChallenge}
+              recentChallenge={recentChallenge}
+              handleDashboardTitle={handleDashboardTitle}
+            />
+          </Animated.View>
+          <DoIt
+            modalVisible={modalVisible}
+            toggleModal={this.toggleModal}
             recentChallenge={recentChallenge}
-            handleDashboardTitle={handleDashboardTitle}
           />
-        </Animated.View>
-        <DoIt
-          modalVisible={modalVisible}
-          toggleModal={this.toggleModal}
-          recentChallenge={recentChallenge}
-        />
-        <View style={[styles.sloganContainer]}>
-          <Text style={styles.sloganText}>{recentChallenge.slogan}</Text>
-        </View>
-        <View style={[styles.progressContainer]}>
-          <Image style={styles.runImage} source={runIcon} />
-          <Progress.Bar progress={0.3} width={width * 0.8} color="#ff6600" />
-          {/* <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
+          <View style={[styles.sloganContainer]}>
+            <Text style={styles.sloganText}>{recentChallenge.slogan}</Text>
+          </View>
+          <View style={[styles.progressContainer]}>
+            <Image style={styles.runImage} source={runIcon} />
+            <Progress.Bar progress={progress} width={width * 0.8} color="#ff6600" />
+            <Text style={{ marginTop: 3 }}>
+              {(progress * 100).toFixed(1)}
+%
+            </Text>
+            {/* <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
             <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
             <View style={{ flex: 1, backgroundColor: 'red', margin: '0.5%' }} />
             <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} /> */}
-          {/* </View> */}
+            {/* </View> */}
+          </View>
+          <Carousel
+            layout="stack"
+            swipeThreshold={5}
+            data={reports}
+            renderItem={({ item }) => <ReportEntry data={item} />}
+            sliderWidth={width}
+            itemWidth={width * 0.8}
+            sliderHeight={270}
+          />
+          <View style={[styles.doItContainer]}>
+            <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
+          </View>
         </View>
-        <Carousel
-          layout="stack"
-          swipeThreshold={5}
-          data={fakeData}
-          renderItem={({ item }) => <ReportEntry data={item} />}
-          sliderWidth={width}
-          itemWidth={width * 0.8}
-          sliderHeight={270}
-        />
-        <View style={[styles.doItContainer]}>
-          <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
-        </View>
-      </View>
-    ) : (
-      <Text>Loading</Text>
-    );
+      );
+    }
+    return <Text>아직 시작되지 않은 도전입니다</Text>;
+    // }
+    return <Text>Loading</Text>;
   }
 }
 
