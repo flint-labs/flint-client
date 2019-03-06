@@ -47,7 +47,7 @@ class HistoryDetail extends Component {
       const {
         data: { reports },
       } = await axios.get(
-        `http://127.0.0.1:3000/api/reports/getNotPendingReports/${id}`,
+        `http://13.209.19.196:3000/api/reports/getNotPendingReports/${id}`,
       );
       this.setState({ isLoading: true, reportList: reports || [] });
     } catch (err) {
