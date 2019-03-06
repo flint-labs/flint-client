@@ -21,7 +21,7 @@ const ReportEntry = ({ data }) => (
       }}
     >
       <View style={{ flex: 1, justifyContent: 'center', fontStyle: 'italic' }}>
-        <Text style={styles.reportEntryTitle}>{`${data.index}th Report`}</Text>
+        <Text style={styles.reportEntryTitle}>{`${data.index}th Record`}</Text>
       </View>
       <View style={{ flex: 1, justifyContent: 'center' }}>
         <Text
@@ -41,11 +41,7 @@ const ReportEntry = ({ data }) => (
           justifyContent: 'center',
         }}
       >
-        <Icon
-          name={data.isConfirmed === '1' ? 'ios-checkmark-circle' : 'ios-close-circle'}
-          size={30}
-          style={{ color: 'white' }}
-        />
+        <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
       </View>
     </View>
   </ImageBackground>
