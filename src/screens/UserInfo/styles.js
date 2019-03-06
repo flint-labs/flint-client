@@ -7,21 +7,8 @@ import { Dimensions, StyleSheet } from 'react-native';
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
-  userInfoEntry: {
-    fontSize: 17,
-    marginBottom: 10,
-    marginTop: 10,
-    color: '#333',
-  },
-
   redButton: {
     color: 'red',
-  },
-
-  userInfoArea: {
-    flex: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
   adBoxOuter: {
@@ -40,7 +27,7 @@ export default StyleSheet.create({
   },
 
   img: {
-    width,
+    width: width - 50,
     height: '100%',
     opacity: 0.7,
     // resizeMode: 'cover',

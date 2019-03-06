@@ -14,11 +14,16 @@ const BASE_URL = 'http://13.209.19.196:3000';
  */
 const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   const setHeader = token => {
-    if (setHeaders) return Object.asign(setHeaders, { 'x-access-token': token });
+    if (setHeaders)
+      return Object.asign(setHeaders, { 'x-access-token': token });
     return { 'x-access-token': token };
   };
   const request = token => {
-    const params = [`${BASE_URL}${endPoint}`, setBody, { headers: setHeader(token) }];
+    const params = [
+      `${BASE_URL}${endPoint}`,
+      setBody,
+      { headers: setHeader(token) },
+    ];
     if (method === 'get' || method === 'delete') params.splice(1, 1);
     return axios[method](...params);
   };
@@ -37,7 +42,9 @@ const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   try {
     const refreshToken = await SecureStore.getItemAsync('refreshToken');
     // const refreshToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJraW1zajk0ODRAZ21haWwuY29tIiwibmlja25hbWUiOiLquYDshKDsnqwiLCJnZW5kZXIiOiJtYW4iLCJiaXJ0aCI6MTk5NCwibG9jYXRpb24iOiIiLCJjaGFuZ2UiOjAsImNyZWF0ZWRBdCI6IjIwMTktMDMtMDFUMDQ6NDI6MzYuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTktMDMtMDFUMDQ6NDI6MzYuMDAwWiIsImlhdCI6MTU1MTY4MzM5NCwiZXhwIjoxNTUxNjgzNDA0LCJpc3MiOiJmbGludCIsInN1YiI6IngtcmVmcmVzaC10b2tlbiJ9.tHXrqLNBoPrgSq6e7bXyInJDKL4ZMy2mTsNwmoeCb0U';
-    const { headers } = await axios.get(`${BASE_URL}/oauth/accessToken`, { headers: { 'x-refresh-token': refreshToken } });
+    const { headers } = await axios.get(`${BASE_URL}/oauth/accessToken`, {
+      headers: { 'x-refresh-token': refreshToken },
+    });
     const accessToken = headers['x-access-token'];
     result = await request(accessToken);
     await AsyncStorage.removeItem('accessToken');
@@ -51,14 +58,19 @@ const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   try {
     const keyChain = await SecureStore.getItemAsync('keyChain');
     const { email, password } = JSON.parse(keyChain);
-    const { headers, data } = await axios.get(`${BASE_URL}/oauth/signIn`, { headers: { email, password } });
+    const { headers, data } = await axios.get(`${BASE_URL}/oauth/signIn`, {
+      headers: { email, password },
+    });
     const accessToken = headers['x-access-token'];
     const refreshToken = headers['x-refresh-token'];
     result = await request(accessToken);
     await AsyncStorage.setItem('userInfo', JSON.stringify(data.user));
     await AsyncStorage.setItem('accessToken', accessToken);
     await SecureStore.setItemAsync('refreshToken', refreshToken);
-    await SecureStore.setItemAsync('keyChain', JSON.stringify({ email, password }));
+    await SecureStore.setItemAsync(
+      'keyChain',
+      JSON.stringify({ email, password }),
+    );
   } catch (error) {
     console.log('Auto Sign In Error');
     console.log(error);
