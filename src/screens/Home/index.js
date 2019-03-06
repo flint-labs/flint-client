@@ -29,9 +29,12 @@ class Home extends Component {
   };
 
   handleWillFocus = () => {
-    if (this.state.isSetting) {
+    const { isSetting } = this.state;
+    const { navigation } = this.props;
+
+    if (isSetting) {
       this.setState({ isSetting: false });
-      this.props.navigation.navigate('Dashboard');
+      navigation.navigate('Dashboard');
     }
   };
 
