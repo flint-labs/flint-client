@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Text, TouchableOpacity, Animated, AsyncStorage,
 } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -18,7 +18,7 @@ class component extends React.Component {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleBottomModal()}>
           <Text style={{ fontSize: 20 }}>
-            {params.dashboardTitle ? `${params.dashboardTitle} ` : ' '}
+            {params.dashboardTitle ? ` ${params.dashboardTitle} ` : ' 선택된 도전이 없어요 '}
             <Icon name="ios-arrow-dropdown" size={20} />
           </Text>
         </TouchableOpacity>
@@ -28,21 +28,21 @@ class component extends React.Component {
 
   state = {
     bounceValue: new Animated.Value(0),
-    challenges: null,
+    challenges: [],
     isLoaded: false,
-    recentChallenge: null,
+    recentChallenge: {},
     user: null,
-    reports: null,
+    reports: [],
     progress: null,
   };
 
-  toggleSubView = () => {
+  toggleSubView = async () => {
     const { bounceValue } = this.state;
     let toValue = 0;
     if (isHidden) {
       toValue = 200;
     }
-    Animated.spring(bounceValue, {
+    await Animated.spring(bounceValue, {
       toValue,
       velocity: 3,
       tension: 2,
@@ -53,29 +53,39 @@ class component extends React.Component {
   };
 
   componentDidMount = async () => {
+    this.setState({ isLoaded: false });
+    const { navigation } = this.props;
+    navigation.setParams({
+      handleBottomModal: this.toggleSubView,
+    });
     this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
     // await AsyncStorage.removeItem('recentChallenge');
     const { user } = this.state;
-    const response = await axios // await 사용해야 밑에서 challenges 사용가능
-      .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
-    this.setState({ challenges: response.data.challenges });
-    const { navigation } = this.props;
-    const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    this.setState({
-      recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
-    });
+    if (user) {
+      const response = await axios // await 사용해야 밑에서 challenges 사용가능
+        .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
+      this.setState({ challenges: response.data.challenges });
+      const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      this.setState({
+        recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+      });
+    }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    const res = await axios.get(
-      `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
-    );
-    let { reports } = res.data;
-    reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
-    this.setState({ reports: reports.reverse() });
-    this.setState({ progress: await this.calculateProgress() <= 1 ? await this.calculateProgress() : 1 });
-    navigation.setParams({
-      handleBottomModal: this.toggleSubView,
-      dashboardTitle: recentChallenge.title,
-    });
+    if (recentChallenge) {
+      const res = await axios.get(
+        `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
+      );
+      // console.log(res);
+      let { reports } = res && res.data;
+      reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+      this.setState({ reports: reports.reverse() });
+      this.setState({
+        progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
+      });
+      navigation.setParams({
+        dashboardTitle: recentChallenge.title,
+      });
+    }
     this.setState({ isLoaded: true });
   };
 
@@ -94,7 +104,9 @@ class component extends React.Component {
     let { reports } = response.data;
     reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
-    this.setState({ progress: await this.calculateProgress() <= 1 ? await this.calculateProgress() : 1 });
+    this.setState({
+      progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
+    });
     navigation.setParams({ dashboardTitle: recentChallenge.title });
     this.setState({ isLoaded: true });
   };
@@ -111,7 +123,7 @@ class component extends React.Component {
     return result;
   };
 
-  render() {
+  renderMethod = () => {
     const {
       bounceValue,
       challenges,
@@ -121,8 +133,8 @@ class component extends React.Component {
       reports,
       progress,
     } = this.state;
-    if (user) {
-      if (isLoaded) {
+    if (isLoaded) {
+      if (user) {
         return challenges.length ? (
           <Dashboard
             bounceValue={bounceValue}
@@ -138,9 +150,18 @@ class component extends React.Component {
           <Text>새로운 도전을 시작하세요!</Text>
         );
       }
-      return <Text>Loading</Text>;
+      return <Text>로그인을 먼저 해주세요</Text>;
     }
-    return <Text>로그인을 먼저 해주세요</Text>;
+    return <Text>Loading</Text>;
+  };
+
+  render() {
+    return (
+      <>
+        <NavigationEvents onWillFocus={this.componentDidMount} />
+        {this.renderMethod()}
+      </>
+    );
   }
 }
 

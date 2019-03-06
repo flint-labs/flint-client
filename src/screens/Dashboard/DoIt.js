@@ -8,6 +8,7 @@ import { ImagePicker, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 import { OrangeButton } from '../../components';
 
@@ -62,42 +63,44 @@ class DoIt extends React.Component {
     const { photo } = this.state;
     return (
       <SafeAreaView>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}
-        >
-          <TouchableOpacity onPress={toggleModal} style={{ flex: 0.5 }}>
-            <Icon size={35} name="ios-arrow-round-back" />
-          </TouchableOpacity>
-          <View style={{ flex: 10 }}>
-            <View style={styles.modalTextInputContainer}>
-              <TextInput
-                style={styles.modalTextInput}
-                placeholder={'도전에 대한 일지를 남겨주세요\n( 50자 이내 )'}
-                multiline
-                autoFocus
-                blurOnSubmit
-                onChangeText={text => this.setState({ text })}
-              />
-            </View>
-            <View style={{ flex: 1, marginLeft: '5%' }}>
-              <TouchableOpacity style={styles.imageRefBtn} onPress={this.selectPicture}>
-                <Image
-                  source={photo ? { uri: photo } : cameraImage}
-                  style={{ width: 80, height: 80 }}
+        <KeyboardAwareScrollView>
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}
+          >
+            <TouchableOpacity onPress={toggleModal} style={{ flex: 0.5 }}>
+              <Icon size={35} name="ios-arrow-round-back" />
+            </TouchableOpacity>
+            <View style={{ flex: 10 }}>
+              <View style={styles.modalTextInputContainer}>
+                <TextInput
+                  style={styles.modalTextInput}
+                  placeholder={'도전에 대한 일지를 남겨주세요\n( 50자 이내 )'}
+                  multiline
+                  autoFocus
+                  blurOnSubmit
+                  onChangeText={text => this.setState({ text })}
                 />
-              </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1, marginLeft: '5%' }}>
+                <TouchableOpacity style={styles.imageRefBtn} onPress={this.selectPicture}>
+                  <Image
+                    source={photo ? { uri: photo } : cameraImage}
+                    style={{ width: 80, height: 80 }}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.submitBtnContainer}>
+                <OrangeButton text="제출" onPress={this.submitBtnHandler} />
+              </View>
+              <View style={{ flex: 1 }} />
             </View>
-            <View style={styles.submitBtnContainer}>
-              <OrangeButton text="제출" onPress={this.submitBtnHandler} />
-            </View>
-            <View style={{ flex: 1 }} />
-          </View>
-        </Modal>
+          </Modal>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     );
   }

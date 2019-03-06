@@ -20,12 +20,8 @@ const Select = ({
   const handleChallengeListButton = async item => {
     // item은 최근 challenge
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-    axios
-      .get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`)
-      .then(res => {
-        handleChallenges(res.data.challenges);
-      })
-      .catch(err => console.log(err));
+    const { data } = await axios.get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`);
+    handleChallenges(data.challenges);
     await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
     handleRecentChallenge(item);
     toggleSubView();
