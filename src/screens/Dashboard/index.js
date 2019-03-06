@@ -36,13 +36,13 @@ class component extends React.Component {
     progress: null,
   };
 
-  toggleSubView = () => {
+  toggleSubView = async () => {
     const { bounceValue } = this.state;
     let toValue = 0;
     if (isHidden) {
       toValue = 200;
     }
-    Animated.spring(bounceValue, {
+    await Animated.spring(bounceValue, {
       toValue,
       velocity: 3,
       tension: 2,
@@ -87,7 +87,6 @@ class component extends React.Component {
       });
     }
     this.setState({ isLoaded: true });
-    console.log('here');
   };
 
   handleRecentChallenge = async challenge => {
@@ -135,7 +134,6 @@ class component extends React.Component {
       progress,
     } = this.state;
     if (isLoaded) {
-      console.log(isLoaded);
       if (user) {
         return challenges.length ? (
           <Dashboard

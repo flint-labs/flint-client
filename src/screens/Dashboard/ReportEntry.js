@@ -41,11 +41,7 @@ const ReportEntry = ({ data }) => (
           justifyContent: 'center',
         }}
       >
-        <Icon
-          name={data.isConfirmed === '1' ? 'ios-checkmark-circle' : 'ios-close-circle'}
-          size={30}
-          style={{ color: 'white' }}
-        />
+        <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
       </View>
     </View>
   </ImageBackground>
