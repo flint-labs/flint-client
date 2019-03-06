@@ -77,23 +77,10 @@ class UserInfo extends Component {
     }
   };
 
-  renderLogo = change => (
-    <View style={{ flex: 2, alignItems: 'center', justifyContent: 'center' }}>
-      <ImageBackground
-        source={logo}
-        style={styles.img}
-        imageStyle={{ resizeMode: 'contain' }}
-      >
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text style={{ fontSize: 25, color: '#333' }}>
-            {`잔액 : ${change}원`}
-          </Text>
-        </View>
-      </ImageBackground>
-    </View>
-  );
+  numberWithCommas = x => {
+    const temp = x.split(',').join('');
+    return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
 
   renderInfoPage = () => {
     const { user } = this.state;
@@ -132,7 +119,9 @@ class UserInfo extends Component {
           <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Text style={{ fontSize: 25, color: '#FF6600' }}>2</Text>
+            <Text style={{ fontSize: 25, color: '#FF6600' }}>
+              {user.inProgress}
+            </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>진행중</Text>
           </View>
           <View
@@ -145,7 +134,9 @@ class UserInfo extends Component {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontSize: 25, color: '#FF6600' }}>10</Text>
+            <Text style={{ fontSize: 25, color: '#FF6600' }}>
+              {user.totalChallenges}
+            </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>도전 횟수</Text>
           </View>
           <View
@@ -156,7 +147,9 @@ class UserInfo extends Component {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontSize: 25, color: '#FF6600' }}>6</Text>
+            <Text style={{ fontSize: 25, color: '#FF6600' }}>
+              {user.success}
+            </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>성공 횟수</Text>
           </View>
         </View>
@@ -182,7 +175,9 @@ class UserInfo extends Component {
               justifyContent: 'center',
             }}
           >
-            <Text style={{ fontSize: 30, fontWeight: '600' }}>₩ 50,000</Text>
+            <Text style={{ fontSize: 30, fontWeight: '600' }}>
+              ₩ {this.numberWithCommas(user.change.toString())}
+            </Text>
           </View>
         </View>
 
