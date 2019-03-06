@@ -24,9 +24,9 @@ class DoIt extends React.Component {
 
   submitBtnHandler = () => {
     // console.log(modalVisible, hideModal);
-    const { toggleModal, recentChallenge } = this.props;
+    const { recentChallenge } = this.props;
     const { text, photo } = this.state;
-    if (text.length <= 50 && photo) {
+    if (text !== null && text.length <= 50 && text.length > 0 && photo) {
       axios.post(`${baseUrl}/api/reports/postReport`, {
         image: photo,
         isConfirmed: 'pending',
@@ -36,17 +36,18 @@ class DoIt extends React.Component {
       Alert.alert('제출되었습니다.', null, [
         {
           text: 'OK',
-          onPress: () => {
-            toggleModal();
-            this.setState({ photo: null });
-          },
+          onPress: this.closeModal,
         },
       ]);
-    } else if (text.length > 50) {
-      Alert.alert('50자 이내로 작성해주세요');
     } else {
       Alert.alert('내용과 사진을 채워주세요');
     }
+  };
+
+  closeModal = () => {
+    const { toggleModal } = this.props;
+    toggleModal();
+    this.setState({ photo: null, text: null });
   };
 
   selectPicture = async () => {
@@ -59,8 +60,8 @@ class DoIt extends React.Component {
   };
 
   render() {
-    const { modalVisible, toggleModal } = this.props;
-    const { photo } = this.state;
+    const { modalVisible } = this.props;
+    const { photo, text } = this.state;
     return (
       <SafeAreaView>
         <KeyboardAwareScrollView>
@@ -68,11 +69,9 @@ class DoIt extends React.Component {
             animationType="slide"
             transparent={false}
             visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-            }}
+            onRequestClose={this.closeModal}
           >
-            <TouchableOpacity onPress={toggleModal} style={{ flex: 0.5 }}>
+            <TouchableOpacity onPress={this.closeModal} style={{ flex: 0.5 }}>
               <Icon size={35} name="ios-arrow-round-back" />
             </TouchableOpacity>
             <View style={{ flex: 10 }}>
@@ -83,7 +82,9 @@ class DoIt extends React.Component {
                   multiline
                   autoFocus
                   blurOnSubmit
-                  onChangeText={text => this.setState({ text })}
+                  onChangeText={inputText => this.setState({ text: inputText })}
+                  maxLength={50}
+                  value={text}
                 />
               </View>
               <View style={{ flex: 1, marginLeft: '5%' }}>
