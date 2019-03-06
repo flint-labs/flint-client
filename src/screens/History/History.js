@@ -16,7 +16,7 @@ class History extends Component {
 
     try {
       const { data } = await axios.get(
-        `http://127.0.0.1:3000/api/history/completeList/${id}`,
+        `http://13.209.19.196:3000/api/history/completeList/${id}`,
       );
       this.setState({ isLoading: true, completeList: data });
     } catch (err) {

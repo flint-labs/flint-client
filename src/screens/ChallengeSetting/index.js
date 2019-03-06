@@ -725,7 +725,9 @@ class ChallengeSetting extends Component {
     if (page < 9) {
       this.setState({ page: page + 1 });
     } else if (await this.handleChallengeSettingSubmit()) {
-      navigation.navigate('Dashboard');
+      console.log('here');
+      navigation.state.params.setting();
+      navigation.goBack();
     }
   };
 
