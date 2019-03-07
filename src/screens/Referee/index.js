@@ -17,6 +17,7 @@ import axios from 'axios';
 import styles from './Styles';
 import RefereeEntry from './RefereeEntry';
 import SignIn from '../SignIn';
+import sendRequest from '../../modules/sendRequest';
 
 const socket = io('http://13.209.19.196:3000');
 
@@ -33,13 +34,10 @@ class Referee extends Component {
   };
 
   componentDidMount = async () => {
-    const { reqData } = this.state;
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-    socket.on(id, data => {
-      console.log(data);
-      this.setState({ reqData: [data, ...reqData] });
-    });
-    // this.props.navigation.addListener('didFocus', () => {});
+
+    const list = await sendRequest('get', `/api/reports/getRequireList/${id}`);
+    this.setState({ reqData: list.data });
   };
 
   renderRefereeModal = (image, description, id) => {
@@ -179,24 +177,34 @@ class Referee extends Component {
     );
   };
 
+  handleWillFocus = async () => {
+    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+
+    const list = await sendRequest('get', `/api/reports/getRequireList/${id}`);
+    this.setState({ reqData: list.data });
+  };
+
   render = () => {
     const { reqData } = this.state;
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <FlatList
-            data={reqData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={itemData => (
-              <RefereeEntry
-                data={itemData.item}
-                modal={this.renderRefereeModal}
-              />
-            )}
-          />
-        </View>
-        {this.renderModal()}
-      </SafeAreaView>
+      <View style={{ flex: 1 }}>
+        <NavigationEvents onWillFocus={this.handleWillFocus} />
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.container}>
+            <FlatList
+              data={reqData}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={itemData => (
+                <RefereeEntry
+                  data={itemData.item}
+                  modal={this.renderRefereeModal}
+                />
+              )}
+            />
+          </View>
+          {this.renderModal()}
+        </SafeAreaView>
+      </View>
     );
   };
 }
