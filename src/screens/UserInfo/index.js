@@ -12,13 +12,12 @@ import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
 import SignUp from '../SignUp';
 import styles from './styles';
-
-const logo = require('../../../assets/images/UserInfo/ice.png');
 
 class UserInfo extends Component {
   static navigationOptions = {
@@ -62,6 +61,7 @@ class UserInfo extends Component {
       this.setState({ pending: true });
       await AsyncStorage.removeItem('userInfo');
       await AsyncStorage.removeItem('accessToken');
+      await AsyncStorage.removeItem('recentChallenge');
       await SecureStore.deleteItemAsync('refreshToken');
       this.setState({ user: null });
       Alert.alert('로그아웃 성공!', '보고싶을 거에요 🥺', [
@@ -70,6 +70,27 @@ class UserInfo extends Component {
           onPress: () => this.goTo('Home'),
         },
       ]);
+    } catch (error) {
+      Alert.alert(error.message);
+    } finally {
+      this.setState({ pending: false });
+    }
+  };
+
+  handleDeleteAccountButton = async () => {
+    try {
+      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+      const res = await axios.delete(
+        `http://13.209.19.196:3000/api/users/deleteAccount/${id}`,
+      );
+
+      this.setState({ pending: true });
+      await AsyncStorage.removeItem('userInfo');
+      await AsyncStorage.removeItem('accessToken');
+      await AsyncStorage.removeItem('recentChallenge');
+      await SecureStore.deleteItemAsync('refreshToken');
+      this.setState({ user: null });
+      Alert.alert('감사합니다.');
     } catch (error) {
       Alert.alert(error.message);
     } finally {
@@ -86,17 +107,7 @@ class UserInfo extends Component {
     const { user } = this.state;
     return (
       <View style={{ flex: 1 }}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-            alignItems: 'flex-end',
-            justifyContent: 'flex-between',
-            flexDirection: 'row',
-            marginLeft: 15,
-            marginBottom: 20,
-          }}
-        >
+        <View style={styles.userNicknameContainer}>
           <View
             style={{ flex: 2, flexDirection: 'row', alignItems: 'flex-end' }}
           >
@@ -107,46 +118,20 @@ class UserInfo extends Component {
           </View>
         </View>
 
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            borderTopWidth: 1,
-            borderBottomWidth: 1,
-            borderColor: '#dcdcdc',
-          }}
-        >
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
+        <View style={styles.userChallengeStateContainer}>
+          <View style={styles.inProgressChallenge}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.inProgress}
             </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>진행중</Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              borderLeftWidth: 1,
-              borderRightWidth: 1,
-              borderColor: '#dcdcdc',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View style={styles.totalChallenges}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.totalChallenges}
             </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>도전 횟수</Text>
           </View>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'rgba(0,0,0,0)',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View style={styles.successChallenge}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.success}
             </Text>
@@ -165,16 +150,7 @@ class UserInfo extends Component {
           >
             현재 잔액
           </Text>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: 'white',
-              margin: 15,
-              borderRadius: 5,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <View style={styles.change}>
             <Text style={{ fontSize: 30, fontWeight: '600' }}>
               ₩ {this.numberWithCommas(user.change.toString())}
             </Text>
@@ -182,38 +158,19 @@ class UserInfo extends Component {
         </View>
 
         <View style={{ flex: 4, backgroundColor: 'white' }}>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              borderBottomWidth: 1,
-              borderColor: '#dcdcdc',
-            }}
-          >
+          <TouchableOpacity style={styles.userInfoEtc}>
             <Text style={{ marginLeft: 15, fontSize: 15, color: '#444' }}>
               개인정보 약관
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              borderBottomWidth: 1,
-              borderColor: '#dcdcdc',
-            }}
-          >
+          <TouchableOpacity style={styles.userInfoEtc}>
             <Text style={{ marginLeft: 15, fontSize: 15, color: '#444' }}>
               Support
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              borderBottomWidth: 1,
-              borderColor: '#dcdcdc',
-            }}
+            style={styles.userInfoEtc}
             onPress={this.handleSignOutButton}
           >
             <Text style={{ marginLeft: 15, fontSize: 15, color: 'red' }}>
@@ -221,12 +178,8 @@ class UserInfo extends Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              borderBottomWidth: 1,
-              borderColor: '#dcdcdc',
-            }}
+            style={styles.userInfoEtc}
+            onPress={this.handleDeleteAccountButton}
           >
             <Text style={{ marginLeft: 15, fontSize: 15, color: 'red' }}>
               회원탈퇴
