@@ -13,6 +13,7 @@ import { SecureStore } from 'expo';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import DialogInput from 'react-native-dialog-input';
 
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
@@ -27,6 +28,7 @@ class UserInfo extends Component {
   state = {
     user: null,
     pending: false,
+    isDialogVisible: false,
   };
 
   goTo = screen => {
@@ -77,24 +79,29 @@ class UserInfo extends Component {
     }
   };
 
-  handleDeleteAccountButton = async () => {
+  handleDeleteAccountButton = async inputText => {
     try {
-      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      const res = await axios.delete(
-        `http://13.209.19.196:3000/api/users/deleteAccount/${id}`,
-      );
+      const { id, email } = JSON.parse(await AsyncStorage.getItem('userInfo'));
 
-      this.setState({ pending: true });
-      await AsyncStorage.removeItem('userInfo');
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('recentChallenge');
-      await SecureStore.deleteItemAsync('refreshToken');
-      this.setState({ user: null });
-      Alert.alert('감사합니다.');
+      if (email === inputText) {
+        await axios.delete(
+          `http://13.209.19.196:3000/api/users/deleteAccount/${id}`,
+        );
+
+        this.setState({ pending: true });
+        await AsyncStorage.removeItem('userInfo');
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('recentChallenge');
+        await SecureStore.deleteItemAsync('refreshToken');
+        this.setState({ user: null });
+        Alert.alert('감사합니다.');
+      } else {
+        Alert.alert('이메일이 일치하지 않습니다.');
+      }
     } catch (error) {
       Alert.alert(error.message);
     } finally {
-      this.setState({ pending: false });
+      this.setState({ pending: false, isDialogVisible: false });
     }
   };
 
@@ -104,7 +111,7 @@ class UserInfo extends Component {
   };
 
   renderInfoPage = () => {
-    const { user } = this.state;
+    const { user, isDialogVisible } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.userNicknameContainer}>
@@ -179,7 +186,9 @@ class UserInfo extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.userInfoEtc}
-            onPress={this.handleDeleteAccountButton}
+            onPress={() => {
+              this.setState({ isDialogVisible: true });
+            }}
           >
             <Text style={{ marginLeft: 15, fontSize: 15, color: 'red' }}>
               회원탈퇴
@@ -187,6 +196,18 @@ class UserInfo extends Component {
           </TouchableOpacity>
           <View style={{ flex: 1, backgroundColor: 'white' }} />
         </View>
+
+        <DialogInput
+          isDialogVisible={isDialogVisible}
+          title="Email을 한 번 더 입력해 주세요"
+          hintInput="Email"
+          submitInput={inputText => {
+            this.handleDeleteAccountButton(inputText);
+          }}
+          closeDialog={() => {
+            this.setState({ isDialogVisible: false });
+          }}
+        />
       </View>
     );
   };
