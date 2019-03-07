@@ -8,6 +8,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "flint",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -18,7 +19,12 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "kakaotalk"
+        ]
+      }
     }
   }
 }
