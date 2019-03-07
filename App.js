@@ -48,7 +48,7 @@ const Root = createBottomTabNavigator(
         ),
       },
     },
-    UserInfo: {
+    MyPage: {
       screen: UserInfo,
       navigationOptions: {
         tabBarLable: 'UserInfo',
