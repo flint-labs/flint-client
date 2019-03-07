@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Dashboard from './Dashboard';
+import styles from './style';
+import Select from './Select';
+import EndChallenge from '../EndChallenge';
 
 let isHidden = true;
 const baseUrl = 'http://13.209.19.196:3000';
@@ -66,11 +69,19 @@ class component extends React.Component {
         .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-      this.setState({
-        recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
-      });
+      const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
+      if (EndChallengeArray.length > 0) {
+        this.setState({
+          recentChallenge: EndChallengeArray[0],
+        });
+      } else {
+        this.setState({
+          recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+        });
+      }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+    console.log(recentChallenge);
     if (recentChallenge) {
       const res = await axios.get(
         `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
@@ -135,20 +146,38 @@ class component extends React.Component {
     } = this.state;
     if (isLoaded) {
       if (user) {
-        return challenges.length ? (
-          <Dashboard
-            bounceValue={bounceValue}
-            toggleSubView={this.toggleSubView}
-            challenges={challenges}
-            recentChallenge={recentChallenge}
-            handleChallenges={this.handleChallenges}
-            handleRecentChallenge={this.handleRecentChallenge}
-            reports={reports}
-            progress={progress}
-          />
-        ) : (
-          <Text>새로운 도전을 시작하세요!</Text>
-        );
+        if (challenges.length) {
+          return (
+            <>
+              <Animated.View
+                style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
+              >
+                <Select
+                  toggleSubView={this.toggleSubView}
+                  handleChallenges={this.handleChallenges}
+                  challenges={challenges}
+                  handleRecentChallenge={this.handleRecentChallenge}
+                  recentChallenge={recentChallenge}
+                />
+              </Animated.View>
+              {new Date(recentChallenge.endAt) - new Date() > 0 ? (
+                <Dashboard
+                  bounceValue={bounceValue}
+                  toggleSubView={this.toggleSubView}
+                  challenges={challenges}
+                  recentChallenge={recentChallenge}
+                  handleChallenges={this.handleChallenges}
+                  handleRecentChallenge={this.handleRecentChallenge}
+                  reports={reports}
+                  progress={progress}
+                />
+              ) : (
+                <EndChallenge reports={reports} />
+              )}
+            </>
+          );
+        }
+        return <Text>새로운 도전을 시작하세요!</Text>;
       }
       return <Text>로그인을 먼저 해주세요</Text>;
     }

@@ -57,17 +57,7 @@ class Dashboard extends Component {
       if (recentChallenge.state === 'inProgress') {
         return (
           <View style={styles.container}>
-            <Animated.View
-              style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
-            >
-              <Select
-                toggleSubView={toggleSubView}
-                handleChallenges={handleChallenges}
-                challenges={challenges}
-                handleRecentChallenge={handleRecentChallenge}
-                recentChallenge={recentChallenge}
-              />
-            </Animated.View>
+            
             <DoIt
               modalVisible={modalVisible}
               toggleModal={this.toggleModal}
@@ -108,7 +98,7 @@ class Dashboard extends Component {
       }
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Animated.View
+          {/* <Animated.View
             style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
           >
             <Select
@@ -118,7 +108,7 @@ class Dashboard extends Component {
               handleRecentChallenge={handleRecentChallenge}
               recentChallenge={recentChallenge}
             />
-          </Animated.View>
+          </Animated.View> */}
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <Image
               source={readyRun2Image}

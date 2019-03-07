@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import styles from '../Success/styles';
+import styles from './styles';
 
 const Failure = () => (
   <View style={styles.container}>
