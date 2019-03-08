@@ -61,7 +61,7 @@ class Referee extends Component {
         'http://13.209.19.196:3000/api/reports/responseReport',
         {
           reportId: requestReportId,
-          check: true,
+          check: 'true',
         },
       );
       this.setState({
@@ -81,7 +81,7 @@ class Referee extends Component {
         'http://13.209.19.196:3000/api/reports/responseReport',
         {
           reportId: requestReportId,
-          check: false,
+          check: 'false',
         },
       );
 

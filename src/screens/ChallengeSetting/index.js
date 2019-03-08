@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  findNodeHandle,
   SafeAreaView,
   Picker,
   TextInput,
@@ -16,7 +15,7 @@ import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
-import { StackActions } from 'react-navigation';
+import PropTypes from 'prop-types';
 import { AuthInput, OrangeButton } from '../../components';
 
 YellowBox.ignoreWarnings([
@@ -29,26 +28,25 @@ const thisMonth = new Date().getMonth() + 1;
 const thisDate = new Date().getDate();
 
 class ChallengeSetting extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: (
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            marginLeft: 10,
-            alignItems: 'center',
-          }}
-          onPress={navigation.getParam('handleBackButton') || navigation.goBack}
-        >
-          <Icon name="ios-arrow-round-back" size={35} />
-        </TouchableOpacity>
-      ),
-      gesturesEnabled: false,
-      headerStyle: {
-        borderColor: 'white',
-      },
-    };
-  };
+  static navigationOptions = ({ navigation }) => ({
+    headerLeft: (
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          marginLeft: 10,
+          alignItems: 'center',
+        }}
+        onPress={navigation.getParam('handleBackButton') || navigation.goBack}
+      >
+        <Icon name="ios-arrow-round-back" size={35} />
+      </TouchableOpacity>
+    ),
+    gesturesEnabled: false,
+    headerStyle: {
+      borderColor: 'white',
+    },
+  });
+
 
   state = {
     page: 0,
@@ -96,7 +94,9 @@ class ChallengeSetting extends Component {
   };
 
   componentDidUpdate = async () => {
-    const { page, referee, isValid, selectUser, isValidUser } = this.state;
+    const {
+      page, referee, isValid, selectUser, isValidUser,
+    } = this.state;
 
     if (page === 4 && referee !== '') {
       try {
@@ -129,7 +129,7 @@ class ChallengeSetting extends Component {
     }
   };
 
-  scrollToInput(node) {
+  scrollToInput = node => {
     this.scroll.props.scrollToFocusedInput(node);
   }
 
@@ -150,6 +150,25 @@ class ChallengeSetting extends Component {
   renderIcon = ({ name, style }) => (
     <Icon name={name} size={20} color="#333" style={style} />
   );
+
+  renderChallengeType = () => {
+    const { isOnGoing, isOneShot } = this.state;
+    if (isOnGoing) {
+      return (
+        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+          {'꾸준한 도전입니다.\n ex) 매일 30분씩 운동하기'}
+        </Text>
+      );
+    }
+    if (isOneShot) {
+      return (
+        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+          {'한번에 이룰 수 있는 도전입니다.\n ex) 3월 중에 대청소 하기'}
+        </Text>
+      );
+    }
+    return <Text />;
+  }
 
   renderIsOnGoing = () => {
     const { isOnGoing, isOneShot } = this.state;
@@ -173,31 +192,19 @@ class ChallengeSetting extends Component {
           <CheckBox
             title="On Going!"
             checked={isOnGoing}
-            onPress={() =>
-              this.setState({ isOnGoing: !isOnGoing, isOneShot: isOnGoing })
+            onPress={() => this.setState({ isOnGoing: !isOnGoing, isOneShot: isOnGoing })
             }
           />
           <CheckBox
             title="One Shot!"
             checked={isOneShot}
-            onPress={() =>
-              this.setState({ isOneShot: !isOneShot, isOnGoing: isOneShot })
+            onPress={() => this.setState({ isOneShot: !isOneShot, isOnGoing: isOneShot })
             }
           />
         </View>
 
         <View style={{ alignItems: 'center', marginTop: 10 }}>
-          {!isOnGoing && !isOneShot ? (
-            <Text />
-          ) : isOnGoing ? (
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-              {'꾸준한 도전입니다.\n ex) 매일 30분씩 운동하기'}
-            </Text>
-          ) : (
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-              {'한번에 이룰 수 있는 도전입니다.\n ex) 3월 중에 대청소 하기'}
-            </Text>
-          )}
+          {this.renderChallengeType()}
         </View>
       </View>
     );
@@ -329,7 +336,9 @@ class ChallengeSetting extends Component {
   );
 
   renderModePart = () => {
-    const { isReferee, isSolo, isValid, referee } = this.state;
+    const {
+      isReferee, isSolo, isValid, referee,
+    } = this.state;
 
     return (
       <View>
@@ -351,21 +360,19 @@ class ChallengeSetting extends Component {
           <CheckBox
             title="Solo"
             checked={isSolo}
-            onPress={() =>
-              this.setState({
-                isSolo: !isSolo,
-                isReferee: isSolo,
-              })
+            onPress={() => this.setState({
+              isSolo: !isSolo,
+              isReferee: isSolo,
+            })
             }
           />
           <CheckBox
             title="Referee"
             checked={isReferee}
-            onPress={() =>
-              this.setState({
-                isReferee: !isReferee,
-                isSolo: isReferee,
-              })
+            onPress={() => this.setState({
+              isReferee: !isReferee,
+              isSolo: isReferee,
+            })
             }
           />
         </View>
@@ -434,8 +441,7 @@ class ChallengeSetting extends Component {
         <Picker
           selectedValue={checkingPeriod}
           style={{ width: width * 0.2 }}
-          onValueChange={itemValue =>
-            this.setState({ checkingPeriod: itemValue })
+          onValueChange={itemValue => this.setState({ checkingPeriod: itemValue })
           }
         >
           {new Array(7).fill(null).map((el, index) => {
@@ -565,21 +571,19 @@ class ChallengeSetting extends Component {
           <CheckBox
             title="친구"
             checked={isFriend}
-            onPress={() =>
-              this.setState({
-                isFriend: !isFriend,
-                isCompany: isFriend,
-              })
+            onPress={() => this.setState({
+              isFriend: !isFriend,
+              isCompany: isFriend,
+            })
             }
           />
           <CheckBox
             title="자선단체"
             checked={isCompany}
-            onPress={() =>
-              this.setState({
-                isCompany: !isCompany,
-                isFriend: isCompany,
-              })
+            onPress={() => this.setState({
+              isCompany: !isCompany,
+              isFriend: isCompany,
+            })
             }
           />
         </View>
@@ -621,8 +625,7 @@ class ChallengeSetting extends Component {
               <Picker
                 selectedValue={selectCharity}
                 style={{ width: width * 0.7 }}
-                onValueChange={itemValue =>
-                  this.setState({ selectCharity: itemValue })
+                onValueChange={itemValue => this.setState({ selectCharity: itemValue })
                 }
               >
                 {charities.map(ele => {
@@ -643,22 +646,26 @@ class ChallengeSetting extends Component {
     );
   };
 
-  renderStartChallengePart = () => (
-    <View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 40, fontFamily: 'Fontrust' }}>
-          {' '}
-          Change Your Life
-        </Text>
+  renderStartChallengePart = () => {
+    const { amount } = this.state;
+    const fontFamily = amount > 0 ? {} : { fontFamily: 'Fontrust' };
+    return (
+      <View>
+        <View
+          style={{
+            alignItems: 'center',
+          }}
+        >
+          <Text style={{ ...fontFamily, fontSize: 40 }}>
+            {' '}
+            { amount > 0 ? '결제하러 가기' : 'Challenge Your Life' }
+          </Text>
+        </View>
       </View>
-    </View>
-  );
+    );
+  }
 
-  handleChallengeSettingSubmit = async () => {
+  getChallenge = () => {
     const challenge = { ...this.state };
     delete challenge.page;
     delete challenge.isFree;
@@ -673,22 +680,23 @@ class ChallengeSetting extends Component {
     delete challenge.isCompany;
     delete challenge.selectUser;
     delete challenge.selectCharity;
+    return challenge;
+  }
+
+  handleChallengeSettingSubmit = async () => {
+    const { selectCharity, selectUser, referee } = this.state;
+    const challenge = this.getChallenge();
 
     const check = Object.values(challenge);
     const challKey = Object.keys(challenge);
     const result = {};
-    let accessToken;
 
-    const selectCharity = this.state.selectCharity || false;
-    const selectUser = this.state.selectUser || false;
-
-    result.selectCharity = selectCharity;
-    result.selectUser = selectUser;
+    result.selectCharity = selectCharity || false;
+    result.selectUser = selectUser || false;
 
     for (const value of check) {
       if (value === '') {
         Alert.alert('⚠️\n입력하지 않은 항목이 있습니다.');
-        console.log(challenge);
         return false;
       }
     }
@@ -696,10 +704,9 @@ class ChallengeSetting extends Component {
     challKey.forEach((ele, idx) => {
       result[ele] = check[idx];
     });
-    result.referee = this.state.referee;
+    result.referee = referee;
 
     try {
-      accessToken = await AsyncStorage.getItem('accessToken');
       const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
       result.userId = id;
     } catch (err) {
@@ -707,6 +714,7 @@ class ChallengeSetting extends Component {
     }
 
     try {
+      // TODO `sendRequest` 모듈로 변경
       await axios.post(
         'http://13.209.19.196:3000/api/challenges/setting',
         result,
@@ -720,14 +728,20 @@ class ChallengeSetting extends Component {
   };
 
   buttonHandler = async () => {
-    const { page } = this.state;
+    const { page, amount } = this.state;
     const { navigation } = this.props;
     if (page < 9) {
       this.setState({ page: page + 1 });
     } else if (await this.handleChallengeSettingSubmit()) {
-      console.log('here');
-      navigation.state.params.setting();
-      navigation.goBack();
+      if (amount > 0) {
+        navigation.navigate('Payment', {
+          setting: navigation.state.params.setting,
+          amount,
+        });
+      } else {
+        navigation.state.params.setting();
+        navigation.popToTop();
+      }
     }
   };
 
@@ -743,7 +757,6 @@ class ChallengeSetting extends Component {
       amount,
       slogan,
     } = this.state;
-    const { navigation } = this.props;
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -766,8 +779,8 @@ class ChallengeSetting extends Component {
             {page === 0 && this.renderIsOnGoing()}
             {page === 1 && this.renderTitleInputPart(title)}
             {page === 2 && this.renderPeriodSelectPart(week)}
-            {page === 3 &&
-              this.renderStartAtPart(startYear, startMonth, startDay)}
+            {page === 3
+              && this.renderStartAtPart(startYear, startMonth, startDay)}
             {page === 4 && this.renderModePart()}
             {page === 5 && this.renderCheckingPeriodPart(checkingPeriod)}
             {page === 6 && this.renderAmountPart(amount)}
@@ -787,5 +800,13 @@ class ChallengeSetting extends Component {
     );
   };
 }
+
+ChallengeSetting.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+    getParam: PropTypes.func,
+  }).isRequired,
+};
 
 export default ChallengeSetting;
