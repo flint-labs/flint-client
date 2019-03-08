@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import Dashboard from './Dashboard';
+import styles from './style';
+import Select from './Select';
+import EndChallenge from '../EndChallenge';
 
 let isHidden = true;
 const baseUrl = 'http://13.209.19.196:3000';
@@ -59,24 +62,39 @@ class component extends React.Component {
       handleBottomModal: this.toggleSubView,
     });
     this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
-    // await AsyncStorage.removeItem('recentChallenge');
     const { user } = this.state;
     if (user) {
       const response = await axios // await 사용해야 밑에서 challenges 사용가능
         .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-      this.setState({
-        recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
-      });
+      const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
+      if (EndChallengeArray.length > 0) {
+        this.setState({
+          recentChallenge: EndChallengeArray[0],
+        });
+      } else {
+        this.setState({
+          recentChallenge:
+          JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+        });
+      }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
       const res = await axios.get(
         `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
       );
-      // console.log(res);
       let { reports } = res && res.data;
+      if (new Date(recentChallenge.endAt) - new Date() <= 0) {
+        reports = reports.map(el => {
+          if (el.isConfirmed === 'pending') {
+            return { ...el, isConfirmed: 'true' };
+          }
+          return { ...el };
+        });
+        // axios.put(' update 요청');
+      }
       reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
@@ -118,7 +136,7 @@ class component extends React.Component {
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
     const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
-    const result = await (reports.filter(el => el.isConfirmed === '1').length
+    const result = await (reports.filter(el => el.isConfirmed === 'true').length
       / (week * recentChallenge.checkingPeriod));
     return result;
   };
@@ -135,20 +153,42 @@ class component extends React.Component {
     } = this.state;
     if (isLoaded) {
       if (user) {
-        return challenges.length ? (
-          <Dashboard
-            bounceValue={bounceValue}
-            toggleSubView={this.toggleSubView}
-            challenges={challenges}
-            recentChallenge={recentChallenge}
-            handleChallenges={this.handleChallenges}
-            handleRecentChallenge={this.handleRecentChallenge}
-            reports={reports}
-            progress={progress}
-          />
-        ) : (
-          <Text>새로운 도전을 시작하세요!</Text>
-        );
+        if (challenges.length) {
+          return (
+            <>
+              <Animated.View
+                style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
+              >
+                <Select
+                  toggleSubView={this.toggleSubView}
+                  handleChallenges={this.handleChallenges}
+                  challenges={challenges}
+                  handleRecentChallenge={this.handleRecentChallenge}
+                  recentChallenge={recentChallenge}
+                />
+              </Animated.View>
+              {new Date(recentChallenge.endAt) - new Date() > 0 ? (
+                <Dashboard
+                  bounceValue={bounceValue}
+                  toggleSubView={this.toggleSubView}
+                  challenges={challenges}
+                  recentChallenge={recentChallenge}
+                  handleChallenges={this.handleChallenges}
+                  handleRecentChallenge={this.handleRecentChallenge}
+                  reports={reports}
+                  progress={progress}
+                />
+              ) : (
+                <EndChallenge
+                  recentChallenge={recentChallenge}
+                  progress={progress}
+                  refreshDashboard={this.componentDidMount}
+                />
+              )}
+            </>
+          );
+        }
+        return <Text>새로운 도전을 시작하세요!</Text>;
       }
       return <Text>로그인을 먼저 해주세요</Text>;
     }
