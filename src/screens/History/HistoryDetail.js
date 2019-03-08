@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
+import sendRequest from '../../modules/sendRequest';
 
 import HistoryReportEntry from './HistoryReportEntry';
 
@@ -46,9 +47,7 @@ class HistoryDetail extends Component {
     try {
       const {
         data: { reports },
-      } = await axios.get(
-        `http://13.209.19.196:3000/api/reports/getNotPendingReports/${id}`,
-      );
+      } = await sendRequest('get', `/api/reports/getNotPendingReports/${id}`);
       this.setState({ isLoading: true, reportList: reports || [] });
     } catch (err) {
       console.log(err.message);
