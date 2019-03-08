@@ -107,6 +107,12 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
+  nonReportsTextContainer: {
+    height: 270,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default styles;
