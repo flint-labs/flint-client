@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Dimensions, SafeAreaView } from 'react-native';
+import {
+ View, Text, ScrollView, Dimensions, SafeAreaView 
+} from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 
 import Intro from './Intro';
 import Feedback from './Feedback';
 
 import ChallengeSetting from '../ChallengeSetting';
+import Payment from '../Payment';
+import Success from '../Payment/Success';
 
 import styles from './Styles';
 
@@ -71,6 +75,12 @@ export default createStackNavigator(
           <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
         ),
       },
+    },
+    Payment: {
+      screen: Payment,
+    },
+    Success: {
+      screen: Success,
     },
   },
   {
