@@ -29,9 +29,16 @@ class Referee extends Component {
 
   componentDidMount = async () => {
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+    try {
+      const list = await sendRequest(
+        'get',
+        `/api/reports/getRequireList/${id}`,
+      );
 
-    const list = await sendRequest('get', `/api/reports/getRequireList/${id}`);
-    this.setState({ reqData: list.data });
+      this.setState({ reqData: list ? list.data : [] });
+    } catch (error) {
+      console.log('err');
+    }
   };
 
   renderRefereeModal = (image, description, id) => {
