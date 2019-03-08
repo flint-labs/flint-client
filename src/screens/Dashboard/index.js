@@ -76,26 +76,43 @@ class component extends React.Component {
       } else {
         this.setState({
           recentChallenge:
-          JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+            JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
         });
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
-      const res = await axios.get(
-        `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
-      );
+      const res = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
       let { reports } = res && res.data;
-      if (new Date(recentChallenge.endAt) - new Date() <= 0) {
-        reports = reports.map(el => {
-          if (el.isConfirmed === 'pending') {
-            return { ...el, isConfirmed: 'true' };
-          }
-          return { ...el };
+      const shouldConfirmReportsId = [];
+      reports.forEach(el => {
+        if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
+          shouldConfirmReportsId.push(el.id);
+        }
+      });
+      // 하루지나도 심판이 소식없으면 자동 success
+      if (shouldConfirmReportsId.length) {
+        await axios.put(`${baseUrl}/api/reports/updateReports`, {
+          willBeConfirmed: 'true',
+          reportsId: shouldConfirmReportsId,
         });
-        // axios.put(' update 요청');
       }
-      reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+      if (new Date(recentChallenge.endAt) - new Date() <= 0) {
+        const pendingReportsId = [];
+        reports.forEach((el, index) => {
+          if (el.isConfirmed === 'pending') {
+            pendingReportsId.push(el.id);
+            reports[index].isConfirmed = 'true';
+          }
+        });
+        await axios.put(`${baseUrl}/api/reports/updateReports`, {
+          willBeConfirmed: 'true',
+          reportsId: pendingReportsId,
+        });
+      }
+      reports = reports
+        .filter(el => el.isConfirmed === 'true')
+        .map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
         progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
@@ -116,11 +133,24 @@ class component extends React.Component {
     this.setState({ challenges: res.data.challenges });
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
-    const response = await axios.get(
-      `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
-    );
+    const response = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
     let { reports } = response.data;
-    reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+    const shouldConfirmReportsId = [];
+    // 하루지나도 심판이 소식없으면 자동 success
+    reports.forEach(el => {
+      if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
+        shouldConfirmReportsId.push(el.id);
+      }
+    });
+    if (shouldConfirmReportsId.length) {
+      await axios.put(`${baseUrl}/api/reports/updateReports`, {
+        willBeConfirmed: 'true',
+        reportsId: shouldConfirmReportsId,
+      });
+    }
+    reports = reports
+      .filter(el => el.isConfirmed === 'true')
+      .map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
       progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,

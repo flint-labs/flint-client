@@ -21,9 +21,9 @@ const Select = ({
     // item은 최근 challenge
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     const { data } = await axios.get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`);
-    handleChallenges(data.challenges);
+    await handleChallenges(data.challenges);
     await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
-    handleRecentChallenge(item);
+    await handleRecentChallenge(item);
     toggleSubView();
   };
 
