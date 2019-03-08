@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  SafeAreaView,
-  Picker,
-  TextInput,
-  Dimensions,
-  TouchableOpacity,
-  Alert,
-  AsyncStorage,
-  YellowBox,
-  findNodeHandle,
-  Image,
+  View, Text, SafeAreaView, Picker, TextInput, Dimensions,
+  TouchableOpacity, Alert, AsyncStorage, YellowBox, findNodeHandle, Image,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,16 +9,17 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { AuthInput, OrangeButton } from '../../components';
+import styles from './style';
+import { numberWithCommas, reapeat } from '../../modules/util';
 
 YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?',
 ]);
 
 const { width } = Dimensions.get('window');
-const thisYear = new Date().getFullYear();
-const thisMonth = new Date().getMonth() + 1;
-const thisDate = new Date().getDate();
-
+const THIS_YEAR = new Date().getFullYear();
+const THIS_MONTH = new Date().getMonth() + 1;
+const TODAY = new Date().getDate();
 const KAKAO_PAY_ICON = require('../../../assets/images/ChallengeSetting/kakao-icon.png');
 const PAYPAL_ICON = require('../../../assets/images/ChallengeSetting/paypal-icon.png');
 
@@ -36,69 +27,56 @@ class ChallengeSetting extends Component {
   static navigationOptions = ({ navigation }) => ({
     headerLeft: (
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          marginLeft: 10,
-          alignItems: 'center',
-        }}
+        style={styles.headerLeftButton}
         onPress={navigation.getParam('handleBackButton') || navigation.goBack}
       >
         <Icon name="ios-arrow-round-back" size={35} />
       </TouchableOpacity>
     ),
     gesturesEnabled: false,
-    headerStyle: {
-      borderColor: 'white',
-    },
+    headerStyle: { borderColor: 'white' },
   });
 
-
   state = {
-    page: 0,
     title: '',
-    startYear: thisYear,
-    startMonth: thisMonth,
-    startDay: thisDate,
     week: 1,
+    startYear: THIS_YEAR,
+    startMonth: THIS_MONTH,
+    startDay: TODAY,
     isReferee: true,
     isSolo: false,
     referee: '',
-    isValid: false,
     checkingPeriod: 1,
     category: '',
     amount: '',
     isFree: false,
     isOnGoing: true,
-    isOneShot: false,
     slogan: '',
-    charities: [],
     selectCharity: '',
     selectUser: '',
+    isKakao: false,
+    isPaypal: false,
+    page: 0,
+    isValid: false,
     isValidUser: false,
     isFriend: false,
     isCompany: true,
-    isKakao: false,
-    isPaypal: false,
+    charities: [],
   };
 
   componentDidMount = async () => {
     const { navigation } = this.props;
-
-    navigation.setParams({
-      handleBackButton: this.handleBackButton,
-    });
+    const { handleBackButton } = this;
+    navigation.setParams({ handleBackButton });
 
     try {
-      const charities = await axios.get(
-        'http://13.209.19.196:3000/api/challenges/charities',
-      );
-
+      const charities = await axios.get('http://13.209.19.196:3000/api/challenges/charities');
       this.setState({
         charities: charities.data,
         category: navigation.getParam('category'),
       });
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -109,31 +87,23 @@ class ChallengeSetting extends Component {
 
     if (page === 4 && referee !== '') {
       try {
-        const {
-          data: { isExist },
-        } = await axios.get(
-          `http://13.209.19.196:3000/api/users/checkNickname/${referee}`,
-        );
+        const { data: { isExist } } = await axios.get(`http://13.209.19.196:3000/api/users/checkNickname/${referee}`);
         if (isExist !== isValid) {
           this.setState({ isValid: isExist });
         }
-      } catch (err) {
-        throw err;
+      } catch (error) {
+        throw error;
       }
     }
 
     if (page === 7 && selectUser !== '') {
       try {
-        const {
-          data: { isExist },
-        } = await axios.get(
-          `http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`,
-        );
+        const { data: { isExist } } = await axios.get(`http://13.209.19.196:3000/api/users/checkNickname/${selectUser}`);
         if (isExist !== isValidUser) {
           this.setState({ isValidUser: isExist });
         }
-      } catch (err) {
-        throw err;
+      } catch (error) {
+        throw error;
       }
     }
   };
@@ -144,24 +114,15 @@ class ChallengeSetting extends Component {
 
   handleBackButton = () => {
     const { page } = this.state;
-    const {
-      navigation: { goBack },
-    } = this.props;
+    const { navigation: { goBack } } = this.props;
     if (page > 0) this.setState({ page: page - 1 });
     else goBack();
   };
 
-  numberWithCommas = x => {
-    const temp = x.split(',').join('');
-    return temp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  };
-
-  renderIcon = ({ name, style }) => (
-    <Icon name={name} size={20} color="#333" style={style} />
-  );
+  renderIcon = ({ name, style }) => <Icon name={name} size={20} color="#333" style={style} />;
 
   renderChallengeType = () => {
-    const { isOnGoing, isOneShot } = this.state;
+    const { isOnGoing } = this.state;
     if (isOnGoing) {
       return (
         <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
@@ -169,331 +130,311 @@ class ChallengeSetting extends Component {
         </Text>
       );
     }
-    if (isOneShot) {
-      return (
-        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-          {'한번에 이룰 수 있는 도전입니다.\n ex) 3월 중에 대청소 하기'}
-        </Text>
-      );
-    }
-    return <Text />;
+    return (
+      <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+        {'한번에 이룰 수 있는 도전입니다.\n ex) 3월 중에 대청소 하기'}
+      </Text>
+    );
   }
 
   renderIsOnGoing = () => {
-    const { isOnGoing, isOneShot } = this.state;
+    const { isOnGoing } = this.state;
     return (
-      <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 20 }}>🏆 어떤 종류의 도전인가요? 🏆</Text>
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>어떤 종류의 도전인가요?</Text>
         </View>
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 30,
-          }}
-        >
-          <CheckBox
-            title="On Going!"
-            checked={isOnGoing}
-            onPress={() => this.setState({ isOnGoing: !isOnGoing, isOneShot: isOnGoing })
-            }
-          />
-          <CheckBox
-            title="One Shot!"
-            checked={isOneShot}
-            onPress={() => this.setState({ isOneShot: !isOneShot, isOnGoing: isOneShot })
-            }
-          />
+        <View style={{ flex: 4, justifyContent: 'center' }}>
+          <View style={styles.pickerBox}>
+            <CheckBox
+              title="On Going!"
+              checked={isOnGoing}
+              onPress={() => this.setState({ isOnGoing: true })}
+            />
+            <CheckBox
+              title="One Shot!"
+              checked={!isOnGoing}
+              onPress={() => this.setState({ isOnGoing: false })}
+            />
+          </View>
+          <View style={{ alignItems: 'center', marginTop: 10 }}>
+            {this.renderChallengeType()}
+          </View>
         </View>
-
-        <View style={{ alignItems: 'center', marginTop: 10 }}>
-          {this.renderChallengeType()}
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
         </View>
       </View>
     );
   };
 
-  renderTitleInputPart = title => (
-    <View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 20 }}>🏆 당신의 도전은 무엇인가요? 🏆</Text>
-      </View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <AuthInput
-          state={title}
-          setState={text => this.setState({ title: text })}
-          renderIcon={() => this.renderIcon({})}
-          customProps={{
-            returnKeyType: 'next',
-            onSubmitEditing: this.buttonHandler,
-            onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
-          }}
-        />
-      </View>
-    </View>
-  );
-
-  renderPeriodSelectPart = week => (
-    <View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 20 }}>📆 몇 주 동안 하실래요? 📆</Text>
-      </View>
-      <View
-        style={{
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}
-      >
-        <Picker
-          selectedValue={week}
-          style={{ width: width * 0.2 }}
-          onValueChange={itemValue => this.setState({ week: itemValue })}
-        >
-          {new Array(24).fill(null).map((el, index) => {
-            const value = (index + 1).toString();
-            return <Picker.Item key={value} label={value} value={value} />;
-          })}
-        </Picker>
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}> weeks</Text>
+  renderTitleInputPart = () => {
+    const { title } = this.state;
+    return (
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>당신의 도전은 무엇인가요?</Text>
+        </View>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+          <AuthInput
+            state={title}
+            setState={text => this.setState({ title: text })}
+            renderIcon={() => this.renderIcon({})}
+            customProps={{
+              returnKeyType: 'next',
+              onSubmitEditing: this.buttonHandler,
+              onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+            }}
+          />
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
         </View>
       </View>
-    </View>
-  );
+    );
+  }
 
-  renderStartAtPart = (startYear, startMonth, startDay) => (
-    <View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 20 }}>🏃‍♂️언제부터 시작할까요?🏃‍♂️</Text>
-      </View>
-      <View
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'row',
-        }}
-      >
-        <Picker
-          selectedValue={startYear}
-          style={{ width: width * 0.2 }}
-          onValueChange={itemValue => this.setState({ startYear: itemValue })}
-        >
-          {new Array(2).fill(null).map((el, index) => {
-            const value = (thisYear + index).toString();
-            return <Picker.Item key={value} label={value} value={value} />;
-          })}
-        </Picker>
-
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}> 년</Text>
+  renderPeriodSelectPart = () => {
+    const { week } = this.state;
+    return (
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>몇 주 동안 하실래요?</Text>
         </View>
-
-        <Picker
-          selectedValue={startMonth}
-          style={{ width: width * 0.2 }}
-          onValueChange={itemValue => this.setState({ startMonth: itemValue })}
-        >
-          {new Array(12).fill(null).map((el, index) => {
-            const value = (index + 1).toString();
-            return <Picker.Item key={value} label={value} value={value} />;
-          })}
-        </Picker>
-
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}> 월</Text>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.pickerBox}>
+            <Picker
+              selectedValue={week}
+              style={{ width: width * 0.2 }}
+              onValueChange={itemValue => this.setState({ week: itemValue })}
+            >
+              {reapeat(24, (el, index) => {
+                const value = (index + 1).toString();
+                return <Picker.Item key={value} label={value} value={value} />;
+              })}
+            </Picker>
+            <View>
+              <Text style={{ fontSize: 20, fontWeight: '500' }}> weeks</Text>
+            </View>
+          </View>
         </View>
-
-        <Picker
-          selectedValue={startDay}
-          style={{ width: width * 0.2 }}
-          onValueChange={itemValue => this.setState({ startDay: itemValue })}
-        >
-          {new Array(30).fill(null).map((el, index) => {
-            const value = (index + 1).toString();
-            return <Picker.Item key={value} label={value} value={value} />;
-          })}
-        </Picker>
-
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}> 일</Text>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
         </View>
       </View>
-    </View>
-  );
+    );
+  }
+
+  renderStartAtPart = () => {
+    const { startYear, startMonth, startDay } = this.state;
+
+    return (
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>언제부터 시작할까요?</Text>
+        </View>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+
+          <View style={styles.pickerBox}>
+            <Picker
+              selectedValue={startYear}
+              style={{ width: width * 0.2 }}
+              onValueChange={itemValue => this.setState({ startYear: itemValue })}
+            >
+              {reapeat(2, (el, index) => {
+                const value = (THIS_YEAR + index).toString();
+                return <Picker.Item key={value} label={value} value={value} />;
+              })}
+            </Picker>
+            <View>
+              <Text style={{ fontSize: 20, fontWeight: '500' }}> 년</Text>
+            </View>
+            <Picker
+              selectedValue={startMonth}
+              style={{ width: width * 0.2 }}
+              onValueChange={itemValue => this.setState({ startMonth: itemValue })}
+            >
+              {reapeat(12, (el, index) => {
+                const value = (index + 1).toString();
+                return <Picker.Item key={value} label={value} value={value} />;
+              })}
+            </Picker>
+
+            <View>
+              <Text style={{ fontSize: 20, fontWeight: '500' }}> 월</Text>
+            </View>
+
+            <Picker
+              selectedValue={startDay}
+              style={{ width: width * 0.2 }}
+              onValueChange={itemValue => this.setState({ startDay: itemValue })}
+            >
+              {reapeat(30, (el, index) => {
+                const value = (index + 1).toString();
+                return <Picker.Item key={value} label={value} value={value} />;
+              })}
+            </Picker>
+
+            <View>
+              <Text style={{ fontSize: 20, fontWeight: '500' }}> 일</Text>
+            </View>
+          </View>
+
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
+        </View>
+      </View>
+    );
+  }
 
   renderModePart = () => {
     const {
       isReferee, isSolo, isValid, referee,
     } = this.state;
 
+    const toggleCheckBox = () => {
+      this.setState({
+        isSolo: !isSolo,
+        isReferee: !isReferee,
+      });
+    };
+
     return (
-      <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 20 }}>👀 어떤 모드로 진행할까요? 👀 </Text>
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>어떤 모드로 진행할까요?</Text>
         </View>
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 30,
-          }}
-        >
-          <CheckBox
-            title="Solo"
-            checked={isSolo}
-            onPress={() => this.setState({
-              isSolo: !isSolo,
-              isReferee: isSolo,
-            })
-            }
-          />
-          <CheckBox
-            title="Referee"
-            checked={isReferee}
-            onPress={() => this.setState({
-              isReferee: !isReferee,
-              isSolo: isReferee,
-            })
-            }
-          />
-        </View>
-        <View style={{ alignItems: 'center', marginTop: 10 }}>
-          {isSolo ? (
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-              {'스스로 진행 상황을 체크합니다.'}
-            </Text>
-          ) : (
-            <View>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+
+          <View style={{ ...styles.pickerBox, flex: 1 }}>
+            <CheckBox
+              title="Solo"
+              checked={isSolo}
+              onPress={toggleCheckBox}
+            />
+            <CheckBox
+              title="Referee"
+              checked={isReferee}
+              onPress={toggleCheckBox}
+            />
+          </View>
+
+          <View style={{ flex: 1, alignItems: 'center', marginTop: 10 }}>
+            {isSolo ? (
               <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                {'심판으로 등록된 사용자가 체크합니다.'}
+                {'스스로 진행 상황을 체크합니다.'}
               </Text>
-              <TextInput
-                style={{
-                  width: width * 0.7,
-                  fontSize: 25,
-                  marginTop: 40,
-                  paddingBottom: 5,
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#333',
-                }}
-                onChangeText={text => this.setState({ referee: text })}
-                blurOnSubmit={false}
-                value={referee}
-                returnKeyType="next"
-                placeholder="심판 아이디"
-                onSubmitEditing={this.buttonHandler}
-                onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
-              />
-              {isValid ? (
-                <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
-                  훌륭한 심판이십니다.
+            ) : (
+              <View>
+                <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
+                  {'심판으로 등록된 사용자가 체크합니다.'}
                 </Text>
-              ) : (
-                <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
-                  등록되지않은 아이디 입니다.
-                </Text>
-              )}
-            </View>
-          )}
+                <TextInput
+                  style={styles.textInput}
+                  onChangeText={text => this.setState({ referee: text })}
+                  blurOnSubmit={false}
+                  value={referee}
+                  returnKeyType="next"
+                  placeholder="심판 아이디"
+                  onSubmitEditing={this.buttonHandler}
+                  onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
+                />
+                {isValid ? (
+                  <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
+                    {referee !== '' ? '훌륭한 심판이십니다.' : ' '}
+                  </Text>
+                ) : (
+                  <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
+                    {referee !== '' ? '등록되지않은 아이디 입니다.' : ' '}
+                  </Text>
+                )}
+              </View>
+            )}
+          </View>
+
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
         </View>
       </View>
     );
   };
 
-  renderCheckingPeriodPart = checkingPeriod => (
-    <View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 20 }}>✔️ 일주일에 몇 번 체크할까요? ✔️</Text>
-      </View>
-      <View
-        style={{
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}
-      >
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}>주 </Text>
-        </View>
-        <Picker
-          selectedValue={checkingPeriod}
-          style={{ width: width * 0.2 }}
-          onValueChange={itemValue => this.setState({ checkingPeriod: itemValue })
-          }
-        >
-          {new Array(7).fill(null).map((el, index) => {
-            const value = (index + 1).toString();
-            return <Picker.Item key={value} label={value} value={value} />;
-          })}
-        </Picker>
-        <View>
-          <Text style={{ fontSize: 20, fontWeight: '500' }}> 회</Text>
-        </View>
-      </View>
-    </View>
-  );
-
-  renderAmountPart = amount => {
-    const { isFree } = this.state;
+  renderCheckingPeriodPart = () => {
+    const { checkingPeriod } = this.state;
     return (
-      <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 20 }}>💰얼마를 묶어 둘까요?💸</Text>
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>일주일에 몇 번 체크할까요?</Text>
         </View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+
+          <View style={styles.pickerBox}>
+            <View>
+              <Text style={{ fontSize: 20, fontWeight: '500' }}>주 </Text>
+            </View>
+            <Picker
+              selectedValue={checkingPeriod}
+              style={{ width: width * 0.3 }}
+              onValueChange={itemValue => this.setState({ checkingPeriod: itemValue })}
+            >
+              {reapeat(7, (el, index) => {
+                const value = (index + 1).toString();
+                return <Picker.Item key={value} label={value} value={value} />;
+              })}
+            </Picker>
+            <View>
+              <Text style={{ fontSize: 20, fontWeight: '500' }}> 회</Text>
+            </View>
+          </View>
+
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  renderAmountPart = () => {
+    const { isFree, amount } = this.state;
+    return (
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>얼마를 묶어 둘까요?</Text>
+        </View>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
           <TextInput
-            style={{
-              width: width * 0.7,
-              fontSize: 25,
-              marginTop: 40,
-              paddingBottom: 5,
-              borderBottomWidth: 1,
-              borderBottomColor: '#333',
-            }}
+            style={styles.textInput}
             placeholder="금액(원)"
             onChangeText={text => this.setState({ amount: text })}
             blurOnSubmit={false}
-            value={this.numberWithCommas(amount)}
+            value={numberWithCommas(amount)}
             keyboardType="numeric"
             returnKeyType="next"
             onSubmitEditing={this.buttonHandler}
@@ -510,44 +451,47 @@ class ChallengeSetting extends Component {
               onPress={() => this.setState({ isFree: !isFree, amount: '0' })}
             />
           </View>
+
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
         </View>
       </View>
     );
   };
 
-  renderSloganPart = slogan => (
-    <View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <Text style={{ fontSize: 20 }}> 🎙각오 한마디🎙</Text>
+  renderSloganPart = () => {
+    const { slogan } = this.state;
+    return (
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>각오 한마디</Text>
+        </View>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={text => this.setState({ slogan: text })}
+            blurOnSubmit={false}
+            value={slogan}
+            returnKeyType="next"
+            onSubmitEditing={this.buttonHandler}
+            onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
+          />
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
+        </View>
       </View>
-      <View
-        style={{
-          alignItems: 'center',
-        }}
-      >
-        <TextInput
-          style={{
-            width: width * 0.7,
-            fontSize: 25,
-            marginTop: 40,
-            paddingBottom: 5,
-            borderBottomWidth: 1,
-            borderBottomColor: '#333',
-          }}
-          onChangeText={text => this.setState({ slogan: text })}
-          blurOnSubmit={false}
-          value={slogan}
-          returnKeyType="next"
-          onSubmitEditing={this.buttonHandler}
-          onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
-        />
-      </View>
-    </View>
-  );
+    );
+  }
 
   renderReceipientPart = () => {
     const {
@@ -556,195 +500,152 @@ class ChallengeSetting extends Component {
       selectCharity,
       isValidUser,
       selectUser,
-      charities,
+      // charities,
     } = this.state;
+    const toggleCheckBox = () => {
+      this.setState({
+        isFriend: !isFriend,
+        isCompany: !isCompany,
+      });
+    };
+
+    const charities = [{ name: '김선재', id: 1 }, { name: '박준홍', id: 2 }, { name: '유건', id: 3 }, { name: '박지혜', id: 4 }];
+
     return (
-      <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ fontSize: 20 }}>
-            💸만약 실패한다면 누구에게 보낼까요?💸
-          </Text>
+
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>만약 실패한다면 누구에게 보낼까요?</Text>
         </View>
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-            marginTop: 30,
-          }}
-        >
-          <CheckBox
-            title="친구"
-            checked={isFriend}
-            onPress={() => this.setState({
-              isFriend: !isFriend,
-              isCompany: isFriend,
-            })
-            }
-          />
-          <CheckBox
-            title="자선단체"
-            checked={isCompany}
-            onPress={() => this.setState({
-              isCompany: !isCompany,
-              isFriend: isCompany,
-            })
-            }
-          />
-        </View>
-        <View style={{ alignItems: 'center', marginTop: 10 }}>
-          {isFriend ? (
-            <View>
-              <TextInput
-                style={{
-                  width: width * 0.7,
-                  fontSize: 25,
-                  marginTop: 40,
-                  paddingBottom: 5,
-                  borderBottomWidth: 1,
-                  borderBottomColor: '#333',
-                }}
-                onChangeText={text => this.setState({ selectUser: text })}
-                blurOnSubmit={false}
-                value={selectUser}
-                returnKeyType="next"
-                onSubmitEditing={this.buttonHandler}
-                onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
-              />
-              {isValidUser ? (
-                <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
-                  유효한 아이디 입니다.
-                </Text>
-              ) : (
-                <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
-                  등록되지않은 아이디 입니다.
-                </Text>
-              )}
-            </View>
-          ) : (
-            <View
-              style={{
-                alignItems: 'center',
-              }}
-            >
-              <Picker
-                selectedValue={selectCharity}
-                style={{ width: width * 0.7 }}
-                onValueChange={itemValue => this.setState({ selectCharity: itemValue })
-                }
-              >
-                {charities.map(ele => {
-                  const value = ele;
-                  return (
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+
+          <View style={{ ...styles.pickerBox, flex: 2, marginTop: 20 }}>
+            <CheckBox
+              title="친구"
+              checked={isFriend}
+              onPress={toggleCheckBox}
+            />
+            <CheckBox
+              title="자선단체"
+              checked={isCompany}
+              onPress={toggleCheckBox}
+            />
+          </View>
+          <View style={{ alignItems: 'center', flex: 7 }}>
+            {isFriend ? (
+              <View style={{ marginTop: 30 }}>
+                <TextInput
+                  style={styles.textInput}
+                  onChangeText={text => this.setState({ selectUser: text })}
+                  blurOnSubmit={false}
+                  value={selectUser}
+                  returnKeyType="next"
+                  onSubmitEditing={this.buttonHandler}
+                  onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
+                />
+                {isValidUser ? (
+                  <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
+                    {selectUser !== '' ? '유효한 아이디 입니다.' : ' '}
+                  </Text>
+                ) : (
+                  <Text style={{ fontSize: 12, color: 'red', marginTop: 6 }}>
+                    {selectUser !== '' ? '등록되지않은 아이디 입니다.' : ' '}
+                  </Text>
+                )}
+              </View>
+            ) : (
+              <View style={{ alignItems: 'center' }}>
+                <Picker
+                  selectedValue={selectCharity}
+                  style={{ width: width * 0.7 }}
+                  onValueChange={itemValue => this.setState({ selectCharity: itemValue })}
+                >
+                  {charities.map(value => (
                     <Picker.Item
                       key={value.name}
                       label={value.name}
                       value={value.id}
                     />
-                  );
-                })}
-              </Picker>
-            </View>
-          )}
+                  ))}
+                </Picker>
+              </View>
+            )}
+          </View>
+
+        </View>
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
         </View>
       </View>
     );
   };
 
-  renderStartChallengePart = () => {
-    const { amount } = this.state;
-    const fontFamily = amount > 0 ? {} : { fontFamily: 'Fontrust' };
-    return (
-      <View>
-        <View
-          style={{
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ ...fontFamily, fontSize: 40 }}>
-            {' '}
-            { amount > 0 ? '결제하러 가기' : 'Challenge Your Life' }
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
   renderSelectPaymentMethodIcon = () => {
     const { isKakao, isPaypal } = this.state;
+
     return (
-      <View style={{ alignItems: 'center' }}>
-        <Text style={{ fontSize: 20 }}>
-              결제수단을 선택해주세요!
-        </Text>
-        <View style={{
-          flexDirection: 'row', justifyContent: 'center', width: width * 0.7, marginBottom: 40, marginTop: 60,
-        }}
-        >
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              source={KAKAO_PAY_ICON}
-              style={{
-                width: 110,
-                height: 110,
-                marginBottom: 10,
-                resizeMode: 'center',
-                borderColor: '#DCDCDC',
-                borderWidth: 1,
-                borderRadius: 20,
-              }}
-            />
-            <CheckBox
-              title="Kakao Pay"
-              checked={isKakao}
-              onPress={() => this.setState({
-                isKakao: true,
-                isPaypal: false,
-              })
-              }
-            />
-          </View>
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              source={PAYPAL_ICON}
-              style={{
-                width: 110,
-                height: 110,
-                marginBottom: 10,
-                resizeMode: 'center',
-                borderColor: '#DCDCDC',
-                borderWidth: 1,
-                borderRadius: 20,
-              }}
-            />
-            <CheckBox
-              title="Paypal"
-              checked={isPaypal}
-              onPress={() => this.setState({
-                isKakao: false,
-                isPaypal: true,
-              })
-              }
-            />
+      <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+        <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+          <Text style={{ fontSize: 20 }}>결제수단을 선택해주세요</Text>
+        </View>
+        <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+
+          <View style={styles.paymentMethodBox}>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                source={KAKAO_PAY_ICON}
+                style={styles.paymentIcon}
+              />
+              <CheckBox
+                title="Kakao Pay"
+                checked={isKakao}
+                onPress={() => this.setState({ isKakao: true, isPaypal: false })}
+              />
+            </View>
+            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                source={PAYPAL_ICON}
+                style={styles.paymentIcon}
+              />
+              <CheckBox
+                title="Paypal"
+                checked={isPaypal}
+                onPress={() => this.setState({ isKakao: false, isPaypal: true })}
+              />
+            </View>
           </View>
 
         </View>
-        {/* <View style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        >
-
-
-        </View> */}
+        <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+          <OrangeButton
+            text="Next"
+            onPress={() => this.buttonHandler()}
+            marginTop={0}
+          />
+        </View>
       </View>
     );
   }
+
+  renderStartChallengePart = () => (
+    <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+      <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+        <Text style={{ fontSize: 20 }}>Challenge Your Life</Text>
+      </View>
+      <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }} />
+      <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+        <OrangeButton
+          text="Next"
+          onPress={() => this.buttonHandler()}
+          marginTop={0}
+        />
+      </View>
+    </View>
+  )
 
   getChallenge = () => {
     const challenge = { ...this.state };
@@ -827,12 +728,8 @@ class ChallengeSetting extends Component {
 
   render = () => {
     const {
-      title,
       week,
       page,
-      startYear,
-      startMonth,
-      startDay,
       checkingPeriod,
       amount,
       slogan,
@@ -844,38 +741,22 @@ class ChallengeSetting extends Component {
           resetScrollToCoords={{ x: 0, y: 0 }}
           contentContainerStyle={{ flex: 1 }}
           enableAutomaticScroll
-          extraHeight={180}
+          extraHeight={235}
           innerRef={ref => {
             this.scroll = ref;
           }}
         >
-          <View
-            style={{
-              flex: 1,
-              alignContent: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {page === 0 && this.renderIsOnGoing()}
-            {page === 1 && this.renderTitleInputPart(title)}
-            {page === 2 && this.renderPeriodSelectPart(week)}
-            {page === 3
-              && this.renderStartAtPart(startYear, startMonth, startDay)}
-            {page === 4 && this.renderModePart()}
-            {page === 5 && this.renderCheckingPeriodPart(checkingPeriod)}
-            {page === 6 && this.renderAmountPart(amount)}
-            {page === 7 && this.renderReceipientPart()}
-            {page === 8 && this.renderSloganPart(slogan)}
-            {page === 9 && this.renderStartChallengePart()}
-            {page === 10 && this.renderSelectPaymentMethodIcon()}
-
-            <View style={{ alignItems: 'center' }}>
-              <OrangeButton
-                text={page === 10 ? 'Start' : 'Next'}
-                onPress={() => this.buttonHandler()}
-              />
-            </View>
-          </View>
+          {page === 0 && this.renderIsOnGoing()}
+          {page === 1 && this.renderTitleInputPart()}
+          {page === 2 && this.renderPeriodSelectPart(week)}
+          {page === 3 && this.renderStartAtPart()}
+          {page === 4 && this.renderModePart()}
+          {page === 5 && this.renderCheckingPeriodPart(checkingPeriod)}
+          {page === 6 && this.renderAmountPart(amount)}
+          {page === 7 && this.renderReceipientPart()}
+          {page === 8 && this.renderSloganPart(slogan)}
+          {page === 9 && this.renderStartChallengePart()}
+          {page === 10 && this.renderSelectPaymentMethodIcon()}
         </KeyboardAwareScrollView>
       </SafeAreaView>
     );
