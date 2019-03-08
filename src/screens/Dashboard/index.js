@@ -82,10 +82,21 @@ class component extends React.Component {
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
-      const res = await axios.get(
-        `${baseUrl}/api/reports/getReports/${recentChallenge.id}`,
-      );
+      const res = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
       let { reports } = res && res.data;
+      const shouldConfirmReportsId = [];
+      reports.forEach(el => {
+        if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
+          shouldConfirmReportsId.push(el.id);
+        }
+      });
+      // 하루지나도 심판이 소식없으면 자동 success
+      if (shouldConfirmReportsId.length) {
+        await axios.put(`${baseUrl}/api/reports/updateReports`, {
+          willBeConfirmed: 'true',
+          reportsId: shouldConfirmReportsId,
+        });
+      }
       if (new Date(recentChallenge.endAt) - new Date() <= 0) {
         const pendingReportsId = [];
         reports.forEach((el, index) => {
@@ -99,8 +110,9 @@ class component extends React.Component {
           reportsId: pendingReportsId,
         });
       }
-      reports = reports.filter(el => el.isConfirmed === 'true').map((el, index) => ({ ...el, index: index + 1 }));
-      console.log(reports);
+      reports = reports
+        .filter(el => el.isConfirmed === 'true')
+        .map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
         progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
@@ -121,12 +133,24 @@ class component extends React.Component {
     this.setState({ challenges: res.data.challenges });
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
-    const response = await axios.get(
-      `${baseUrl}/api/reports/getReports/${recentChallenge.id}`,
-    );
+    const response = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
     let { reports } = response.data;
-    reports = reports.filter(el => el.isConfirmed === 'true').map((el, index) => ({ ...el, index: index + 1 }));
-    console.log(reports);
+    const shouldConfirmReportsId = [];
+    // 하루지나도 심판이 소식없으면 자동 success
+    reports.forEach(el => {
+      if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
+        shouldConfirmReportsId.push(el.id);
+      }
+    });
+    if (shouldConfirmReportsId.length) {
+      await axios.put(`${baseUrl}/api/reports/updateReports`, {
+        willBeConfirmed: 'true',
+        reportsId: shouldConfirmReportsId,
+      });
+    }
+    reports = reports
+      .filter(el => el.isConfirmed === 'true')
+      .map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
       progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
