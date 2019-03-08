@@ -9,14 +9,10 @@ import {
   Image,
   AsyncStorage,
 } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { Overlay } from 'react-native-elements';
-import io from 'socket.io-client';
-import axios from 'axios';
-
 import styles from './Styles';
 import RefereeEntry from './RefereeEntry';
-import SignIn from '../SignIn';
 import sendRequest from '../../modules/sendRequest';
 
 const { width, height } = Dimensions.get('window');
