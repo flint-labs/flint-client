@@ -10,6 +10,8 @@ import {
   Alert,
   AsyncStorage,
   YellowBox,
+  findNodeHandle,
+  Image,
 } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,6 +28,9 @@ const { width } = Dimensions.get('window');
 const thisYear = new Date().getFullYear();
 const thisMonth = new Date().getMonth() + 1;
 const thisDate = new Date().getDate();
+
+const KAKAO_PAY_ICON = require('../../../assets/images/ChallengeSetting/kakao-icon.png');
+const PAYPAL_ICON = require('../../../assets/images/ChallengeSetting/paypal-icon.png');
 
 class ChallengeSetting extends Component {
   static navigationOptions = ({ navigation }) => ({
@@ -60,10 +65,9 @@ class ChallengeSetting extends Component {
     referee: '',
     isValid: false,
     checkingPeriod: 1,
-    category: this.props.navigation.getParam('category'),
+    category: '',
     amount: '',
     isFree: false,
-    // description: '',
     isOnGoing: true,
     isOneShot: false,
     slogan: '',
@@ -73,6 +77,8 @@ class ChallengeSetting extends Component {
     isValidUser: false,
     isFriend: false,
     isCompany: true,
+    isKakao: false,
+    isPaypal: false,
   };
 
   componentDidMount = async () => {
@@ -87,7 +93,10 @@ class ChallengeSetting extends Component {
         'http://13.209.19.196:3000/api/challenges/charities',
       );
 
-      this.setState({ charities: charities.data });
+      this.setState({
+        charities: charities.data,
+        category: navigation.getParam('category'),
+      });
     } catch (err) {
       throw err;
     }
@@ -230,8 +239,8 @@ class ChallengeSetting extends Component {
           renderIcon={() => this.renderIcon({})}
           customProps={{
             returnKeyType: 'next',
-            // onSubmitEditing: () => this.secondTextInput.focus(),
-            // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+            onSubmitEditing: this.buttonHandler,
+            onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
           }}
         />
       </View>
@@ -400,8 +409,8 @@ class ChallengeSetting extends Component {
                 value={referee}
                 returnKeyType="next"
                 placeholder="심판 아이디"
-                // onSubmitEditing: () => this.secondTextInput.focus(),
-                // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+                onSubmitEditing={this.buttonHandler}
+                onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
               />
               {isValid ? (
                 <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
@@ -487,8 +496,8 @@ class ChallengeSetting extends Component {
             value={this.numberWithCommas(amount)}
             keyboardType="numeric"
             returnKeyType="next"
-            // onSubmitEditing: () => this.secondTextInput.focus(),
-            // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+            onSubmitEditing={this.buttonHandler}
+            onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
           />
           <View style={{ width: width * 0.8 }}>
             <CheckBox
@@ -533,8 +542,8 @@ class ChallengeSetting extends Component {
           blurOnSubmit={false}
           value={slogan}
           returnKeyType="next"
-          // onSubmitEditing: () => this.secondTextInput.focus(),
-          // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+          onSubmitEditing={this.buttonHandler}
+          onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
         />
       </View>
     </View>
@@ -603,8 +612,8 @@ class ChallengeSetting extends Component {
                 blurOnSubmit={false}
                 value={selectUser}
                 returnKeyType="next"
-                // onSubmitEditing: () => this.secondTextInput.focus(),
-                // onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+                onSubmitEditing={this.buttonHandler}
+                onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
               />
               {isValidUser ? (
                 <Text style={{ fontSize: 12, color: 'green', marginTop: 6 }}>
@@ -665,6 +674,78 @@ class ChallengeSetting extends Component {
     );
   }
 
+  renderSelectPaymentMethodIcon = () => {
+    const { isKakao, isPaypal } = this.state;
+    return (
+      <View style={{ alignItems: 'center' }}>
+        <Text style={{ fontSize: 20 }}>
+              결제수단을 선택해주세요!
+        </Text>
+        <View style={{
+          flexDirection: 'row', justifyContent: 'center', width: width * 0.7, marginBottom: 40, marginTop: 60,
+        }}
+        >
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+              source={KAKAO_PAY_ICON}
+              style={{
+                width: 110,
+                height: 110,
+                marginBottom: 10,
+                resizeMode: 'center',
+                borderColor: '#DCDCDC',
+                borderWidth: 1,
+                borderRadius: 20,
+              }}
+            />
+            <CheckBox
+              title="Kakao Pay"
+              checked={isKakao}
+              onPress={() => this.setState({
+                isKakao: true,
+                isPaypal: false,
+              })
+              }
+            />
+          </View>
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+              source={PAYPAL_ICON}
+              style={{
+                width: 110,
+                height: 110,
+                marginBottom: 10,
+                resizeMode: 'center',
+                borderColor: '#DCDCDC',
+                borderWidth: 1,
+                borderRadius: 20,
+              }}
+            />
+            <CheckBox
+              title="Paypal"
+              checked={isPaypal}
+              onPress={() => this.setState({
+                isKakao: false,
+                isPaypal: true,
+              })
+              }
+            />
+          </View>
+
+        </View>
+        {/* <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        >
+
+
+        </View> */}
+      </View>
+    );
+  }
+
   getChallenge = () => {
     const challenge = { ...this.state };
     delete challenge.page;
@@ -694,13 +775,6 @@ class ChallengeSetting extends Component {
     result.selectCharity = selectCharity || false;
     result.selectUser = selectUser || false;
 
-    for (const value of check) {
-      if (value === '') {
-        Alert.alert('⚠️\n입력하지 않은 항목이 있습니다.');
-        return false;
-      }
-    }
-
     challKey.forEach((ele, idx) => {
       result[ele] = check[idx];
     });
@@ -721,27 +795,33 @@ class ChallengeSetting extends Component {
       );
     } catch (err) {
       Alert.alert(err.message);
-      return false;
     }
-
-    return true;
   };
 
   buttonHandler = async () => {
-    const { page, amount } = this.state;
+    const {
+      page, amount, isKakao, isPaypal,
+    } = this.state;
     const { navigation } = this.props;
     if (page < 9) {
-      this.setState({ page: page + 1 });
-    } else if (await this.handleChallengeSettingSubmit()) {
-      if (amount > 0) {
-        navigation.navigate('Payment', {
-          setting: navigation.state.params.setting,
-          amount,
-        });
-      } else {
+      if (amount === 0) {
+        await this.handleChallengeSettingSubmit();
         navigation.state.params.setting();
         navigation.popToTop();
       }
+      this.setState({ page: page + 1 });
+    } else if (amount > 0) {
+      if (!(isPaypal || isKakao)) this.setState({ page: page + 1 });
+      else {
+        navigation.navigate('Payment', {
+          setting: navigation.state.params.setting,
+          amount,
+          isKakao,
+        });
+      }
+    } else {
+      navigation.state.params.setting();
+      navigation.popToTop();
     }
   };
 
@@ -787,10 +867,11 @@ class ChallengeSetting extends Component {
             {page === 7 && this.renderReceipientPart()}
             {page === 8 && this.renderSloganPart(slogan)}
             {page === 9 && this.renderStartChallengePart()}
+            {page === 10 && this.renderSelectPaymentMethodIcon()}
 
             <View style={{ alignItems: 'center' }}>
               <OrangeButton
-                text={page === 9 ? 'Start' : 'Next'}
+                text={page === 10 ? 'Start' : 'Next'}
                 onPress={() => this.buttonHandler()}
               />
             </View>
