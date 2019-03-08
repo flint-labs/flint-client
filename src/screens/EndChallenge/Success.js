@@ -1,14 +1,15 @@
 import React from 'react';
-import { View, Text, AsyncStorage } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  View, Text, AsyncStorage, Alert, Image,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Modal from 'react-native-modal';
 import styles from './styles';
 import OrangeButton from '../../components/OrangeButton';
 
-const Success = ({
-  recentChallenge, updateChallengeStateRequest, handleExistEnd, refresh,
-}) => (
+const successImage = require('../../../assets/images/Dashboard/success.png');
+
+const Success = ({ recentChallenge, updateChallengeStateRequest, refreshDashboard }) => (
   <Modal style={styles.container} isVisible>
     <View style={styles.headerContainer}>
       <Text style={{ fontSize: 18 }}>{recentChallenge.title}</Text>
@@ -18,16 +19,16 @@ const Success = ({
       <Text style={styles.title}>Success</Text>
     </View>
     <View style={{ flex: 1 }}>
-      <Icon name="ios-rocket" size={80} />
+      <Image source={successImage} style={{ resizeMode: 'contain', width: 100, height: 100 }} />
     </View>
     <View style={styles.buttonContainer}>
       <OrangeButton
         text="확인"
         onPress={async () => {
           await updateChallengeStateRequest('success');
-          // navigation.navigate('component');
           await AsyncStorage.removeItem('recentChallenge');
-          refresh();
+          await refreshDashboard();
+          Alert.alert('완료되었습니다');
         }}
       />
     </View>
@@ -40,6 +41,7 @@ Success.propTypes = {
     title: PropTypes.string.isRequired,
   }).isRequired,
   updateChallengeStateRequest: PropTypes.func.isRequired,
+  refreshDashboard: PropTypes.func.isRequired,
 };
 
 export default Success;

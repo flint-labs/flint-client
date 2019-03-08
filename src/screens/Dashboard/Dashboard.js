@@ -73,11 +73,6 @@ class Dashboard extends Component {
                 {(progress * 100).toFixed(1)}
 %
               </Text>
-              {/* <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
-            <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} />
-            <View style={{ flex: 1, backgroundColor: 'red', margin: '0.5%' }} />
-            <View style={{ flex: 1, backgroundColor: '#32CD32', margin: '0.5%' }} /> */}
-              {/* </View> */}
             </View>
             <Carousel
               layout="stack"

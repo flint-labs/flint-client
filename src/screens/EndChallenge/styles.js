@@ -40,6 +40,11 @@ const styles = StyleSheet.create({
     borderBottomColor: '#dcdcdc',
     borderBottomWidth: 0.5,
   },
+  failureImageContainer: {
+    flex: 1.5,
+    marginRight: '5%',
+    alignItems: 'flex-start',
+  },
 });
 
 export default styles;
