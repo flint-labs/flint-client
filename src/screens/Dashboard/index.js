@@ -87,13 +87,24 @@ class component extends React.Component {
       );
       let { reports } = res && res.data;
       if (new Date(recentChallenge.endAt) - new Date() <= 0) {
-        reports = reports.map(el => {
-          if (el.isConfirmed === 'pending') {
-            return { ...el, isConfirmed: 'true' };
+        let pendingReportsId = [];
+        reports.forEach((el, index) => {
+          if(el.isConfirmed = 'pending'){
+            console.log('before', reports)
+            pendingReportsId.push(index);
+            reports[index] = 'true';
+            console.log('after', reports)
           }
-          return { ...el };
-        });
-        // axios.put(' update 요청');
+        })
+        axios.put(`${baseUrl}/api/reports/updateReports`, {"willBeConfirmed": "true",
+        "reportsId": pendingReportsId});
+
+        // reports = reports.map(el => {
+        //   if (el.isConfirmed === 'pending') {
+        //     return { ...el, isConfirmed: 'true' };
+        //   }
+        //   return { ...el };
+        // });
       }
       reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
