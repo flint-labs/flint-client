@@ -1,44 +1,28 @@
 import React, { Component } from 'react';
 import {
-  WebView, SafeAreaView, Linking, Alert,
+  WebView, SafeAreaView, Linking, Alert, AsyncStorage,
 } from 'react-native';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import PropTypes from 'prop-types';
-import Success from './Success';
 
 const source = require('./payment.html');
 
 const propTypes = {
-  billingInformation: PropTypes.shape({
-    pg: PropTypes.oneOf(['kakaopay', 'paypal']).isRequired,
-    amount: PropTypes.oneOfType([
-      PropTypes.string.isRequired,
-      PropTypes.number.isRequired,
-    ]),
-    buyer_email: PropTypes.string.isRequired,
-    buyer_name: PropTypes.string.isRequired,
-  }),
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
 };
 
-const defaultProps = {
-  billingInformation: {
-    pg: 'kakaopay',
-    amount: 64900,
-    buyer_email: 'gildong@gmail.com',
-    buyer_name: '홍길동',
-  },
-};
-
 class Payment extends Component {
   isLoaded = false
 
-  defaultBillingInfo = () => {
-    const { billingInformation: { pg, amount } } = this.props;
+  defaultBillingInfo = async () => {
+    const { navigation: { state: { params: { amount } } } } = this.props;
+    const pg = 'kakaopay';
+    const { email, nickname } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     return {
+      buyer_email: email,
+      buyer_name: nickname,
       pay_method: 'card',
       merchant_uid: `merchant_${new Date().getTime()}`,
       name: 'Flint Challenge',
@@ -66,7 +50,9 @@ class Payment extends Component {
     try {
       const response = JSON.parse(e.nativeEvent.data);
       if (response.success) {
-        navigation.navigate('Success');
+        navigation.navigate('Success', {
+          setting: navigation.state.params.setting,
+        });
       } else {
         Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
           text: '보러가기',
@@ -74,6 +60,7 @@ class Payment extends Component {
         }]);
       }
     } catch (error) {
+      console.log(error);
       Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
         text: '보러가기',
         onPress: () => navigation.goBack(),
@@ -81,9 +68,9 @@ class Payment extends Component {
     }
   }
 
-  sendPropsToWebView = () => {
-    const { billingInformation } = this.props;
-    const data = { ...billingInformation, ...this.defaultBillingInfo() };
+  sendPropsToWebView = async () => {
+    const data = await this.defaultBillingInfo();
+    console.log(data);
     if (!this.isLoaded) {
       this.isLoaded = true;
       this.xdm.postMessage(JSON.stringify(data));
@@ -121,7 +108,7 @@ class Payment extends Component {
           thirdPartyCookiesEnabled
           useWebKit
           onShouldStartLoadWithRequest={this.openExternalLink}
-          onError={() => Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
+          onError={error => Alert.alert('결제실패 :(', `${error.message}`, [{
             text: '보러가기',
             onPress: () => navigation.goBack(),
           }])}
@@ -131,13 +118,5 @@ class Payment extends Component {
   }
 }
 Payment.propTypes = propTypes;
-Payment.defaultProps = defaultProps;
 
-export default createAppContainer(createSwitchNavigator({
-  App: {
-    screen: Payment,
-  },
-  Success: {
-    screen: Success,
-  },
-}));
+export default Payment;

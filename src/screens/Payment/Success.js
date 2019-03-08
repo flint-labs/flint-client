@@ -10,7 +10,8 @@ const CHECK_URL = 'https://www.kasa-solutions.com/wp-content/uploads/sites/2/201
 
 const Success = ({ navigation }) => {
   const handleOnPress = () => {
-    alert('Some logic here...');
+    navigation.state.params.setting();
+    navigation.popToTop();
   };
 
   return (
@@ -33,6 +34,7 @@ const Success = ({ navigation }) => {
 Success.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
+    popToTop: PropTypes.func,
   }).isRequired,
 };
 
