@@ -27,6 +27,7 @@ class DoIt extends React.Component {
     const { recentChallenge } = this.props;
     const { text, photo } = this.state;
     if (text !== null && text.length <= 50 && text.length > 0 && photo) {
+      console.log(recentChallenge);
       axios.post(`${baseUrl}/api/reports/postReport`, {
         image: photo,
         isConfirmed: 'pending',

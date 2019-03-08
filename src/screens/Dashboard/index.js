@@ -76,37 +76,31 @@ class component extends React.Component {
       } else {
         this.setState({
           recentChallenge:
-          JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+            JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
         });
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
       const res = await axios.get(
-        `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
+        `${baseUrl}/api/reports/getReports/${recentChallenge.id}`,
       );
       let { reports } = res && res.data;
       if (new Date(recentChallenge.endAt) - new Date() <= 0) {
-        let pendingReportsId = [];
+        const pendingReportsId = [];
         reports.forEach((el, index) => {
-          if(el.isConfirmed = 'pending'){
-            console.log('before', reports)
-            pendingReportsId.push(index);
-            reports[index] = 'true';
-            console.log('after', reports)
+          if (el.isConfirmed === 'pending') {
+            pendingReportsId.push(el.id);
+            reports[index].isConfirmed = 'true';
           }
-        })
-        axios.put(`${baseUrl}/api/reports/updateReports`, {"willBeConfirmed": "true",
-        "reportsId": pendingReportsId});
-
-        // reports = reports.map(el => {
-        //   if (el.isConfirmed === 'pending') {
-        //     return { ...el, isConfirmed: 'true' };
-        //   }
-        //   return { ...el };
-        // });
+        });
+        await axios.put(`${baseUrl}/api/reports/updateReports`, {
+          willBeConfirmed: 'true',
+          reportsId: pendingReportsId,
+        });
       }
-      reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+      reports = reports.filter(el => el.isConfirmed === 'true').map((el, index) => ({ ...el, index: index + 1 }));
+      console.log(reports);
       this.setState({ reports: reports.reverse() });
       this.setState({
         progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
@@ -128,10 +122,11 @@ class component extends React.Component {
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
     const response = await axios.get(
-      `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
+      `${baseUrl}/api/reports/getReports/${recentChallenge.id}`,
     );
     let { reports } = response.data;
-    reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
+    reports = reports.filter(el => el.isConfirmed === 'true').map((el, index) => ({ ...el, index: index + 1 }));
+    console.log(reports);
     this.setState({ reports: reports.reverse() });
     this.setState({
       progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
