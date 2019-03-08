@@ -19,8 +19,6 @@ import RefereeEntry from './RefereeEntry';
 import SignIn from '../SignIn';
 import sendRequest from '../../modules/sendRequest';
 
-const socket = io('http://13.209.19.196:3000');
-
 const { width, height } = Dimensions.get('window');
 
 class Referee extends Component {
@@ -55,17 +53,22 @@ class Referee extends Component {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = axios.post(
-        'http://13.209.19.196:3000/api/reports/responseReport',
+      const { status } = sendRequest(
+        'post',
+        '/api/reports/responseReport',
+        null,
         {
           reportId: requestReportId,
           check: 'true',
         },
       );
-      this.setState({
-        isVisible: !isVisible,
-        reqData: reqData.filter(ele => ele.id !== requestReportId),
-      });
+
+      if (status === 200) {
+        this.setState({
+          isVisible: !isVisible,
+          reqData: reqData.filter(ele => ele.id !== requestReportId),
+        });
+      }
     } catch (err) {
       console.log(err.message);
     }
@@ -75,11 +78,13 @@ class Referee extends Component {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = axios.post(
-        'http://13.209.19.196:3000/api/reports/responseReport',
+      const { status } = sendRequest(
+        'post',
+        '/api/reports/responseReport',
+        null,
         {
           reportId: requestReportId,
-          check: 'false',
+          check: 'true',
         },
       );
 
