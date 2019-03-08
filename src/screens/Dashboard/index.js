@@ -1,15 +1,17 @@
 import React from 'react';
 import {
-  Text, TouchableOpacity, Animated, AsyncStorage,
+  Text, TouchableOpacity, Animated, AsyncStorage, View,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import Modal from 'react-native-modal';
 import Dashboard from './Dashboard';
 import styles from './style';
 import Select from './Select';
 import EndChallenge from '../EndChallenge';
+import OrangeButton from '../../components/OrangeButton';
 
 let isHidden = true;
 const baseUrl = 'http://13.209.19.196:3000';
@@ -37,6 +39,7 @@ class component extends React.Component {
     user: null,
     reports: [],
     progress: null,
+    existEnd: false,
   };
 
   toggleSubView = async () => {
@@ -58,6 +61,7 @@ class component extends React.Component {
   componentDidMount = async () => {
     this.setState({ isLoaded: false });
     const { navigation } = this.props;
+    console.log('Async', JSON.stringify(await AsyncStorage.getItem('recentChallenge')));
     navigation.setParams({
       handleBottomModal: this.toggleSubView,
     });
@@ -73,21 +77,32 @@ class component extends React.Component {
       if (EndChallengeArray.length > 0) {
         this.setState({
           recentChallenge: EndChallengeArray[0],
+          existEnd: true,
         });
       } else {
         this.setState({
-          recentChallenge: JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+          recentChallenge:
+          JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
         });
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    console.log(recentChallenge);
+    console.log('오나 확인', recentChallenge);
     if (recentChallenge) {
       const res = await axios.get(
         `${baseUrl}/api/reports/getNotPendingReports/${recentChallenge.id}`,
       );
       // console.log(res);
       let { reports } = res && res.data;
+      if (new Date(recentChallenge.endAt) - new Date() <= 0) {
+        reports = reports.map(el => {
+          if (el.isConfirmed === 'pending') {
+            return { ...el, isConfirmed: 'true' };
+          }
+          return { ...el };
+        });
+        // axios.put(' update 요청');
+      }
       reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
@@ -129,9 +144,16 @@ class component extends React.Component {
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
     const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
-    const result = await (reports.filter(el => el.isConfirmed === '1').length
+    const result = await (reports.filter(el => el.isConfirmed === 'true').length
       / (week * recentChallenge.checkingPeriod));
     return result;
+  };
+
+  handleExistEnd = () => {
+    const { existEnd } = this.state;
+    this.setState({
+      existEnd: !existEnd,
+    });
   };
 
   renderMethod = () => {
@@ -143,6 +165,7 @@ class component extends React.Component {
       recentChallenge,
       reports,
       progress,
+      existEnd,
     } = this.state;
     if (isLoaded) {
       if (user) {
@@ -160,7 +183,7 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Animated.View>
-              {new Date(recentChallenge.endAt) - new Date() > 0 ? (
+              {!existEnd ? (
                 <Dashboard
                   bounceValue={bounceValue}
                   toggleSubView={this.toggleSubView}
@@ -172,7 +195,25 @@ class component extends React.Component {
                   progress={progress}
                 />
               ) : (
-                <EndChallenge reports={reports} />
+                // <EndChallenge
+                //   recentChallenge={recentChallenge}
+                //   progress={progress}
+                //   handleExistEnd={this.handleExistEnd}
+                // />
+                <Modal isVisible={existEnd} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                  <View style={{ width: '70%', height: '20%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}>
+                    <Text style={{ fontSize: 20 }}>종료된 도전이 있어요!</Text>
+                    <OrangeButton text="확인하기" onPress={() => {
+                        this.props.navigation.navigate('EndChallenge', {
+                          recentChallenge,
+                          progress,
+                          handleExistEnd: this.handleExistEnd,
+                          refreshDashboard: this.componentDidMount,
+                        });
+                        this.handleExistEnd();
+                      }} width={150}/>
+                  </View>
+                </Modal>
               )}
             </>
           );
@@ -185,6 +226,8 @@ class component extends React.Component {
   };
 
   render() {
+    console.log('aaaaaaaaaaaaaa');
+
     return (
       <>
         <NavigationEvents onWillFocus={this.componentDidMount} />
@@ -200,4 +243,4 @@ component.propTypes = {
   }).isRequired,
 };
 
-export default createStackNavigator({ component });
+export default createStackNavigator({ component, EndChallenge });
