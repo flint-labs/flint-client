@@ -73,6 +73,7 @@ class component extends React.Component {
         .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      console.log('집합들', challenges);
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
       if (EndChallengeArray.length > 0) {
         this.setState({
@@ -183,7 +184,7 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Animated.View>
-              {!existEnd ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0 ? (
                 <Dashboard
                   bounceValue={bounceValue}
                   toggleSubView={this.toggleSubView}
@@ -195,25 +196,26 @@ class component extends React.Component {
                   progress={progress}
                 />
               ) : (
-                // <EndChallenge
-                //   recentChallenge={recentChallenge}
-                //   progress={progress}
-                //   handleExistEnd={this.handleExistEnd}
-                // />
-                <Modal isVisible={existEnd} style={{ alignItems: 'center', justifyContent: 'center' }}>
-                  <View style={{ width: '70%', height: '20%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}>
-                    <Text style={{ fontSize: 20 }}>종료된 도전이 있어요!</Text>
-                    <OrangeButton text="확인하기" onPress={() => {
-                        this.props.navigation.navigate('EndChallenge', {
-                          recentChallenge,
-                          progress,
-                          handleExistEnd: this.handleExistEnd,
-                          refreshDashboard: this.componentDidMount,
-                        });
-                        this.handleExistEnd();
-                      }} width={150}/>
-                  </View>
-                </Modal>
+                <EndChallenge
+                  recentChallenge={recentChallenge}
+                  progress={progress}
+                  handleExistEnd={this.handleExistEnd}
+                  refresh={this.componentDidMount}
+                />
+                // <Modal isVisible={existEnd} style={{ alignItems: 'center', justifyContent: 'center' }}>
+                //   <View style={{ width: '70%', height: '20%', backgroundColor: 'white', alignItems: 'center', justifyContent: 'center', borderRadius: 5 }}>
+                //     <Text style={{ fontSize: 20 }}>종료된 도전이 있어요!</Text>
+                //     <OrangeButton text="확인하기" onPress={() => {
+                //         this.props.navigation.navigate('EndChallenge', {
+                //           recentChallenge,
+                //           progress,
+                //           handleExistEnd: this.handleExistEnd,
+                //           refreshDashboard: this.componentDidMount,
+                //         });
+                //         this.handleExistEnd();
+                //       }} width={150}/>
+                //   </View>
+                // </Modal>
               )}
             </>
           );

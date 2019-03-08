@@ -10,7 +10,7 @@ import styles from './styles';
 import OrangeButton from '../../components/OrangeButton';
 
 const Failure = ({
-  recentChallenge, updateChallengeStateRequest, handleExistEnd, navigation,
+  recentChallenge, updateChallengeStateRequest, handleExistEnd, refresh,
 }) => (
   <Modal style={styles.container} isVisible>
     <KeyboardAwareScrollView
@@ -37,7 +37,9 @@ const Failure = ({
           text="확인"
           onPress={async () => {
             await updateChallengeStateRequest('failure');
-            navigation.navigate('component');
+            await AsyncStorage.removeItem('recentChallenge');
+            // navigation.navigate('component');
+            refresh();
           }}
         />
       </View>

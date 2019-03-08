@@ -7,7 +7,7 @@ import styles from './styles';
 import OrangeButton from '../../components/OrangeButton';
 
 const Success = ({
-  recentChallenge, updateChallengeStateRequest, handleExistEnd, navigation,
+  recentChallenge, updateChallengeStateRequest, handleExistEnd, refresh,
 }) => (
   <Modal style={styles.container} isVisible>
     <View style={styles.headerContainer}>
@@ -25,7 +25,9 @@ const Success = ({
         text="확인"
         onPress={async () => {
           await updateChallengeStateRequest('success');
-          navigation.navigate('component');
+          // navigation.navigate('component');
+          await AsyncStorage.removeItem('recentChallenge');
+          refresh();
         }}
       />
     </View>
