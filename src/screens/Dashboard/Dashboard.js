@@ -57,7 +57,6 @@ class Dashboard extends Component {
       if (recentChallenge.state === 'inProgress') {
         return (
           <View style={styles.container}>
-            
             <DoIt
               modalVisible={modalVisible}
               toggleModal={this.toggleModal}
@@ -74,17 +73,25 @@ class Dashboard extends Component {
 %
               </Text>
             </View>
-            <Carousel
-              layout="stack"
-              inverted
-              swipeThreshold={5}
-              data={reports}
-              renderItem={({ item }) => <ReportEntry data={item} />}
-              sliderWidth={width}
-              itemWidth={width * 0.8}
-              sliderHeight={270}
-              style={{ transform: [{ scaleY: -1 }] }}
-            />
+            {reports.length ? (
+              <Carousel
+                layout="stack"
+                inverted
+                swipeThreshold={5}
+                data={reports}
+                renderItem={({ item }) => <ReportEntry data={item} />}
+                sliderWidth={width}
+                itemWidth={width * 0.8}
+                sliderHeight={270}
+                style={{ transform: [{ scaleY: -1 }] }}
+              />
+            ) : (
+              <View
+                style={styles.nonReportsTextContainer}
+              >
+                <Text style={{ fontSize: 15 }}>기록이 아직 없어요</Text>
+              </View>
+            )}
             <View style={[styles.doItContainer]}>
               <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
             </View>
