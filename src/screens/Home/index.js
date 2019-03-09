@@ -1,12 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Dimensions,
-  SafeAreaView,
-  StatusBar,
-} from 'react-native';
+import { View, Text, ScrollView, Dimensions, SafeAreaView } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 
 import Intro from './Intro';
@@ -51,7 +44,6 @@ class Home extends Component {
     <View style={{ flex: 1 }}>
       <NavigationEvents onWillFocus={this.handleWillFocus} />
 
-      <StatusBar barStyle="light-content" />
       <View style={styles.indexContainer}>
         <ScrollView style={{ flex: 1, width }}>
           <Intro goToScreen={this.goToScreen} />

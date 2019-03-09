@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, Dimensions } from 'react-native';
+import { View, Text, FlatList, Dimensions, StatusBar } from 'react-native';
 import { Video } from 'expo';
 import { NavigationEvents } from 'react-navigation';
 
@@ -8,6 +8,7 @@ import styles from './Styles';
 
 const { width } = Dimensions.get('window');
 
+const video = require('../../../assets/video/Flint.mp4');
 const category1 = require('../../../assets/images/Home/cate1.jpg');
 const category2 = require('../../../assets/images/Home/cate2.jpg');
 const category3 = require('../../../assets/images/Home/cate3.jpg');
@@ -23,32 +24,35 @@ const imageArray = [
 class Intro extends Component {
   state = {
     isPlay: true,
+    barColor: 'light-content',
   };
 
   handleWillFocus = () => {
-    this.setState({ isPlay: true });
+    this.setState({ isPlay: true, barColor: 'light-content' });
   };
 
   handleWillBlur = () => {
-    this.setState({ isPlay: false });
+    this.setState({ isPlay: false, barColor: 'dark-content' });
   };
 
   render() {
     const { goToScreen } = this.props;
+    const { barColor, isPlay } = this.state;
     return (
       <View style={styles.container}>
         <NavigationEvents
           onWillFocus={this.handleWillFocus}
           onWillBlur={this.handleWillBlur}
         />
+        <StatusBar barStyle={barColor} />
         <View style={styles.imgContainer}>
           <View style={{ position: 'relative' }}>
             <Video
-              source={require('../../../assets/video/Flint.mp4')}
+              source={video}
               rate={1.0}
-              isMuted={true}
+              isMuted
               isLooping
-              shouldPlay={this.state.isPlay}
+              shouldPlay={isPlay}
               resizeMode="cover"
               style={{ flex: 1, height: 300 }}
             />

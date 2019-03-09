@@ -14,7 +14,7 @@ const HistoryEntry = ({ data, handlePress }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        handlePress('HistoryDetail', data);
+        handlePress('HistoryDetail', data, period);
       }}
     >
       <View style={styles.historyEntry}>
@@ -60,7 +60,7 @@ HistoryEntry.propTypes = {
   data: PropTypes.shape({
     title: PropTypes.string,
     description: PropTypes.string,
-    state: PropTypes.bool,
+    state: PropTypes.string,
   }).isRequired,
   handlePress: PropTypes.func.isRequired,
 };
