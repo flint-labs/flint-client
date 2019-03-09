@@ -1,21 +1,11 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  ImageBackground,
-} from 'react-native';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Carousel from 'react-native-snap-carousel';
-import * as Progress from 'react-native-progress';
 import sendRequest from '../../modules/sendRequest';
 
 import HistoryReportEntry from './HistoryReportEntry';
-
 import styles from './style';
-
-const { width } = Dimensions.get('window');
 
 class HistoryDetail extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -43,6 +33,18 @@ class HistoryDetail extends Component {
   state = {
     reportList: [],
     isLoading: false,
+    progress: 0,
+  };
+
+  calculateProgress = async () => {
+    const { challenge, reportList } = this.state;
+    const week =
+      (new Date(challenge.endAt) - new Date(challenge.startAt)) /
+      (86400000 * 7);
+    const result = await (reportList.filter(el => el.isConfirmed === 'true')
+      .length /
+      (week * challenge.checkingPeriod));
+    return result;
   };
 
   componentDidMount = async () => {
@@ -53,52 +55,78 @@ class HistoryDetail extends Component {
       const {
         data: { reports },
       } = await sendRequest('get', `/api/reports/getReports/${id}`);
-      this.setState({ isLoading: true, reportList: reports || [] });
+
+      this.setState({
+        isLoading: true,
+        reportList: reports || [],
+        challenge: navigation.getParam('detail'),
+      });
+
+      const progress = await this.calculateProgress();
+      this.setState({
+        progress,
+      });
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  render = () => {
-    const { isLoading, reportList } = this.state;
-    const { navigation } = this.props;
-    const { title } = navigation.getParam('detail');
-    const info = navigation.getParam('detail');
-    console.log(info);
-    return isLoading ? (
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <View
-            style={{
-              flex: 2,
-              marginLeft: 20,
-              backgroundColor: 'white',
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ fontSize: 30, fontWeight: '600' }}>{title}</Text>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'flex-end',
-              backgroundColor: 'white',
-              marginLeft: 20,
-            }}
-          >
-            <Text>달성률</Text>
-            <Text style={{ fontSize: 50, fontWeight: '700' }}>84%</Text>
+  headerComponent = (title, period, progress) => (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+      }}
+    >
+      <View style={styles.HistoryDetailTitle}>
+        <Text
+          style={{
+            fontSize: 30,
+            fontWeight: '600',
+            marginBottom: 20,
+            marginLeft: 20,
+          }}
+        >
+          {title}
+        </Text>
+      </View>
+      <View style={styles.HistoryDetailSubContainer}>
+        <View
+          style={{
+            flex: 1,
+            borderRightWidth: 1,
+            borderColor: '#d3d3d3',
+          }}
+        >
+          <View style={styles.subContainerEntry}>
+            <Text>도전기간</Text>
+            <Text style={{ fontSize: 30, fontWeight: '600' }}>{period} 주</Text>
           </View>
         </View>
+        <View style={styles.subContainerEntry}>
+          <Text>달성률</Text>
+          <Text style={{ fontSize: 30, fontWeight: '600' }}>{progress}%</Text>
+        </View>
+      </View>
+    </View>
+  );
 
-        <View style={{ flex: 4, marginTop: 40 }}>
-          <Carousel
+  render = () => {
+    const { isLoading, reportList, progress } = this.state;
+    const { navigation } = this.props;
+    const { title } = navigation.getParam('detail');
+    const period = navigation.getParam('period');
+
+    return isLoading ? (
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ flex: 4, marginTop: 20 }}>
+          <FlatList
             layout="stack"
-            swipeThreshold={5}
             data={reportList}
+            stickyHeaderIndices={[0]}
+            keyExtractor={(item, index) => index.toString()}
+            ListHeaderComponent={this.headerComponent(title, period, progress)}
             renderItem={({ item }) => <HistoryReportEntry data={item} />}
-            sliderWidth={width}
-            itemWidth={width * 0.8}
           />
         </View>
       </View>
@@ -109,5 +137,11 @@ class HistoryDetail extends Component {
     );
   };
 }
+
+HistoryDetail.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default HistoryDetail;
