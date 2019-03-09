@@ -5,7 +5,6 @@ import {
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import axios from 'axios';
 import Dashboard from './Dashboard';
 import styles from './style';
 import Select from './Select';
@@ -13,7 +12,6 @@ import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 
 let isHidden = true;
-// const baseUrl = 'http://13.209.19.196:3000';
 
 class component extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -65,8 +63,6 @@ class component extends React.Component {
     this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
     const { user } = this.state;
     if (user) {
-      // const response = await axios // await 사용해야 밑에서 challenges 사용가능
-      //   .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
       const response = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
@@ -84,7 +80,6 @@ class component extends React.Component {
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
-      // const res = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
       const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
       let { reports } = res && res.data;
       const shouldConfirmReportsId = [];
@@ -99,10 +94,6 @@ class component extends React.Component {
           willBeConfirmed: 'true',
           reportsId: shouldConfirmReportsId,
         });
-        // await axios.put(`${baseUrl}/api/reports/updateReports`, {
-        //   willBeConfirmed: 'true',
-        //   reportsId: shouldConfirmReportsId,
-        // });
       }
       if (new Date(recentChallenge.endAt) - new Date() <= 0) {
         const pendingReportsId = [];
@@ -116,10 +107,6 @@ class component extends React.Component {
           willBeConfirmed: 'true',
           reportsId: pendingReportsId,
         });
-        // await axios.put(`${baseUrl}/api/reports/updateReports`, {
-        //   willBeConfirmed: 'true',
-        //   reportsId: pendingReportsId,
-        // });
       }
       reports = reports
         .filter(el => el.isConfirmed === 'true')
@@ -139,13 +126,10 @@ class component extends React.Component {
     this.setState({ isLoaded: false });
     const { user } = this.state;
     const { navigation } = this.props;
-    // const res = await axios // await 사용해야 밑에서 challenges 사용가능
-    //   .get(`${baseUrl}/api/challenges/getInProgressChallenges/${user.id}`);
     const res = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
     this.setState({ challenges: res.data.challenges });
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
-    // const response = await axios.get(`${baseUrl}/api/reports/getReports/${recentChallenge.id}`);
     const response = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
     let { reports } = response.data;
     const shouldConfirmReportsId = [];
@@ -160,10 +144,6 @@ class component extends React.Component {
         willBeConfirmed: 'true',
         reportsId: shouldConfirmReportsId,
       });
-      // await axios.put(`${baseUrl}/api/reports/updateReports`, {
-      //   willBeConfirmed: 'true',
-      //   reportsId: shouldConfirmReportsId,
-      // });
     }
     reports = reports
       .filter(el => el.isConfirmed === 'true')

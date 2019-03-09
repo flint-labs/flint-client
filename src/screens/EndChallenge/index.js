@@ -5,14 +5,9 @@ import Success from './Success';
 import Failure from './Failure';
 import sendRequest from '../../modules/sendRequest';
 
-// const baseUrl = 'http://13.209.19.196:3000';
-
 class EndChallenge extends React.Component {
   updateChallengeStateRequest = async state => {
     const { recentChallenge } = this.props;
-    // await axios.put(
-    //   `${baseUrl}/api/challenges/updateChallengeState/${recentChallenge.id}/${state}`,
-    // );
     await sendRequest('put', `/api/challenges/updateChallengeState/${recentChallenge.id}/${state}`);
   };
 

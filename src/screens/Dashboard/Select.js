@@ -8,7 +8,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import sendRequest from '../../modules/sendRequest';
 import styles from './style';
 
-// const baseUrl = 'http://13.209.19.196:3000';
 const { width } = Dimensions.get('window');
 
 const Select = ({
@@ -21,7 +20,6 @@ const Select = ({
   const handleChallengeListButton = async item => {
     // item은 최근 challenge
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-    // const { data } = await axios.get(`${baseUrl}/api/challenges/getInProgressChallenges/${id}`);
     const { data } = await sendRequest('get', `/api/challenges/getInProgressChallenges/${id}`);
     await handleChallenges(data.challenges);
     await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
@@ -33,7 +31,6 @@ const Select = ({
     <View
       style={{
         flex: 1,
-        // backgroundColor: 'red',
       }}
     >
       <FlatList
