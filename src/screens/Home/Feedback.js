@@ -16,12 +16,16 @@ const renderItem = item => {
   );
 };
 const Feedback = () => (
-  <View style={{ marginTop: 20, marginBottom: 30 }}>
+  <View style={{ marginBottom: 30 }}>
+    {/*
     <ImageBackground
       source={require('../../../assets/images/Home/background.png')}
       style={{ width, height: 300 }}
     >
+  */}
+    <View style={{ width, height: 260, backgroundColor: '#444' }}>
       <View style={styles.userFeedback}>
+        {/*
         <Text
           style={{
             fontSize: 30,
@@ -30,11 +34,12 @@ const Feedback = () => (
             marginLeft: 20,
             marginBottom: 15,
             alignSelf: 'center',
-            fontFamily: 'Fontrust',
+            // fontFamily: 'Fontrust',
           }}
         >
           Our Story
         </Text>
+      */}
         <View style={styles.feedbackContainer}>
           <Carousel
             swipeThreshold={5}
@@ -47,7 +52,8 @@ const Feedback = () => (
           />
         </View>
       </View>
-    </ImageBackground>
+      {/*</ImageBackground>*/}
+    </View>
   </View>
 );
 

@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 
 import styles from './Styles';
 
-const fakeImage = require('../../../assets/images/Home/cate1.jpg');
-
 const RefereeEntry = ({ data, modal }) => (
   <TouchableOpacity
     onPress={() => {

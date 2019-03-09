@@ -3,8 +3,8 @@ import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './style';
 
-const pass = require('../../../assets/images/History/pass.jpg');
-const faile = require('../../../assets/images/History/faile.jpg');
+const pass = require('../../../assets/images/History/pass.png');
+const faile = require('../../../assets/images/History/faile.png');
 
 const HistoryEntry = ({ data, handlePress }) => {
   const end = new Date(data.endAt);
@@ -24,23 +24,32 @@ const HistoryEntry = ({ data, handlePress }) => {
         </View>
         <View style={{ flex: 1 }}>
           {data.state === 'success' ? (
-            <ImageBackground
-              source={pass}
-              style={{ flex: 1, transform: [{ rotateZ: '-0.3rad' }] }}
-              imageStyle={{
-                width: 110,
-                resizeMode: 'contain',
-              }}
-            />
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ImageBackground
+                source={pass}
+                style={{ flex: 1 }}
+                imageStyle={{
+                  width: 120,
+                  resizeMode: 'contain',
+                }}
+              />
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 12, color: 'green' }}>Success</Text>
+              </View>
+            </View>
           ) : (
-            <ImageBackground
-              source={faile}
-              style={{
-                flex: 1,
-                transform: [{ rotateZ: '-0.3rad' }],
-              }}
-              imageStyle={{ width: 110, resizeMode: 'contain' }}
-            />
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ImageBackground
+                source={faile}
+                style={{
+                  flex: 1,
+                }}
+                imageStyle={{ width: 110, resizeMode: 'contain' }}
+              />
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 12, color: 'red' }}>Failure</Text>
+              </View>
+            </View>
           )}
         </View>
       </View>

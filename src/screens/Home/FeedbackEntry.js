@@ -15,7 +15,7 @@ const FeedbackEntry = ({ index }) => (
     <ImageBackground
       source={imageArray[index]}
       style={styles.feedbackEntryImage}
-      imageStyle={{ borderRadius: 5 }}
+      imageStyle={{ borderRadius: 5, resizeMode: 'cover' }}
     />
   </View>
 );

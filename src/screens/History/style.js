@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 2,
+    marginTop: 10,
     // backgroundColor: 'green',
     color: '#333',
   },
