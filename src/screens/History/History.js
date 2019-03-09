@@ -19,7 +19,7 @@ class History extends Component {
         'get',
         `/api/history/completeList/${id}`,
       );
-      this.setState({ isLoading: true, completeList: data });
+      this.setState({ isLoading: true, completeList: data || [] });
     } catch (err) {
       console.log(err.message);
     }

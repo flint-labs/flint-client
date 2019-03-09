@@ -59,9 +59,10 @@ export default createStackNavigator(
     Home: {
       screen: Home,
       navigationOptions: {
-        headerTitle: () => (
-          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        ),
+        // headerTitle: () => (
+        //   <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        // ),
+        header: null,
       },
     },
     ChallengeSetting: {

@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
-import axios from 'axios';
 import sendRequest from '../../modules/sendRequest';
 
 import HistoryReportEntry from './HistoryReportEntry';
@@ -47,7 +52,7 @@ class HistoryDetail extends Component {
     try {
       const {
         data: { reports },
-      } = await sendRequest('get', `/api/reports/getNotPendingReports/${id}`);
+      } = await sendRequest('get', `/api/reports/getReports/${id}`);
       this.setState({ isLoading: true, reportList: reports || [] });
     } catch (err) {
       console.log(err.message);
@@ -58,15 +63,35 @@ class HistoryDetail extends Component {
     const { isLoading, reportList } = this.state;
     const { navigation } = this.props;
     const { title } = navigation.getParam('detail');
+    const info = navigation.getParam('detail');
+    console.log(info);
     return isLoading ? (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Text style={styles.titleText}>{title}</Text>
+      <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View
+            style={{
+              flex: 2,
+              marginLeft: 20,
+              backgroundColor: 'white',
+              justifyContent: 'center',
+            }}
+          >
+            <Text style={{ fontSize: 30, fontWeight: '600' }}>{title}</Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              backgroundColor: 'white',
+              marginLeft: 20,
+            }}
+          >
+            <Text>달성률</Text>
+            <Text style={{ fontSize: 50, fontWeight: '700' }}>84%</Text>
+          </View>
         </View>
-        <View style={{ flex: 1 }}>
-          <Progress.Bar progress={0.8} width={width * 0.8} color="#ff6600" />
-        </View>
-        <View style={{ flex: 4 }}>
+
+        <View style={{ flex: 4, marginTop: 40 }}>
           <Carousel
             layout="stack"
             swipeThreshold={5}

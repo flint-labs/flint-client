@@ -52,11 +52,11 @@ class Referee extends Component {
     });
   };
 
-  handleAccept = () => {
+  handleAccept = async () => {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = sendRequest(
+      const { status } = await sendRequest(
         'post',
         '/api/reports/responseReport',
         null,
@@ -77,11 +77,11 @@ class Referee extends Component {
     }
   };
 
-  handleReject = () => {
+  handleReject = async () => {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = sendRequest(
+      const { status } = await sendRequest(
         'post',
         '/api/reports/responseReport',
         null,

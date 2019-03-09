@@ -1,10 +1,13 @@
-import React from 'react';
-import { View, Text, FlatList, ImageBackground } from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, FlatList, Dimensions } from 'react-native';
+import { Video } from 'expo';
+import { NavigationEvents } from 'react-navigation';
 
 import CategoryEntry from './CategoryEntry';
 import styles from './Styles';
 
-const introImage = require('../../../assets/images/Home/Intro.jpg');
+const { width } = Dimensions.get('window');
+
 const category1 = require('../../../assets/images/Home/cate1.jpg');
 const category2 = require('../../../assets/images/Home/cate2.jpg');
 const category3 = require('../../../assets/images/Home/cate3.jpg');
@@ -17,36 +20,87 @@ const imageArray = [
   [category4, '식습관'],
 ];
 
-const Intro = ({ goToScreen }) => (
-  <View style={styles.container}>
-    <View style={styles.imgContainer}>
-      <ImageBackground source={introImage} style={styles.img}>
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text
-            style={{ fontFamily: 'Fontrust', fontSize: 65, color: 'white' }}
-          >
-            Change Your Life
-          </Text>
+class Intro extends Component {
+  state = {
+    isPlay: true,
+  };
+
+  handleWillFocus = () => {
+    this.setState({ isPlay: true });
+  };
+
+  handleWillBlur = () => {
+    this.setState({ isPlay: false });
+  };
+
+  render() {
+    const { goToScreen } = this.props;
+    return (
+      <View style={styles.container}>
+        <NavigationEvents
+          onWillFocus={this.handleWillFocus}
+          onWillBlur={this.handleWillBlur}
+        />
+        <View style={styles.imgContainer}>
+          <View style={{ position: 'relative' }}>
+            <Video
+              source={require('../../../assets/video/Flint.mp4')}
+              rate={1.0}
+              isMuted={true}
+              isLooping
+              shouldPlay={this.state.isPlay}
+              resizeMode="cover"
+              style={{ flex: 1, height: 300 }}
+            />
+            <View style={{ position: 'absolute', width, height: 300 }}>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: 'Fontrust',
+                    fontSize: 55,
+                    color: 'white',
+                  }}
+                >
+                  Change Your Life
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
-      </ImageBackground>
-    </View>
-    <View style={styles.challengeContainer}>
-      <FlatList
-        data={imageArray}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={item => (
-          <CategoryEntry
-            img={imageArray[item.index][0]}
-            title={imageArray[item.index][1]}
-            goToScreen={goToScreen}
-          />
-        )}
-        numColumns={2}
-      />
-    </View>
-  </View>
-);
+        <View style={styles.challengeContainer}>
+          <View
+            style={{
+              width,
+              backgroundColor: 'white',
+              marginLeft: 6,
+              marginTop: 6,
+              marginBottom: 6,
+              height: width * 0.7,
+            }}
+          >
+            <FlatList
+              data={imageArray}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={item => (
+                <CategoryEntry
+                  img={imageArray[item.index][0]}
+                  title={imageArray[item.index][1]}
+                  goToScreen={goToScreen}
+                />
+              )}
+              numColumns={3}
+            />
+          </View>
+        </View>
+      </View>
+    );
+  }
+}
 
 export default Intro;
