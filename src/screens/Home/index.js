@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import {
- View, Text, ScrollView, Dimensions, SafeAreaView 
+  View,
+  Text,
+  ScrollView,
+  Dimensions,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 
@@ -46,14 +51,13 @@ class Home extends Component {
     <View style={{ flex: 1 }}>
       <NavigationEvents onWillFocus={this.handleWillFocus} />
 
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.indexContainer}>
-          <ScrollView style={{ flex: 1, width }}>
-            <Intro goToScreen={this.goToScreen} />
-            <Feedback />
-          </ScrollView>
-        </View>
-      </SafeAreaView>
+      <StatusBar barStyle="light-content" />
+      <View style={styles.indexContainer}>
+        <ScrollView style={{ flex: 1, width }}>
+          <Intro goToScreen={this.goToScreen} />
+          <Feedback />
+        </ScrollView>
+      </View>
     </View>
   );
 }
