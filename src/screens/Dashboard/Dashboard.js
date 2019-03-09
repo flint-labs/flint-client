@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, Dimensions, Animated,
+  View, Text, Image, Dimensions,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
@@ -9,13 +9,10 @@ import styles from './style';
 import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
-import Select from './Select';
-// import sendRequest from '../../modules/sendRequest';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 const runIcon = require('../../../assets/images/Dashboard/run.png');
 const readyRun2Image = require('../../../assets/images/Dashboard/readyRun2.png');
-// const baseUrl = 'http://13.209.19.196:3000';
 
 class Dashboard extends Component {
   state = {
@@ -86,9 +83,7 @@ class Dashboard extends Component {
                 style={{ transform: [{ scaleY: -1 }] }}
               />
             ) : (
-              <View
-                style={styles.nonReportsTextContainer}
-              >
+              <View style={styles.nonReportsTextContainer}>
                 <Text style={{ fontSize: 15 }}>기록이 아직 없어요</Text>
               </View>
             )}
@@ -100,17 +95,6 @@ class Dashboard extends Component {
       }
       return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          {/* <Animated.View
-            style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
-          >
-            <Select
-              toggleSubView={toggleSubView}
-              handleChallenges={handleChallenges}
-              challenges={challenges}
-              handleRecentChallenge={handleRecentChallenge}
-              recentChallenge={recentChallenge}
-            />
-          </Animated.View> */}
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <Image
               source={readyRun2Image}
@@ -125,22 +109,7 @@ class Dashboard extends Component {
         </View>
       );
     }
-    return (
-      <>
-        {/* <Animated.View
-          style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
-        >
-          <Select
-            toggleSubView={toggleSubView}
-            handleChallenges={handleChallenges}
-            challenges={challenges}
-            handleRecentChallenge={handleRecentChallenge}
-            recentChallenge={recentChallenge}
-          />
-        </Animated.View> */}
-        <Text>Loading</Text>
-      </>
-    );
+    return <Text>Loading</Text>;
   }
 }
 

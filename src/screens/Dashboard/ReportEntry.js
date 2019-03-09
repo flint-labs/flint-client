@@ -49,7 +49,6 @@ const ReportEntry = ({ data }) => (
 
 ReportEntry.propTypes = {
   data: PropTypes.shape({
-    // title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     isConfirmed: PropTypes.string.isRequired,
   }).isRequired,

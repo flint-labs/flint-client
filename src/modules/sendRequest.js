@@ -15,7 +15,7 @@ const BASE_URL = 'http://13.209.19.196:3000';
 const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   const setHeader = token => {
     if (setHeaders)
-      return Object.asign(setHeaders, { 'x-access-token': token });
+      return Object.assign(setHeaders, { 'x-access-token': token });
     return { 'x-access-token': token };
   };
   const request = token => {
