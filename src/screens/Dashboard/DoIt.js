@@ -7,12 +7,13 @@ import PropTypes from 'prop-types';
 import { ImagePicker, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
+// import axios from 'axios';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import styles from './style';
 import { OrangeButton } from '../../components';
+import sendRequest from '../../modules/sendRequest';
 
-const baseUrl = 'http://13.209.19.196:3000';
+// const baseUrl = 'http://13.209.19.196:3000';
 const cameraImage = require('../../../assets/images/Dashboard/camera.png');
 
 class DoIt extends React.Component {
@@ -28,12 +29,18 @@ class DoIt extends React.Component {
     const { text, photo } = this.state;
     if (text !== null && text.length <= 50 && text.length > 0 && photo) {
       console.log(recentChallenge);
-      axios.post(`${baseUrl}/api/reports/postReport`, {
+      sendRequest('post', '/api/reports/postReport', null, {
         image: photo,
         isConfirmed: 'pending',
         description: text,
         challengeId: recentChallenge.id,
       });
+      // axios.post(`${baseUrl}/api/reports/postReport`, {
+      //   image: photo,
+      //   isConfirmed: 'pending',
+      //   description: text,
+      //   challengeId: recentChallenge.id,
+      // });
       Alert.alert('제출되었습니다.', null, [
         {
           text: 'OK',

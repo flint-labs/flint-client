@@ -9,7 +9,7 @@ import styles from './style';
 import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
-import Select from './Select';
+// import Select from './Select';
 // import sendRequest from '../../modules/sendRequest';
 
 const { width, height } = Dimensions.get('window');
