@@ -44,6 +44,7 @@ class component extends React.Component {
     if (isHidden) {
       toValue = 200;
     }
+    console.log(toValue);
     await Animated.spring(bounceValue, {
       toValue,
       velocity: 3,
@@ -81,7 +82,7 @@ class component extends React.Component {
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
       const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
-      let { reports } = res && res.data;
+      let reports = res ? res.data.reports : [];
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
         if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
@@ -116,7 +117,7 @@ class component extends React.Component {
         progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
       });
       navigation.setParams({
-        dashboardTitle: recentChallenge.title,
+        dashboardTitle: user ? recentChallenge.title : '선택된 도전이 없습니다',
       });
     }
     this.setState({ isLoaded: true });
@@ -131,7 +132,7 @@ class component extends React.Component {
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
     const response = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
-    let { reports } = response.data;
+    let { reports } = response && response.data;
     const shouldConfirmReportsId = [];
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
