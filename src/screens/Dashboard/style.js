@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
   },
   imageRefBtn: { flex: 1, justifyContent: 'center', width: '40%' },
   modalTextInputContainer: {
-    flex: 1.5,
-    marginTop: '25%',
+    flex: 1.2,
+    marginTop: 25,
     alignItems: 'center',
   },
   submitBtn: {
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   },
   submitBtnContainer: {
     alignItems: 'center',
-    height: '27%',
+    flex: 1,
   },
   submitText: { fontSize: 20, color: 'white', fontWeight: 'bold' },
   reportEntryContainer: {
@@ -88,6 +88,30 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     fontSize: 25,
     // flex: 1,
+  },
+  doItHeaderContainer: {
+    flexDirection: 'row',
+    flex: 0.07,
+    // shadowOffset: { width: 5, height: 5 },
+    // shadowColor: '#dcdcdc',
+    // shadowOpacity: 1.0,
+    alignItems: 'center',
+    marginTop: 15,
+    borderBottomColor: '#dcdcdc',
+    borderBottomWidth: 0.5,
+    justifyContent: 'center',
+  },
+  doItHeaderTitleContainer: {
+    flex: 2,
+    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  nonReportsTextContainer: {
+    height: 270,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

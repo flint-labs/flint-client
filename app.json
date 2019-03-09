@@ -8,6 +8,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "flint",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,7 +21,12 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.reactjs.native.example.Flint",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": [
+          "kakaotalk"
+        ]
+      }
     }
   }
 }

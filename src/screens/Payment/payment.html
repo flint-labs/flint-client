@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.7.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const IMP = window.IMP;
+      IMP.init('imp99894461');
+      document.addEventListener('message', event => {
+        const params = JSON.parse(event.data);
+        IMP.request_pay(params, (rsp) => {
+            postMessage(JSON.stringify(rsp));
+        });
+      });
+    });
+  </script>
+  <title>Document</title>
+</head>
+<body>
+</body>
+</html>
