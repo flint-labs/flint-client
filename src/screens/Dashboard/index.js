@@ -1,6 +1,9 @@
 import React from 'react';
 import {
-  Text, TouchableOpacity, Animated, AsyncStorage,
+  Text,
+  TouchableOpacity,
+  Animated,
+  AsyncStorage,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
@@ -20,7 +23,9 @@ class component extends React.Component {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleBottomModal()}>
           <Text style={{ fontSize: 20 }}>
-            {params.dashboardTitle ? ` ${params.dashboardTitle} ` : ' 선택된 도전이 없어요 '}
+            {params.dashboardTitle
+              ? ` ${params.dashboardTitle} `
+              : ' 선택된 도전이 없어요 '}
             <Icon name="ios-arrow-dropdown" size={20} />
           </Text>
         </TouchableOpacity>
@@ -64,7 +69,10 @@ class component extends React.Component {
     this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
     const { user } = this.state;
     if (user) {
-      const response = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
+      const response = await sendRequest(
+        'get',
+        `/api/challenges/getInProgressChallenges/${user.id}`,
+      );
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
       const shouldChangeChallenges = [];
@@ -92,7 +100,8 @@ class component extends React.Component {
       } else {
         this.setState({
           recentChallenge:
-            JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+            JSON.parse(await AsyncStorage.getItem('recentChallenge'))
+            || challenges[0],
         });
       }
     }
@@ -102,7 +111,10 @@ class component extends React.Component {
       let reports = res ? res.data.reports : [];
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
-        if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
+        if (
+          el.isConfirmed === 'pending'
+          && new Date() - new Date(el.createdAt) > 86400000
+        ) {
           shouldConfirmReportsId.push(el.id);
         }
       });
@@ -131,7 +143,10 @@ class component extends React.Component {
         .map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
-        progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
+        progress:
+          (await this.calculateProgress()) <= 1
+            ? await this.calculateProgress()
+            : 1,
       });
       navigation.setParams({
         dashboardTitle: user ? recentChallenge.title : '선택된 도전이 없습니다',
@@ -153,7 +168,10 @@ class component extends React.Component {
     const shouldConfirmReportsId = [];
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
-      if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
+      if (
+        el.isConfirmed === 'pending'
+        && new Date() - new Date(el.createdAt) > 86400000
+      ) {
         shouldConfirmReportsId.push(el.id);
       }
     });
@@ -168,7 +186,10 @@ class component extends React.Component {
       .map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
-      progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
+      progress:
+        (await this.calculateProgress()) <= 1
+          ? await this.calculateProgress()
+          : 1,
     });
     navigation.setParams({ dashboardTitle: recentChallenge.title });
     this.setState({ isLoaded: true });
@@ -203,7 +224,10 @@ class component extends React.Component {
           return (
             <>
               <Animated.View
-                style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
+                style={[
+                  styles.subView,
+                  { transform: [{ translateY: bounceValue }], zIndex: 300 },
+                ]}
               >
                 <Select
                   toggleSubView={this.toggleSubView}

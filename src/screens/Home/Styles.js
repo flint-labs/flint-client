@@ -21,8 +21,6 @@ const styles = StyleSheet.create({
   },
   challengeContainer: {
     flex: 2,
-    // marginTop: 90,
-    // marginBottom: 10,
   },
   userFeedback: {
     flex: 1,
@@ -33,14 +31,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   categoryEntryImgContainer: {
-    // height: 100,
-    // // width: width / 2 - 15,
-    // width: width / 3.5,
-    // marginRight: 15,
-
-    // marginLeft: 10,
-    // marginTop: 10,
-
     width: width / 3 - 16,
     height: width / 3 - 16,
     alignItems: 'center',
