@@ -8,7 +8,10 @@ import sendRequest from '../../modules/sendRequest';
 class EndChallenge extends React.Component {
   updateChallengeStateRequest = async state => {
     const { recentChallenge } = this.props;
-    await sendRequest('put', `/api/challenges/updateChallengeState/${recentChallenge.id}/${state}`);
+    await sendRequest('put', '/api/challenges/updateChallengesState', null, {
+      willState: state,
+      challengesId: [recentChallenge.id],
+    });
   };
 
   render() {

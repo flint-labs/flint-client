@@ -67,6 +67,23 @@ class component extends React.Component {
       const response = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      const shouldChangeChallenges = [];
+      challenges.forEach(el => {
+        if (new Date(el.startAt) - new Date() <= 0) {
+          shouldChangeChallenges.push(el.id);
+        }
+      });
+      console.log(shouldChangeChallenges);
+      // challenge 시작날짜가 오늘보다 과거면 inProgress로 변경
+      if (shouldChangeChallenges.length) {
+        await sendRequest('put', '/api/challenges/updateChallengesState', null, {
+          willState: 'inProgress',
+          challengesId: shouldChangeChallenges,
+        });
+        // 변경되면 데이터 다시 불러오기
+        const { data } = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
+        this.setState({ challenges: data.challenges });
+      }
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
       if (EndChallengeArray.length > 0) {
         this.setState({
@@ -127,12 +144,12 @@ class component extends React.Component {
     this.setState({ isLoaded: false });
     const { user } = this.state;
     const { navigation } = this.props;
-    const res = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
-    this.setState({ challenges: res.data.challenges });
+    const response = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
+    this.setState({ challenges: response.data.challenges });
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
-    const response = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
-    let { reports } = response && response.data;
+    const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
+    let { reports } = res && res.data;
     const shouldConfirmReportsId = [];
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
@@ -163,7 +180,8 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
+    const week = (new Date(recentChallenge.endAt)
+     - new Date(recentChallenge.startAt)) / (86400000 * 7);
     const result = await (reports.filter(el => el.isConfirmed === 'true').length
       / (week * recentChallenge.checkingPeriod));
     return result;
