@@ -20,9 +20,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   challengeContainer: {
-    flex: 1,
-    marginTop: 10,
-    marginBottom: 0,
+    flex: 2,
   },
   userFeedback: {
     flex: 1,
@@ -33,22 +31,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   categoryEntryImgContainer: {
-    height: 100,
-    width: width / 2 - 15,
-    marginLeft: 10,
-    marginTop: 10,
+    width: width / 3 - 16,
+    height: width / 3 - 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 6,
+    borderRadius: 10,
   },
   categoryEntryImage: {
     flex: 1,
-    resizeMode: 'contain',
+    margin: 6,
+    width: width / 3 - 16,
+    height: width / 3 - 16,
+    resizeMode: 'cover',
   },
   categoryEntryImageBlur: {
     backgroundColor: 'rgba(0,0,0,0.5)',
-    width: width / 2 - 15,
-    height: 100,
+    width: width / 3 - 16,
+    height: width / 3 - 16,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 15,
+
+    borderColor: '#dcdcdc',
+
+    borderWidth: 1,
+    borderRadius: 10,
   },
   feedbackContainer: {
     marginTop: 10,

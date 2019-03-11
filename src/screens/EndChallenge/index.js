@@ -1,17 +1,17 @@
 import React from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import PropTypes from 'prop-types';
 import Success from './Success';
 import Failure from './Failure';
-
-const baseUrl = 'http://13.209.19.196:3000';
+import sendRequest from '../../modules/sendRequest';
 
 class EndChallenge extends React.Component {
   updateChallengeStateRequest = async state => {
     const { recentChallenge } = this.props;
-    await axios.put(
-      `${baseUrl}/api/challenges/updateChallengeState/${recentChallenge.id}/${state}`,
-    );
+    await sendRequest('put', '/api/challenges/updateChallengesState', null, {
+      willState: state,
+      challengesId: [recentChallenge.id],
+    });
   };
 
   render() {

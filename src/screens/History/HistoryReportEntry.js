@@ -1,19 +1,30 @@
 import React from 'react';
-import { Text, ImageBackground } from 'react-native';
+import { View, Image, Text, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './style';
 
 const img = require('../../../assets/images/Home/cate1.jpg');
 
 const HistoryReportEntry = ({ data }) => (
-  <ImageBackground
-    source={img}
-    style={styles.historyReportEntryBackgroundImg}
-    imageStyle={{ borderRadius: 5 }}
-    blurRadius={4}
-  >
-    <Text style={{ color: 'white', fontSize: 20 }}>{data.description}</Text>
-  </ImageBackground>
+  <View style={styles.refereeEntry}>
+    <View style={styles.imageContainer}>
+      <Image
+        source={img}
+        style={{
+          width: 120,
+          resizeMode: 'cover',
+          flex: 1,
+          borderRadius: 5,
+        }}
+      />
+    </View>
+    <View style={{ flex: 3 }}>
+      <Text style={styles.descriptionText}>{data.description}</Text>
+      <Text style={styles.stateText}>
+        {data.isConfirmed ? 'PASS' : 'FALURE'}
+      </Text>
+    </View>
+  </View>
 );
 
 HistoryReportEntry.propTypes = {

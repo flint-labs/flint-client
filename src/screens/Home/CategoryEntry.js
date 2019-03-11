@@ -22,7 +22,9 @@ const CategoryEntry = ({
         <ImageBackground
           source={img}
           style={styles.categoryEntryImage}
-          imageStyle={{ borderRadius: 15 }}
+          imageStyle={{
+            borderRadius: 10,
+          }}
         >
           <View style={styles.categoryEntryImageBlur}>
             <Text style={{ color: 'white', fontSize: 20 }}>{title}</Text>

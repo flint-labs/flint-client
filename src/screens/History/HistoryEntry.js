@@ -1,10 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './style';
-
-const pass = require('../../../assets/images/History/pass.jpg');
-const faile = require('../../../assets/images/History/faile.jpg');
 
 const HistoryEntry = ({ data, handlePress }) => {
   const end = new Date(data.endAt);
@@ -14,7 +11,7 @@ const HistoryEntry = ({ data, handlePress }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        handlePress('HistoryDetail', data);
+        handlePress('HistoryDetail', data, period);
       }}
     >
       <View style={styles.historyEntry}>
@@ -24,23 +21,29 @@ const HistoryEntry = ({ data, handlePress }) => {
         </View>
         <View style={{ flex: 1 }}>
           {data.state === 'success' ? (
-            <ImageBackground
-              source={pass}
-              style={{ flex: 1, transform: [{ rotateZ: '-0.3rad' }] }}
-              imageStyle={{
-                width: 110,
-                resizeMode: 'contain',
-              }}
-            />
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <View style={{ alignItems: 'center' }}>
+                <Text
+                  style={{
+                    fontFamily: 'Fontrust',
+                    fontSize: 35,
+                    color: 'green',
+                  }}
+                >
+                  Success
+                </Text>
+              </View>
+            </View>
           ) : (
-            <ImageBackground
-              source={faile}
-              style={{
-                flex: 1,
-                transform: [{ rotateZ: '-0.3rad' }],
-              }}
-              imageStyle={{ width: 110, resizeMode: 'contain' }}
-            />
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <View style={{ alignItems: 'center' }}>
+                <Text
+                  style={{ fontFamily: 'Fontrust', fontSize: 35, color: 'red' }}
+                >
+                  Failure
+                </Text>
+              </View>
+            </View>
           )}
         </View>
       </View>
@@ -51,7 +54,7 @@ HistoryEntry.propTypes = {
   data: PropTypes.shape({
     title: PropTypes.string,
     description: PropTypes.string,
-    state: PropTypes.bool,
+    state: PropTypes.string,
   }).isRequired,
   handlePress: PropTypes.func.isRequired,
 };

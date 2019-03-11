@@ -7,6 +7,7 @@ import {
   Alert,
   SafeAreaView,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
@@ -65,6 +66,7 @@ class UserInfo extends Component {
       await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('recentChallenge');
       await SecureStore.deleteItemAsync('refreshToken');
+      await SecureStore.deleteItemAsync('keyChain');
       this.setState({ user: null });
       Alert.alert('로그아웃 성공!', '보고싶을 거에요 🥺', [
         {
@@ -223,9 +225,7 @@ class UserInfo extends Component {
   );
 
   renderLoading = () => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Loading...</Text>
-    </View>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>
   );
 
   renderInCondition = () => {

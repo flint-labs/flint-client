@@ -4,9 +4,9 @@ import History from './History';
 import HistoryDetail from './HistoryDetail';
 
 class component extends Component {
-  goToScreen = (screenName, data) => {
+  goToScreen = (screenName, data, period) => {
     const { navigation } = this.props;
-    navigation.navigate(screenName, { detail: data });
+    navigation.navigate(screenName, { detail: data, period });
   };
 
   render = () => <History switchScreen={this.goToScreen} />;

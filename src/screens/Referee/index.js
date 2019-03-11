@@ -9,16 +9,11 @@ import {
   Image,
   AsyncStorage,
 } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { Overlay } from 'react-native-elements';
-import io from 'socket.io-client';
-import axios from 'axios';
-
 import styles from './Styles';
 import RefereeEntry from './RefereeEntry';
-import SignIn from '../SignIn';
-
-const socket = io('http://13.209.19.196:3000');
+import sendRequest from '../../modules/sendRequest';
 
 const { width, height } = Dimensions.get('window');
 
@@ -33,13 +28,17 @@ class Referee extends Component {
   };
 
   componentDidMount = async () => {
-    const { reqData } = this.state;
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-    socket.on(id, data => {
-      console.log(data);
-      this.setState({ reqData: [data, ...reqData] });
-    });
-    // this.props.navigation.addListener('didFocus', () => {});
+    try {
+      const list = await sendRequest(
+        'get',
+        `/api/reports/getRequireList/${id}`,
+      );
+
+      this.setState({ reqData: list ? list.data : [] });
+    } catch (error) {
+      console.log('err');
+    }
   };
 
   renderRefereeModal = (image, description, id) => {
@@ -53,35 +52,42 @@ class Referee extends Component {
     });
   };
 
-  handleAccept = () => {
+  handleAccept = async () => {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = axios.post(
-        'http://13.209.19.196:3000/api/reports/responseReport',
+      const { status } = await sendRequest(
+        'post',
+        '/api/reports/responseReport',
+        null,
         {
           reportId: requestReportId,
           check: 'true',
         },
       );
-      this.setState({
-        isVisible: !isVisible,
-        reqData: reqData.filter(ele => ele.id !== requestReportId),
-      });
+
+      if (status === 200) {
+        this.setState({
+          isVisible: !isVisible,
+          reqData: reqData.filter(ele => ele.id !== requestReportId),
+        });
+      }
     } catch (err) {
       console.log(err.message);
     }
   };
 
-  handleReject = () => {
+  handleReject = async () => {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = axios.post(
-        'http://13.209.19.196:3000/api/reports/responseReport',
+      const { status } = await sendRequest(
+        'post',
+        '/api/reports/responseReport',
+        null,
         {
           reportId: requestReportId,
-          check: 'false',
+          check: 'true',
         },
       );
 
@@ -179,24 +185,38 @@ class Referee extends Component {
     );
   };
 
+  handleWillFocus = async () => {
+    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+
+    const list = await sendRequest('get', `/api/reports/getRequireList/${id}`);
+    this.setState({ reqData: list.data });
+  };
+
   render = () => {
     const { reqData } = this.state;
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <FlatList
-            data={reqData}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={itemData => (
-              <RefereeEntry
-                data={itemData.item}
-                modal={this.renderRefereeModal}
-              />
-            )}
-          />
-        </View>
-        {this.renderModal()}
-      </SafeAreaView>
+    return reqData.length !== 0 ? (
+      <View style={{ flex: 1 }}>
+        <NavigationEvents onWillFocus={this.handleWillFocus} />
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.container}>
+            <FlatList
+              data={reqData}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={itemData => (
+                <RefereeEntry
+                  data={itemData.item}
+                  modal={this.renderRefereeModal}
+                />
+              )}
+            />
+          </View>
+          {this.renderModal()}
+        </SafeAreaView>
+      </View>
+    ) : (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text> 요청이 모두 처리되었습니다. </Text>
+      </View>
     );
   };
 }

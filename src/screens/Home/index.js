@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {
-  View, Text, ScrollView, Dimensions, SafeAreaView, TouchableOpacity,
+  View, ScrollView, Dimensions,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 
@@ -48,14 +47,12 @@ class Home extends Component {
     <View style={{ flex: 1 }}>
       <NavigationEvents onWillFocus={this.handleWillFocus} />
 
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.indexContainer}>
-          <ScrollView style={{ flex: 1, width }}>
-            <Intro goToScreen={this.goToScreen} />
-            <Feedback />
-          </ScrollView>
-        </View>
-      </SafeAreaView>
+      <View style={styles.indexContainer}>
+        <ScrollView style={{ flex: 1, width }}>
+          <Intro goToScreen={this.goToScreen} />
+          <Feedback />
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -71,9 +68,10 @@ export default createStackNavigator(
     Home: {
       screen: Home,
       navigationOptions: {
-        headerTitle: () => (
-          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        ),
+        // headerTitle: () => (
+        //   <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        // ),
+        header: null,
       },
     },
     ChallengeSetting: {
