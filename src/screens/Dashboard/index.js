@@ -4,6 +4,8 @@ import {
   TouchableOpacity,
   Animated,
   AsyncStorage,
+  ActivityIndicator,
+  View,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
@@ -261,7 +263,7 @@ class component extends React.Component {
       }
       return <Text>로그인을 먼저 해주세요</Text>;
     }
-    return <Text>Loading</Text>;
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>;
   };
 
   render() {

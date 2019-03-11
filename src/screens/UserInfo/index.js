@@ -7,6 +7,7 @@ import {
   Alert,
   SafeAreaView,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
@@ -224,9 +225,7 @@ class UserInfo extends Component {
   );
 
   renderLoading = () => (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Loading...</Text>
-    </View>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>
   );
 
   renderInCondition = () => {

@@ -5,7 +5,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
-  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
@@ -50,10 +50,8 @@ class Dashboard extends Component {
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
 
-    const startTime = `${start.getFullYear()}-${start.getMonth() +
-      1}-${start.getDate()}`;
-    const endTime = `${end.getFullYear()}-${end.getMonth() +
-      1}-${end.getDate()}`;
+    const startTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`;
+    const endTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`;
 
     if (isLoaded) {
       if (recentChallenge.state === 'inProgress') {
@@ -75,8 +73,8 @@ class Dashboard extends Component {
                       }}
                     >
                       <Text
-                        adjustsFontSizeToFit={true}
-                        allowFontScaling={true}
+                        adjustsFontSizeToFit
+                        allowFontScaling
                         numberOfLines={1}
                         style={styles.sloganText}
                       >
@@ -84,7 +82,9 @@ class Dashboard extends Component {
                       </Text>
                       <Text
                         style={{ marginTop: 5, color: '#d0d0d0' }}
-                      >{`도전 기간 | ${startTime} - ${endTime}`}</Text>
+                      >
+                        {`도전 기간 | ${startTime} - ${endTime}`}
+                      </Text>
                     </View>
                     <View style={styles.statusBox}>
                       <View
@@ -96,9 +96,7 @@ class Dashboard extends Component {
                         }}
                       >
                         <Text style={{ color: '#888' }}>체크 주기</Text>
-                        <View
-                          style={{ justifyContent: 'center', marginTop: 5 }}
-                        >
+                        <View style={{ justifyContent: 'center', marginTop: 5 }}>
                           <Text style={{ fontSize: 25, fontWeight: '500' }}>
                             {recentChallenge.checkingPeriod}
                           </Text>
@@ -123,8 +121,8 @@ class Dashboard extends Component {
                         >
                           <Text
                             style={{ fontSize: 25, fontWeight: '500' }}
-                            adjustsFontSizeToFit={true}
-                            allowFontScaling={true}
+                            adjustsFontSizeToFit
+                            allowFontScaling
                             numberOfLines={1}
                           >
                             5만원
@@ -163,14 +161,13 @@ class Dashboard extends Component {
                         marginLeft: 20,
                       }}
                     >
-                      진행 상황 | {(progress * 100).toFixed(1)}%
+                      진행 상황 |
+                      {' '}
+                      {(progress * 100).toFixed(1)}
+%
                     </Text>
                     <View style={{ marginLeft: 20 }}>
-                      <Progress.Bar
-                        progress={progress}
-                        color="#dcdcdc"
-                        width={width - 40}
-                      />
+                      <Progress.Bar progress={progress} color="#dcdcdc" width={width - 40} />
                     </View>
                   </View>
                 </View>
@@ -195,20 +192,14 @@ class Dashboard extends Component {
                 </View>
               )}
               <View style={[styles.doItContainer]}>
-                <OrangeButton
-                  text="오늘 달성"
-                  onPress={this.doItHandler}
-                  width={width - 40}
-                />
+                <OrangeButton text="오늘 달성" onPress={this.doItHandler} width={width - 40} />
               </View>
             </View>
           </ScrollView>
         );
       }
       return (
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <Image
               source={readyRun2Image}
@@ -219,13 +210,15 @@ class Dashboard extends Component {
               }}
             />
           </View>
-          <Text style={{ fontSize: 20, flex: 1 }}>
-            아직 시작되지 않은 도전입니다
-          </Text>
+          <Text style={{ fontSize: 20, flex: 1 }}>아직 시작되지 않은 도전입니다</Text>
         </View>
       );
     }
-    return <Text>Loading</Text>;
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    );
   }
 }
 
