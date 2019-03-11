@@ -17,6 +17,13 @@ const { width } = Dimensions.get('window');
 class Amount extends Component {
   state = {
     isFree: false,
+    warn: false,
+  }
+
+  componentDidUpdate = () => {
+    const { warn } = this.state;
+    const { amount } = this.props;
+    if (amount !== '' && warn) this.setState({ warn: false });
   }
 
   scrollToInput = node => {
@@ -26,7 +33,9 @@ class Amount extends Component {
   handleNext = () => {
     const { navigation, amount } = this.props;
     const { isFree } = this.state;
-    if (isFree || amount.length < 1) {
+    if (amount === '') {
+      this.setState({ warn: true });
+    } else if (isFree) {
       navigation.navigate('Slogan', {
         setting: navigation.state.params.setting,
       });
@@ -57,7 +66,7 @@ class Amount extends Component {
   }
 
   render = () => {
-    const { isFree } = this.state;
+    const { isFree, warn } = this.state;
     const { amount } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -98,6 +107,7 @@ class Amount extends Component {
             </View>
             <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
               <OrangeButton text="Next" onPress={this.handleNext} marginTop={0} />
+              <Text style={{ ...styles.warning }}>{warn ? '금액을 입력해주세요!' : ' '}</Text>
             </View>
           </View>
         </KeyboardAwareScrollView>
