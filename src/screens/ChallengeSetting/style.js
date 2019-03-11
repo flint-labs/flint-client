@@ -3,11 +3,6 @@ import { StyleSheet, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
-  headerLeftButton: {
-    flexDirection: 'row',
-    marginLeft: 10,
-    alignItems: 'center',
-  },
   pickerBox: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -3,7 +3,9 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Font } from 'expo';
 import { View, Text } from 'react-native';
+import { Provider } from 'react-redux';
 
+import store from './store';
 import Home from './src/screens/Home';
 import Referee from './src/screens/Referee';
 import Dashboard from './src/screens/Dashboard';
@@ -92,7 +94,9 @@ class App extends React.Component {
   render() {
     const { isLoaded } = this.state;
     return isLoaded ? (
-      <AppContainer />
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
     ) : (
       <View style={{ flex: 1 }}>
         <Text>Loading</Text>

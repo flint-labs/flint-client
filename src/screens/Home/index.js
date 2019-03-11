@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, Text, ScrollView, Dimensions, SafeAreaView,
+  View, Text, ScrollView, Dimensions, SafeAreaView, TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 
@@ -78,9 +79,7 @@ export default createStackNavigator(
     ChallengeSetting: {
       screen: ChallengeSetting,
       navigationOptions: {
-        headerTitle: () => (
-          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        ),
+        header: null,
       },
     },
     Payment: {

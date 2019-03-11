@@ -63,6 +63,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginHorizontal: 5,
   },
+  headerLeftButton: {
+    flexDirection: 'row',
+    marginLeft: 10,
+    alignItems: 'center',
+  },
 });
 
 export default styles;
