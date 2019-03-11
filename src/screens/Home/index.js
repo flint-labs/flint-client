@@ -9,6 +9,7 @@ import Feedback from './Feedback';
 import ChallengeSetting from '../ChallengeSetting';
 import Payment from '../Payment';
 import Success from '../Payment/Success';
+import SignIn from '../SignIn';
 
 import styles from './Styles';
 
@@ -88,6 +89,10 @@ export default createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+
+    SignIn: {
+      screen: SignIn,
     },
   },
   {
