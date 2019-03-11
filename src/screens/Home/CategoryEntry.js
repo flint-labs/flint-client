@@ -1,6 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+  AsyncStorage,
+} from 'react-native';
 
 import { challengeAction } from '../../actions';
 import styles from './Styles';
@@ -14,9 +20,14 @@ const CategoryEntry = ({
   description,
   setCategory,
 }) => {
-  const handleOnPress = () => {
-    setCategory(title);
-    goToScreen('ChallengeSetting');
+  const handleOnPress = async () => {
+    try {
+      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+      setCategory(title);
+      goToScreen('ChallengeSetting');
+    } catch (error) {
+      goToScreen('SignIn');
+    }
   };
 
   return (
