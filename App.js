@@ -1,11 +1,11 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Font, Notifications } from 'expo';
 import {
   View, Text, AsyncStorage, ActivityIndicator,
 } from 'react-native';
-
 import socketio from 'socket.io-client';
 import Home from './src/screens/Home';
 import Referee from './src/screens/Referee';
@@ -14,6 +14,7 @@ import History from './src/screens/History';
 import UserInfo from './src/screens/UserInfo';
 import sendRequest from './src/modules/sendRequest';
 import registerForPushNotificationsAsync from './src/modules/registerForPushNotificationsAsync';
+import store from './store';
 
 const io = socketio('http://13.209.19.196:3000');
 
@@ -172,7 +173,11 @@ class App extends React.Component {
   render() {
     const { isLoaded, isHome } = this.state;
     if (isLoaded) {
-      return isHome ? <AppContainer1 /> : <AppContainer2 />;
+      return (
+        <Provider store={store}>
+          { isHome ? <AppContainer1 /> : <AppContainer2 />}
+        </Provider>
+      );
     }
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

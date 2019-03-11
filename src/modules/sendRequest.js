@@ -14,8 +14,7 @@ const BASE_URL = 'http://13.209.19.196:3000';
  */
 const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   const setHeader = token => {
-    if (setHeaders)
-      return Object.assign(setHeaders, { 'x-access-token': token });
+    if (setHeaders) return Object.assign(setHeaders, { 'x-access-token': token });
     return { 'x-access-token': token };
   };
   const request = token => {
@@ -31,7 +30,6 @@ const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   let result;
   try {
     const accessToken = await AsyncStorage.getItem('accessToken');
-    // const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJraW1zajk0ODRAZ21haWwuY29tIiwibmlja25hbWUiOiLquYDshKDsnqwiLCJnZW5kZXIiOiJtYW4iLCJiaXJ0aCI6MTk5NCwibG9jYXRpb24iOiIiLCJjaGFuZ2UiOjAsImNyZWF0ZWRBdCI6IjIwMTktMDMtMDFUMDQ6NDI6MzYuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTktMDMtMDFUMDQ6NDI6MzYuMDAwWiIsImlhdCI6MTU1MTY4MzM5NCwiZXhwIjoxNTUxNjgzNDA0LCJpc3MiOiJmbGludCIsInN1YiI6IngtYWNjZXNzLXRva2VuIn0.7YfNHuRVIAa5cB-OYUYJq-1GxTnrXrOZiOHsnsGG0I0';
     result = await request(accessToken);
   } catch (error) {
     console.log('Access Token Error');
@@ -41,7 +39,6 @@ const sendRequest = async (method, endPoint, setHeaders, setBody) => {
   if (result) return result;
   try {
     const refreshToken = await SecureStore.getItemAsync('refreshToken');
-    // const refreshToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJraW1zajk0ODRAZ21haWwuY29tIiwibmlja25hbWUiOiLquYDshKDsnqwiLCJnZW5kZXIiOiJtYW4iLCJiaXJ0aCI6MTk5NCwibG9jYXRpb24iOiIiLCJjaGFuZ2UiOjAsImNyZWF0ZWRBdCI6IjIwMTktMDMtMDFUMDQ6NDI6MzYuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMTktMDMtMDFUMDQ6NDI6MzYuMDAwWiIsImlhdCI6MTU1MTY4MzM5NCwiZXhwIjoxNTUxNjgzNDA0LCJpc3MiOiJmbGludCIsInN1YiI6IngtcmVmcmVzaC10b2tlbiJ9.tHXrqLNBoPrgSq6e7bXyInJDKL4ZMy2mTsNwmoeCb0U';
     const { headers } = await axios.get(`${BASE_URL}/oauth/accessToken`, {
       headers: { 'x-refresh-token': refreshToken },
     });
