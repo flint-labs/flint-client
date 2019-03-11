@@ -30,6 +30,7 @@ class UserInfo extends Component {
     user: null,
     pending: false,
     isDialogVisible: false,
+    totalAmount: 0,
   };
 
   goTo = screen => {
@@ -55,7 +56,16 @@ class UserInfo extends Component {
       );
       console.log(error.message);
     } finally {
-      this.setState({ pending: false });
+      const totalAmount =
+        this.state.user !== null
+          ? this.state.totalAmount + Number(this.state.user.change)
+          : this.state.totalAmount;
+
+      console.log(this.state.totalAmount);
+      this.setState({
+        pending: false,
+        totalAmount,
+      });
     }
   };
 
@@ -113,7 +123,7 @@ class UserInfo extends Component {
   };
 
   renderInfoPage = () => {
-    const { user, isDialogVisible } = this.state;
+    const { user, isDialogVisible, totalAmount } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.userNicknameContainer}>
@@ -157,11 +167,11 @@ class UserInfo extends Component {
               fontWeight: '600',
             }}
           >
-            현재 잔액
+            총 기부 금액
           </Text>
           <View style={styles.change}>
             <Text style={{ fontSize: 30, fontWeight: '600' }}>
-              ₩ {this.numberWithCommas(user.change.toString())}
+              ₩ {this.numberWithCommas(totalAmount.toString())}
             </Text>
           </View>
         </View>
@@ -225,7 +235,9 @@ class UserInfo extends Component {
   );
 
   renderLoading = () => (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator />
+    </View>
   );
 
   renderInCondition = () => {
