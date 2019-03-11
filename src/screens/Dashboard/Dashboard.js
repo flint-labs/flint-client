@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, Dimensions,
+  View, Text, Image, Dimensions, ActivityIndicator,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
@@ -109,7 +109,7 @@ class Dashboard extends Component {
         </View>
       );
     }
-    return <Text>Loading</Text>;
+    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>;
   }
 }
 

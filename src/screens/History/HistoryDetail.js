@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import sendRequest from '../../modules/sendRequest';
@@ -131,9 +131,7 @@ class HistoryDetail extends Component {
         </View>
       </View>
     ) : (
-      <View>
-        <Text>Loading</Text>
-      </View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>
     );
   };
 }

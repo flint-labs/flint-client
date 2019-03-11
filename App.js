@@ -2,7 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Font, Notifications } from 'expo';
-import { View, Text, AsyncStorage } from 'react-native';
+import { View, Text, AsyncStorage, ActivityIndicator } from 'react-native';
 
 import socketio from 'socket.io-client';
 import Home from './src/screens/Home';
@@ -173,9 +173,7 @@ class App extends React.Component {
       return isHome ? <AppContainer1 /> : <AppContainer2 />;
     }
     return (
-      <View style={{ flex: 1 }}>
-        <Text>Loading</Text>
-      </View>
+      <ActivityIndicator />
     );
   }
 }

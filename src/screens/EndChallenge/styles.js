@@ -1,6 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
-
-const { width } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,25 +23,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { fontSize: 20, color: 'white', fontWeight: 'bold' },
-  donationInput: {
-    flex: 0.5,
-    fontSize: 15,
-    width: width * 0.7,
-    textAlign: 'center',
-    borderWidth: 0.5,
-    borderColor: '#dcdcdc',
-    textAlignVertical: 'top',
-  },
   headerContainer: {
     marginTop: 35,
     flex: 0.3,
     borderBottomColor: '#dcdcdc',
     borderBottomWidth: 0.5,
-  },
-  failureImageContainer: {
-    flex: 1.5,
-    marginRight: '5%',
-    alignItems: 'flex-start',
   },
 });
 
