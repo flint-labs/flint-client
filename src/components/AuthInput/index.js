@@ -26,7 +26,7 @@ AuthInput.propTypes = {
     PropTypes.number,
   ]).isRequired,
   setState: PropTypes.func.isRequired,
-  renderIcon: PropTypes.func.isRequired,
+  renderIcon: PropTypes.func,
   customProps: PropTypes.shape({
     placeholder: PropTypes.string,
     returnKeyType: PropTypes.string,
@@ -39,6 +39,7 @@ AuthInput.propTypes = {
 
 AuthInput.defaultProps = {
   customProps: {},
+  renderIcon: () => {},
 };
 
 export default AuthInput;

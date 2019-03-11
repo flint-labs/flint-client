@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Dimensions, SafeAreaView } from 'react-native';
+import {
+  View, ScrollView, Dimensions,
+} from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
+import PropTypes from 'prop-types';
 
 import Intro from './Intro';
 import Feedback from './Feedback';
@@ -54,6 +57,12 @@ class Home extends Component {
   );
 }
 
+Home.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+};
+
 export default createStackNavigator(
   {
     Home: {
@@ -68,16 +77,20 @@ export default createStackNavigator(
     ChallengeSetting: {
       screen: ChallengeSetting,
       navigationOptions: {
-        headerTitle: () => (
-          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        ),
+        header: null,
       },
     },
     Payment: {
       screen: Payment,
+      navigationOptions: {
+        header: null,
+      },
     },
     Success: {
       screen: Success,
+      navigationOptions: {
+        header: null,
+      },
     },
   },
   {

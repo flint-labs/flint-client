@@ -17,17 +17,18 @@ class Payment extends Component {
   isLoaded = false
 
   defaultBillingInfo = async () => {
-    const { navigation: { state: { params: { amount } } } } = this.props;
-    const pg = 'kakaopay';
+    const { navigation: { state: { params: { amount, isKakao } } } } = this.props;
     const { email, nickname } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     return {
+      pg: isKakao ? 'kakaopay' : 'paypal',
       buyer_email: email,
       buyer_name: nickname,
+      app_scheme: 'flint',
       pay_method: 'card',
       merchant_uid: `merchant_${new Date().getTime()}`,
       name: 'Flint Challenge',
-      currency: pg === 'paypal' ? 'USD' : 'KRW',
-      amount: pg === 'paypal' ? amount / 1000 : amount,
+      currency: !isKakao ? 'USD' : 'KRW',
+      amount: !isKakao ? amount / 1000 : amount,
       m_redirect_url: 'flint://payment/success',
     };
   }
@@ -70,7 +71,6 @@ class Payment extends Component {
 
   sendPropsToWebView = async () => {
     const data = await this.defaultBillingInfo();
-    console.log(data);
     if (!this.isLoaded) {
       this.isLoaded = true;
       this.xdm.postMessage(JSON.stringify(data));
@@ -78,13 +78,16 @@ class Payment extends Component {
   }
 
   openExternalLink = req => {
-    const { navigation: { navigate } } = this.props;
+    const { navigation } = this.props;
     const { url } = req;
+    const isFlint = url.search('flint://payment/success') !== -1;
     const isKakao = url.search('kakaotalk://') !== -1;
     const isPaypal = url.search('paypal://') !== -1;
-    const isFlint = url.search('flint://') !== -1;
     if (isFlint) {
-      navigate('Success');
+      navigation.navigate('Success', {
+        setting: navigation.state.params.setting,
+      });
+      return false;
     }
     if (isKakao || isPaypal) {
       Linking.openURL(url);
@@ -93,29 +96,22 @@ class Payment extends Component {
     return true;
   }
 
-  render = () => {
-    const { navigation } = this.props;
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <WebView
-          style={{ flex: 1 }}
-          onLoadEnd={this.sendPropsToWebView}
-          ref={xdm => { this.xdm = xdm; }}
-          originWhitelist={['*']}
-          injectedJavaScript={this.getInjectedJavascript()}
-          onMessage={this.onMessage}
-          source={source}
-          thirdPartyCookiesEnabled
-          useWebKit
-          onShouldStartLoadWithRequest={this.openExternalLink}
-          onError={error => Alert.alert('결제실패 :(', `${error.message}`, [{
-            text: '보러가기',
-            onPress: () => navigation.goBack(),
-          }])}
-        />
-      </SafeAreaView>
-    );
-  }
+  render = () => (
+    <SafeAreaView style={{ flex: 1 }}>
+      <WebView
+        style={{ flex: 1 }}
+        onLoadEnd={this.sendPropsToWebView}
+        ref={xdm => { this.xdm = xdm; }}
+        originWhitelist={['*']}
+        injectedJavaScript={this.getInjectedJavascript()}
+        onMessage={this.onMessage}
+        source={source}
+        thirdPartyCookiesEnabled
+        useWebKit
+        onShouldStartLoadWithRequest={this.openExternalLink}
+      />
+    </SafeAreaView>
+  )
 }
 Payment.propTypes = propTypes;
 
