@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { SafeAreaView, View, FlatList, Text, AsyncStorage } from 'react-native';
+import {
+  SafeAreaView, View, FlatList, Text, AsyncStorage, ActivityIndicator,
+} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import sendRequest from '../../modules/sendRequest';
 import HistoryEntry from './HistoryEntry';
@@ -15,10 +17,7 @@ class History extends Component {
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
 
     try {
-      const { data } = await sendRequest(
-        'get',
-        `/api/history/completeList/${id}`,
-      );
+      const { data } = await sendRequest('get', `/api/history/completeList/${id}`);
       this.setState({ isLoading: true, completeList: data || [] });
     } catch (err) {
       console.log(err.message);
@@ -38,19 +37,14 @@ class History extends Component {
                 data={completeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={itemData => (
-                  <HistoryEntry
-                    data={itemData.item}
-                    handlePress={switchScreen}
-                  />
+                  <HistoryEntry data={itemData.item} handlePress={switchScreen} />
                 )}
               />
             </View>
           </SafeAreaView>
         ) : (
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
-            <Text>Loading</Text>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator />
           </View>
         )}
       </View>
