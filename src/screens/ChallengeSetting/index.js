@@ -76,10 +76,6 @@ export default createStackNavigator({
     screen: PaymentMethod,
     navigationOptions: headerOptions(false),
   },
-  StartChallenge: {
-    screen: StartChallenge,
-    navigationOptions: headerOptions(false),
-  },
 }, {
   transitionConfig: () => ({
     transitionSpec: {

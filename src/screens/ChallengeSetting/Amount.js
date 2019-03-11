@@ -92,6 +92,7 @@ class Amount extends Component {
                 returnKeyType="next"
                 onSubmitEditing={this.handleNext}
                 onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
+                editable={!isFree}
               />
               <View style={{ width: width * 0.8 }}>
                 <CheckBox
