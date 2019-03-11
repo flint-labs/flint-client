@@ -3,7 +3,9 @@ import { Provider } from 'react-redux';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Font, Notifications } from 'expo';
-import { AsyncStorage, ActivityIndicator } from 'react-native';
+import {
+  View, Text, AsyncStorage, ActivityIndicator,
+} from 'react-native';
 import socketio from 'socket.io-client';
 import Home from './src/screens/Home';
 import Referee from './src/screens/Referee';
@@ -178,7 +180,9 @@ class App extends React.Component {
       );
     }
     return (
-      <ActivityIndicator />
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
     );
   }
 }
