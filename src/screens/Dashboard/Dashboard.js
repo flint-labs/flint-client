@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View, Text, Image, Dimensions,
+  View,
+  Text,
+  Image,
+  Dimensions,
+  ScrollView,
+  FlatList,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
@@ -10,7 +15,7 @@ import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const runIcon = require('../../../assets/images/Dashboard/run.png');
 const readyRun2Image = require('../../../assets/images/Dashboard/readyRun2.png');
 
@@ -40,61 +45,170 @@ class Dashboard extends Component {
 
   render() {
     const { modalVisible, isLoaded } = this.state;
-    const {
-      bounceValue,
-      toggleSubView,
-      handleChallenges,
-      challenges,
-      recentChallenge,
-      handleRecentChallenge,
-      reports,
-      progress,
-    } = this.props;
+    const { recentChallenge, reports, progress } = this.props;
+
+    const start = new Date(recentChallenge.startAt);
+    const end = new Date(recentChallenge.endAt);
+
+    const startTime = `${start.getFullYear()}-${start.getMonth() +
+      1}-${start.getDate()}`;
+    const endTime = `${end.getFullYear()}-${end.getMonth() +
+      1}-${end.getDate()}`;
+
     if (isLoaded) {
       if (recentChallenge.state === 'inProgress') {
         return (
-          <View style={styles.container}>
-            <DoIt
-              modalVisible={modalVisible}
-              toggleModal={this.toggleModal}
-              recentChallenge={recentChallenge}
-            />
-            <View style={[styles.sloganContainer]}>
-              <Text style={styles.sloganText}>{recentChallenge.slogan}</Text>
-            </View>
-            <View style={[styles.progressContainer]}>
-              <Image style={styles.runImage} source={runIcon} />
-              <Progress.Bar progress={progress} width={width * 0.8} color="#ff6600" />
-              <Text style={{ marginTop: 3 }}>
-                {(progress * 100).toFixed(1)}
-%
-              </Text>
-            </View>
-            {reports.length ? (
-              <Carousel
-                layout="stack"
-                inverted
-                swipeThreshold={5}
-                data={reports}
-                renderItem={({ item }) => <ReportEntry data={item} />}
-                sliderWidth={width}
-                itemWidth={width * 0.8}
-                sliderHeight={270}
-                style={{ transform: [{ scaleY: -1 }] }}
+          <ScrollView style={{ flex: 1 }}>
+            <View style={styles.container}>
+              <DoIt
+                modalVisible={modalVisible}
+                toggleModal={this.toggleModal}
+                recentChallenge={recentChallenge}
               />
-            ) : (
-              <View style={styles.nonReportsTextContainer}>
-                <Text style={{ fontSize: 15 }}>기록이 아직 없어요</Text>
+
+              <View style={{ flexDirection: 'row', flex: 4 }}>
+                <View style={[styles.sloganContainer]}>
+                  <View style={{ marginLeft: 20 }}>
+                    <View
+                      style={{
+                        marginTop: 5,
+                      }}
+                    >
+                      <Text
+                        adjustsFontSizeToFit={true}
+                        allowFontScaling={true}
+                        numberOfLines={1}
+                        style={styles.sloganText}
+                      >
+                        {recentChallenge.slogan}
+                      </Text>
+                      <Text
+                        style={{ marginTop: 5, color: '#d0d0d0' }}
+                      >{`도전 기간 | ${startTime} - ${endTime}`}</Text>
+                    </View>
+                    <View style={styles.statusBox}>
+                      <View
+                        style={{
+                          flex: 1,
+                          // backgroundColor: 'red',
+                          alignItems: 'center',
+                          marginVertical: 5,
+                        }}
+                      >
+                        <Text style={{ color: '#888' }}>체크 주기</Text>
+                        <View
+                          style={{ justifyContent: 'center', marginTop: 5 }}
+                        >
+                          <Text style={{ fontSize: 25, fontWeight: '500' }}>
+                            {recentChallenge.checkingPeriod}
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          alignItems: 'center',
+                          borderLeftWidth: 1,
+                          borderRightWidth: 1,
+                          borderColor: '#dcdcdc',
+                          marginVertical: 5,
+                        }}
+                      >
+                        <Text style={{ color: '#888' }}>금액</Text>
+                        <View
+                          style={{
+                            justifyContent: 'center',
+                            marginTop: 5,
+                          }}
+                        >
+                          <Text
+                            style={{ fontSize: 25, fontWeight: '500' }}
+                            adjustsFontSizeToFit={true}
+                            allowFontScaling={true}
+                            numberOfLines={1}
+                          >
+                            5만원
+                          </Text>
+                        </View>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          // backgroundColor: 'pink',
+                          alignItems: 'center',
+                          marginVertical: 5,
+                        }}
+                      >
+                        <Text style={{ color: '#888' }}>카테고리</Text>
+                        <View
+                          style={{
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginTop: 5,
+                          }}
+                        >
+                          <Text style={{ fontSize: 22, fontWeight: '500' }}>
+                            {recentChallenge.category}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                  <View style={{}}>
+                    <Text
+                      style={{
+                        color: '#d0d0d0',
+                        marginVertical: 10,
+                        marginLeft: 20,
+                      }}
+                    >
+                      진행 상황 | {(progress * 100).toFixed(1)}%
+                    </Text>
+                    <View style={{ marginLeft: 20 }}>
+                      <Progress.Bar
+                        progress={progress}
+                        color="#dcdcdc"
+                        width={width - 40}
+                      />
+                    </View>
+                  </View>
+                </View>
               </View>
-            )}
-            <View style={[styles.doItContainer]}>
-              <OrangeButton text="오늘 달성" onPress={this.doItHandler} />
+              {reports.length ? (
+                <View style={styles.nonReportsTextContainer}>
+                  <Carousel
+                    layout="stack"
+                    inverted
+                    swipeThreshold={5}
+                    data={reports}
+                    renderItem={({ item }) => <ReportEntry data={item} />}
+                    sliderWidth={width - 80}
+                    itemWidth={width - 100}
+                    sliderHeight={270}
+                    style={{ transform: [{ scaleY: -1 }] }}
+                  />
+                </View>
+              ) : (
+                <View style={styles.nonReportsTextContainer}>
+                  <Text style={{ fontSize: 15 }}>기록이 아직 없어요</Text>
+                </View>
+              )}
+              <View style={[styles.doItContainer]}>
+                <OrangeButton
+                  text="오늘 달성"
+                  onPress={this.doItHandler}
+                  width={width - 40}
+                />
+              </View>
             </View>
-          </View>
+          </ScrollView>
         );
       }
       return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        >
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <Image
               source={readyRun2Image}
@@ -105,7 +219,9 @@ class Dashboard extends Component {
               }}
             />
           </View>
-          <Text style={{ fontSize: 20, flex: 1 }}>아직 시작되지 않은 도전입니다</Text>
+          <Text style={{ fontSize: 20, flex: 1 }}>
+            아직 시작되지 않은 도전입니다
+          </Text>
         </View>
       );
     }

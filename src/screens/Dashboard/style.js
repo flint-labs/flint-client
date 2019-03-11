@@ -1,22 +1,33 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  sloganContainer: { flex: 0.2, justifyContent: 'center', alignItems: 'center' },
+  sloganContainer: {
+    flex: 2,
+    justifyContent: 'center',
+  },
+  sloganText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    marginTop: 10,
+  },
+
   progressContainer: {
-    flex: 0.3,
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'green',
   },
   doItContainer: {
-    flex: 0.3,
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: height * 0.01,
+    marginBottom: 20,
   },
   doItText: { fontSize: 30 },
-  sloganText: { fontSize: 20, fontWeight: 'bold' },
   runImage: { width: 30, height: 30 },
   lineImage: { width: '80%', height: '15%' },
   modalTextInput: {
@@ -92,9 +103,6 @@ const styles = StyleSheet.create({
   doItHeaderContainer: {
     flexDirection: 'row',
     flex: 0.07,
-    // shadowOffset: { width: 5, height: 5 },
-    // shadowColor: '#dcdcdc',
-    // shadowOpacity: 1.0,
     alignItems: 'center',
     marginTop: 15,
     borderBottomColor: '#dcdcdc',
@@ -108,10 +116,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nonReportsTextContainer: {
-    height: 270,
-    flex: 1,
+    width: width,
+    height: 220,
+    flex: 3,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 30,
+  },
+  statusBox: {
+    backgroundColor: 'white',
+    width: width - 40,
+    height: 80,
+    marginTop: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#dcdcdc',
+    flexDirection: 'row',
+    alignItems: 'center',
+
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: 'black',
+    shadowOpacity: 0.1,
+    elevation: 1,
   },
 });
 
