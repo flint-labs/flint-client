@@ -4,17 +4,16 @@ import {
   Text,
   TouchableOpacity,
   AsyncStorage,
-  Alert,
   SafeAreaView,
   ImageBackground,
   ActivityIndicator,
+  AlertIOS,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import DialogInput from 'react-native-dialog-input';
 
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
@@ -50,7 +49,7 @@ class UserInfo extends Component {
       } = await sendRequest('get', `/api/users/${id}`);
       if (user) this.setState({ user });
     } catch (error) {
-      Alert.alert(
+      AlertIOS.alert(
         '⚠️',
         '서버에 문제가 생겼습니다 :( \n 잠시 후 다시 시도해주세요!',
       );
@@ -78,14 +77,14 @@ class UserInfo extends Component {
       await SecureStore.deleteItemAsync('refreshToken');
       await SecureStore.deleteItemAsync('keyChain');
       this.setState({ user: null });
-      Alert.alert('로그아웃 성공!', '보고싶을 거에요 🥺', [
+      AlertIOS.alert('로그아웃 성공!', '보고싶을 거에요 🥺', [
         {
           text: 'OK',
           onPress: () => this.goTo('Home'),
         },
       ]);
     } catch (error) {
-      Alert.alert(error.message);
+      AlertIOS.alert(error.message);
     } finally {
       this.setState({ pending: false });
     }
@@ -94,7 +93,6 @@ class UserInfo extends Component {
   handleDeleteAccountButton = async inputText => {
     try {
       const { id, email } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-
       if (email === inputText) {
         await axios.delete(
           `http://13.209.19.196:3000/api/users/deleteAccount/${id}`,
@@ -105,15 +103,14 @@ class UserInfo extends Component {
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.removeItem('recentChallenge');
         await SecureStore.deleteItemAsync('refreshToken');
-        this.setState({ user: null });
-        Alert.alert('감사합니다.');
+        this.setState({ user: null, pending: false });
+        AlertIOS.alert('감사합니다.');
       } else {
-        Alert.alert('이메일이 일치하지 않습니다.');
+        AlertIOS.alert('이메일이 일치하지 않습니다.');
+        this.setState({ pending: false });
       }
     } catch (error) {
-      Alert.alert(error.message);
-    } finally {
-      this.setState({ pending: false, isDialogVisible: false });
+      AlertIOS.alert(error.message);
     }
   };
 
@@ -123,7 +120,7 @@ class UserInfo extends Component {
   };
 
   renderInfoPage = () => {
-    const { user, isDialogVisible, totalAmount } = this.state;
+    const { user, totalAmount } = this.state;
     return (
       <View style={{ flex: 1 }}>
         <View style={styles.userNicknameContainer}>
@@ -199,7 +196,9 @@ class UserInfo extends Component {
           <TouchableOpacity
             style={styles.userInfoEtc}
             onPress={() => {
-              this.setState({ isDialogVisible: true });
+              AlertIOS.prompt('Email을 한 번 더 입력해 주세요.', null, text =>
+                this.handleDeleteAccountButton(text),
+              );
             }}
           >
             <Text style={{ marginLeft: 15, fontSize: 15, color: 'red' }}>
@@ -208,18 +207,6 @@ class UserInfo extends Component {
           </TouchableOpacity>
           <View style={{ flex: 1, backgroundColor: 'white' }} />
         </View>
-
-        <DialogInput
-          isDialogVisible={isDialogVisible}
-          title="Email을 한 번 더 입력해 주세요"
-          hintInput="Email"
-          submitInput={inputText => {
-            this.handleDeleteAccountButton(inputText);
-          }}
-          closeDialog={() => {
-            this.setState({ isDialogVisible: false });
-          }}
-        />
       </View>
     );
   };
