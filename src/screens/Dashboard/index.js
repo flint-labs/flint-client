@@ -1,5 +1,10 @@
 import React from 'react';
-import { Text, TouchableOpacity, Animated, AsyncStorage } from 'react-native';
+import {
+  Text,
+  TouchableOpacity,
+  Animated,
+  AsyncStorage,
+} from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -44,6 +49,7 @@ class component extends React.Component {
     if (isHidden) {
       toValue = 200;
     }
+    console.log(toValue);
     await Animated.spring(bounceValue, {
       toValue,
       velocity: 3,
@@ -69,9 +75,23 @@ class component extends React.Component {
       );
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-      const EndChallengeArray = challenges.filter(
-        el => new Date(el.endAt) - new Date() <= 0,
-      );
+      const shouldChangeChallenges = [];
+      challenges.forEach(el => {
+        if (new Date(el.startAt) - new Date() <= 0) {
+          shouldChangeChallenges.push(el.id);
+        }
+      });
+      // challenge 시작날짜가 오늘보다 과거면 inProgress로 변경
+      if (shouldChangeChallenges.length) {
+        await sendRequest('put', '/api/challenges/updateChallengesState', null, {
+          willState: 'inProgress',
+          challengesId: shouldChangeChallenges,
+        });
+        // 변경되면 데이터 다시 불러오기
+        const { data } = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
+        this.setState({ challenges: data.challenges });
+      }
+      const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
       if (EndChallengeArray.length > 0) {
         this.setState({
           recentChallenge: EndChallengeArray[0],
@@ -79,23 +99,20 @@ class component extends React.Component {
       } else {
         this.setState({
           recentChallenge:
-            JSON.parse(await AsyncStorage.getItem('recentChallenge')) ||
-            challenges[0],
+            JSON.parse(await AsyncStorage.getItem('recentChallenge'))
+            || challenges[0],
         });
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
     if (recentChallenge) {
-      const res = await sendRequest(
-        'get',
-        `/api/reports/getReports/${recentChallenge.id}`,
-      );
-      let { reports } = res && res.data;
+      const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
+      let reports = res ? res.data.reports : [];
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
         if (
-          el.isConfirmed === 'pending' &&
-          new Date() - new Date(el.createdAt) > 86400000
+          el.isConfirmed === 'pending'
+          && new Date() - new Date(el.createdAt) > 86400000
         ) {
           shouldConfirmReportsId.push(el.id);
         }
@@ -131,7 +148,7 @@ class component extends React.Component {
             : 1,
       });
       navigation.setParams({
-        dashboardTitle: recentChallenge.title,
+        dashboardTitle: user ? recentChallenge.title : '선택된 도전이 없습니다',
       });
     }
     this.setState({ isLoaded: true });
@@ -141,24 +158,18 @@ class component extends React.Component {
     this.setState({ isLoaded: false });
     const { user } = this.state;
     const { navigation } = this.props;
-    const res = await sendRequest(
-      'get',
-      `/api/challenges/getInProgressChallenges/${user.id}`,
-    );
-    this.setState({ challenges: res.data.challenges });
+    const response = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
+    this.setState({ challenges: response.data.challenges });
     this.setState({ recentChallenge: { ...challenge } });
     const { recentChallenge } = this.state;
-    const response = await sendRequest(
-      'get',
-      `/api/reports/getReports/${recentChallenge.id}`,
-    );
-    let { reports } = response.data;
+    const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
+    let { reports } = res && res.data;
     const shouldConfirmReportsId = [];
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
       if (
-        el.isConfirmed === 'pending' &&
-        new Date() - new Date(el.createdAt) > 86400000
+        el.isConfirmed === 'pending'
+        && new Date() - new Date(el.createdAt) > 86400000
       ) {
         shouldConfirmReportsId.push(el.id);
       }
@@ -189,12 +200,10 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week =
-      (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
-      (86400000 * 7);
-    const result = await (reports.filter(el => el.isConfirmed === 'true')
-      .length /
-      (week * recentChallenge.checkingPeriod));
+    const week = (new Date(recentChallenge.endAt)
+     - new Date(recentChallenge.startAt)) / (86400000 * 7);
+    const result = await (reports.filter(el => el.isConfirmed === 'true').length
+      / (week * recentChallenge.checkingPeriod));
     return result;
   };
 
