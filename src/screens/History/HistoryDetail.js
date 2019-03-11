@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import sendRequest from '../../modules/sendRequest';
@@ -105,7 +111,9 @@ class HistoryDetail extends Component {
         </View>
         <View style={styles.subContainerEntry}>
           <Text>달성률</Text>
-          <Text style={{ fontSize: 30, fontWeight: '600' }}>{progress}%</Text>
+          <Text style={{ fontSize: 30, fontWeight: '600' }}>
+            {(progress * 100).toFixed(1)}%
+          </Text>
         </View>
       </View>
     </View>
@@ -131,7 +139,9 @@ class HistoryDetail extends Component {
         </View>
       </View>
     ) : (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
     );
   };
 }
