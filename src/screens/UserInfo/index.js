@@ -65,6 +65,7 @@ class UserInfo extends Component {
       await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('recentChallenge');
       await SecureStore.deleteItemAsync('refreshToken');
+      await SecureStore.deleteItemAsync('keyChain');
       this.setState({ user: null });
       Alert.alert('로그아웃 성공!', '보고싶을 거에요 🥺', [
         {
