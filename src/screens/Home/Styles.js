@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
   },
   img: {
     width,
-    height: 200,
     resizeMode: 'cover',
   },
   challengeContainer: {
@@ -31,30 +30,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   categoryEntryImgContainer: {
-    width: width / 3 - 16,
-    height: width / 3 - 16,
+    width: width - 40,
+    height: width / 2.5,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 6,
+    marginHorizontal: 20,
+    marginVertical: 10,
     borderRadius: 10,
   },
   categoryEntryImage: {
     flex: 1,
-    margin: 6,
-    width: width / 3 - 16,
-    height: width / 3 - 16,
+    width: width - 40,
+    height: width / 2.5,
     resizeMode: 'cover',
-  },
-  categoryEntryImageBlur: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    width: width / 3 - 16,
-    height: width / 3 - 16,
     alignItems: 'center',
     justifyContent: 'center',
-
-    borderColor: '#dcdcdc',
-
-    borderWidth: 1,
+    borderRadius: 10,
+  },
+  categoryEntryImageBlur: {
+    backgroundColor: 'rgba(0, 0, 0,0.5)',
+    width: width - 40,
+    height: width / 2.5,
+    justifyContent: 'center',
+    marginHorizontal: 20,
+    marginVertical: 10,
     borderRadius: 10,
   },
   feedbackContainer: {
