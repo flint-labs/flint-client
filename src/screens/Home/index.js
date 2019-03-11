@@ -47,7 +47,7 @@ class Home extends Component {
       <View style={styles.indexContainer}>
         <ScrollView style={{ flex: 1, width }}>
           <Intro goToScreen={this.goToScreen} />
-          <Feedback />
+          {/*<Feedback />*/}
         </ScrollView>
       </View>
     </View>
@@ -59,10 +59,9 @@ export default createStackNavigator(
     Home: {
       screen: Home,
       navigationOptions: {
-        // headerTitle: () => (
-        //   <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        // ),
-        header: null,
+        headerTitle: () => (
+          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        ),
       },
     },
     ChallengeSetting: {
