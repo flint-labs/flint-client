@@ -194,7 +194,7 @@ class Referee extends Component {
 
   render = () => {
     const { reqData } = this.state;
-    return (
+    return reqData.length !== 0 ? (
       <View style={{ flex: 1 }}>
         <NavigationEvents onWillFocus={this.handleWillFocus} />
         <SafeAreaView style={{ flex: 1 }}>
@@ -212,6 +212,10 @@ class Referee extends Component {
           </View>
           {this.renderModal()}
         </SafeAreaView>
+      </View>
+    ) : (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text> 요청이 모두 처리되었습니다. </Text>
       </View>
     );
   };

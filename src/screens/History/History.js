@@ -47,7 +47,9 @@ class History extends Component {
             </View>
           </SafeAreaView>
         ) : (
-          <View>
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
             <Text>Loading</Text>
           </View>
         )}
