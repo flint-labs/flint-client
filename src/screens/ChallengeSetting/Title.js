@@ -29,7 +29,7 @@ class Title extends Component {
     const { navigation, title } = this.props;
     if (title !== '') {
       this.setState({ warn: false });
-      navigation.navigate('ChallengePeriod', {
+      navigation.navigate('StartAt', {
         setting: navigation.state.params.setting,
       });
     } else {

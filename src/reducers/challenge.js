@@ -5,8 +5,7 @@ const {
   SET_AMOUNT, SET_RECEIPIENT, SET_SLOGAN, SET_CATEGORY,
 } = challengeAction;
 
-const date = new Date();
-const TODAY = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+const TODAY = new Date();
 
 const initialState = {
   category: '',
