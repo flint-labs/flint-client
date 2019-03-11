@@ -5,7 +5,6 @@ import {
   FlatList,
   Text,
   AsyncStorage,
-  ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
@@ -85,7 +84,7 @@ class History extends Component {
         <View
           style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
         >
-          <ActivityIndicator />
+          <Text>완료된 도전이 없습니다.</Text>
         </View>
       );
     }
