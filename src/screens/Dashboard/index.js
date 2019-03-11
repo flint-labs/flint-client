@@ -81,7 +81,6 @@ class component extends React.Component {
           shouldChangeChallenges.push(el.id);
         }
       });
-      console.log(shouldChangeChallenges);
       // challenge 시작날짜가 오늘보다 과거면 inProgress로 변경
       if (shouldChangeChallenges.length) {
         await sendRequest('put', '/api/challenges/updateChallengesState', null, {

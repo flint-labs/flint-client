@@ -1,28 +1,27 @@
 import React from 'react';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Font } from 'expo';
+import { Font, Notifications } from 'expo';
 import { View, Text, AsyncStorage } from 'react-native';
 
+import socketio from 'socket.io-client';
 import Home from './src/screens/Home';
 import Referee from './src/screens/Referee';
 import Dashboard from './src/screens/Dashboard';
 import History from './src/screens/History';
 import UserInfo from './src/screens/UserInfo';
 import sendRequest from './src/modules/sendRequest';
+import registerForPushNotificationsAsync from './src/modules/registerForPushNotificationsAsync';
+
+const io = socketio('http://13.209.19.196:3000');
 
 const isChallenge = async () => {
   const user = JSON.parse(await AsyncStorage.getItem('userInfo'));
-  // console.log(Boolean(user));
   if (!user) return false;
-  // console.log('aaaaa');
   const { data } = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
-  console.log(JSON.stringify(data.challenges));
   if (data.challenges.length) return true;
   return false;
 };
-
-console.log(isChallenge());
 
 const Root1 = createBottomTabNavigator(
   {
@@ -142,16 +141,31 @@ class App extends React.Component {
   state = {
     isLoaded: false,
     isHome: true,
+    notification: {},
   };
 
   async componentDidMount() {
+    // 저장된 유저정보가 바뀔 때마다 새로 받아야 하는데 아직 그러지 못하고 있음.
+    // 앱이 꺼지면 유지 못하고 있음
+    const user = JSON.parse(await AsyncStorage.getItem('userInfo'));
+    this.notificationSubscription = Notifications.addListener(this.handleNotification);
+    registerForPushNotificationsAsync(); // 앱시작했을 때 허락요청
+    if (user !== null) {
+      io.on(user.id, async () => {
+        registerForPushNotificationsAsync();
+      });
+    }
     await Font.loadAsync({
       Fontrust,
     });
     const isHome = !(await isChallenge());
-    console.log(isHome);
+
     this.setState({ isLoaded: true, isHome });
   }
+
+  handleNotification = notification => {
+    this.setState({ notification });
+  };
 
   render() {
     const { isLoaded, isHome } = this.state;
