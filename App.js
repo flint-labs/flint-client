@@ -4,7 +4,7 @@ import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Font, Notifications } from 'expo';
 import {
-  View, Text, AsyncStorage, ActivityIndicator,
+  View, Text, AsyncStorage, ActivityIndicator, YellowBox,
 } from 'react-native';
 import socketio from 'socket.io-client';
 import Home from './src/screens/Home';
@@ -17,6 +17,9 @@ import registerForPushNotificationsAsync from './src/modules/registerForPushNoti
 import store from './store';
 
 const io = socketio('http://13.209.19.196:3000');
+YellowBox.ignoreWarnings([
+  'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
+]);
 
 const isChallenge = async () => {
   const user = JSON.parse(await AsyncStorage.getItem('userInfo'));
