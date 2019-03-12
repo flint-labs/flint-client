@@ -6,8 +6,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { OrangeButton } from '../../components';
 import sendRequest from '../../modules/sendRequest';
+import { challengeAction } from '../../actions';
 
-const StartChallenge = ({ navigation, challenge }) => {
+const { RESET_CHALLENGE } = challengeAction;
+
+const StartChallenge = ({ navigation, challenge, resetChallenge }) => {
   const makeChallenge = async () => {
     const { startAt, challengePeriod } = challenge;
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
@@ -38,6 +41,7 @@ const StartChallenge = ({ navigation, challenge }) => {
       const newChallenge = await makeChallenge();
       await sendRequest('post', '/api/challenges/setting', null, { challenge: newChallenge });
 
+      resetChallenge();
       navigation.state.params.setting();
       navigation.popToTop();
     } catch (error) {
@@ -79,10 +83,14 @@ StartChallenge.propTypes = {
     receipient: PropTypes.number,
     slogan: PropTypes.string,
   }).isRequired,
+  resetChallenge: PropTypes.func.isRequired,
 };
 
 export default connect(
   state => ({
     challenge: state.challenge,
+  }),
+  dispatch => ({
+    resetChallenge: () => dispatch({ type: RESET_CHALLENGE }),
   }),
 )(StartChallenge);

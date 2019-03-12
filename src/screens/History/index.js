@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation';
 import { Text } from 'react-native';
 import History from './History';
 import HistoryDetail from './HistoryDetail';
+import SignIn from '../SignIn';
 
 class component extends Component {
   goToScreen = (screenName, data, period) => {
@@ -24,6 +25,10 @@ export default createStackNavigator(
 
     HistoryDetail: {
       screen: HistoryDetail,
+    },
+
+    SignIn: {
+      screen: SignIn,
     },
   },
   {

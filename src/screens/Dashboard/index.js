@@ -15,6 +15,7 @@ import styles from './style';
 import Select from './Select';
 import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
+import UserInfo from '../UserInfo';
 
 let isHidden = true;
 
@@ -25,9 +26,7 @@ class component extends React.Component {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleBottomModal()}>
           <Text style={{ fontSize: 17 }}>
-            {params.dashboardTitle
-              ? ` ${params.dashboardTitle} `
-              : ' 선택된 도전이 없어요 '}
+            {params.dashboardTitle ? ` ${params.dashboardTitle} ` : ' 선택된 도전이 없어요 '}
             <Icon name="ios-arrow-dropdown" size={17} />
           </Text>
         </TouchableOpacity>
@@ -90,7 +89,10 @@ class component extends React.Component {
           challengesId: shouldChangeChallenges,
         });
         // 변경되면 데이터 다시 불러오기
-        const { data } = await sendRequest('get', `/api/challenges/getInProgressChallenges/${user.id}`);
+        const { data } = await sendRequest(
+          'get',
+          `/api/challenges/getInProgressChallenges/${user.id}`,
+        );
         this.setState({ challenges: data.challenges });
       }
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
@@ -101,21 +103,17 @@ class component extends React.Component {
       } else {
         this.setState({
           recentChallenge:
-            JSON.parse(await AsyncStorage.getItem('recentChallenge'))
-            || challenges[0],
+            JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
         });
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    if (recentChallenge) {
+    if (Object.keys(recentChallenge).length) {
       const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
       let reports = res ? res.data.reports : [];
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
-        if (
-          el.isConfirmed === 'pending'
-          && new Date() - new Date(el.createdAt) > 86400000
-        ) {
+        if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
           shouldConfirmReportsId.push(el.id);
         }
       });
@@ -144,10 +142,7 @@ class component extends React.Component {
         .map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
-        progress:
-          (await this.calculateProgress()) <= 1
-            ? await this.calculateProgress()
-            : 1,
+        progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
       });
       navigation.setParams({
         dashboardTitle: user ? recentChallenge.title : '선택된 도전이 없습니다',
@@ -169,10 +164,7 @@ class component extends React.Component {
     const shouldConfirmReportsId = [];
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
-      if (
-        el.isConfirmed === 'pending'
-        && new Date() - new Date(el.createdAt) > 86400000
-      ) {
+      if (el.isConfirmed === 'pending' && new Date() - new Date(el.createdAt) > 86400000) {
         shouldConfirmReportsId.push(el.id);
       }
     });
@@ -187,10 +179,7 @@ class component extends React.Component {
       .map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
-      progress:
-        (await this.calculateProgress()) <= 1
-          ? await this.calculateProgress()
-          : 1,
+      progress: (await this.calculateProgress()) <= 1 ? await this.calculateProgress() : 1,
     });
     navigation.setParams({ dashboardTitle: recentChallenge.title });
     this.setState({ isLoaded: true });
@@ -202,8 +191,7 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week = (new Date(recentChallenge.endAt)
-     - new Date(recentChallenge.startAt)) / (86400000 * 7);
+    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
     const result = await (reports.filter(el => el.isConfirmed === 'true').length
       / (week * recentChallenge.checkingPeriod));
     return result;
@@ -225,10 +213,7 @@ class component extends React.Component {
           return (
             <>
               <Animated.View
-                style={[
-                  styles.subView,
-                  { transform: [{ translateY: bounceValue }], zIndex: 300 },
-                ]}
+                style={[styles.subView, { transform: [{ translateY: bounceValue }], zIndex: 300 }]}
               >
                 <Select
                   toggleSubView={this.toggleSubView}
@@ -259,11 +244,29 @@ class component extends React.Component {
             </>
           );
         }
-        return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>새로운 도전을 시작하세요!</Text></View>;
+        return (
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Text>새로운 도전을 시작하세요!</Text>
+          </View>
+        );
       }
-      return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>로그인을 먼저 해주세요</Text></View>;
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => this.goTo('SignIn')}>
+              <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
+                Flint 회원이신가요?
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
     }
-    return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>;
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    );
   };
 
   render() {
@@ -282,4 +285,4 @@ component.propTypes = {
   }).isRequired,
 };
 
-export default createStackNavigator({ component });
+export default createStackNavigator({ component, UserInfo });

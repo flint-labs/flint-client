@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View, Text, SafeAreaView, findNodeHandle, TextInput,
 } from 'react-native';
@@ -11,51 +11,76 @@ import styles from './style';
 
 const { SET_TITLE } = challengeAction;
 
-const Title = ({ navigation, title, setTitle }) => {
-  const handleNext = () => {
-    navigation.navigate('ChallengePeriod', {
-      setting: navigation.state.params.setting,
-    });
+class Title extends Component {
+  state = {
+    warn: false,
+  }
+
+  componentDidUpdate = () => {
+    const { title } = this.props;
+    const { warn } = this.state;
+
+    if (warn && title !== '') {
+      this.setState({ warn: false });
+    }
+  }
+
+  handleNext = () => {
+    const { navigation, title } = this.props;
+    if (title !== '') {
+      this.setState({ warn: false });
+      navigation.navigate('StartAt', {
+        setting: navigation.state.params.setting,
+      });
+    } else {
+      this.setState({ warn: true });
+    }
   };
 
-  let scroll;
-  const scrollToInput = node => {
-    if (scroll) scroll.props.scrollToFocusedInput(node);
-  };
+  scrollToInput = node => {
+    this.scroll.props.scrollToFocusedInput(node);
+  }
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAwareScrollView
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        contentContainerStyle={{ flex: 1 }}
-        enableAutomaticScroll
-        extraHeight={235}
-        innerRef={ref => { scroll = ref; }}
-      >
-        <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
-          <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
-            <Text style={{ fontSize: 20 }}>당신의 도전은 무엇인가요?</Text>
+  render = () => {
+    const { warn } = this.state;
+    const { title, setTitle } = this.props;
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={{ flex: 1 }}
+          enableAutomaticScroll
+          extraHeight={235}
+          innerRef={ref => { this.scroll = ref; }}
+        >
+          <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Text style={{ fontSize: 20 }}>당신의 도전은 무엇인가요?</Text>
+            </View>
+            <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+              <View>
+                <TextInput
+                  style={styles.textInput}
+                  onChangeText={text => setTitle(text)}
+                  blurOnSubmit={false}
+                  value={title}
+                  returnKeyType="next"
+                  placeholder="도전 타이틀"
+                  onSubmitEditing={this.handleNext}
+                  onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
+                />
+                <Text style={{ ...styles.warning, marginTop: 10 }}>{warn ? '타이틀을 입력해주세요!' : ' '}</Text>
+              </View>
+            </View>
+            <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+              <OrangeButton text="Next" onPress={this.handleNext} marginTop={0} />
+            </View>
           </View>
-          <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={text => setTitle(text)}
-              blurOnSubmit={false}
-              value={title}
-              returnKeyType="next"
-              placeholder="도전 타이틀"
-              onSubmitEditing={handleNext}
-              onFocus={event => scrollToInput(findNodeHandle(event.target))}
-            />
-          </View>
-          <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <OrangeButton text="Next" onPress={handleNext} marginTop={0} />
-          </View>
-        </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
-  );
-};
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
+    );
+  }
+}
 
 Title.propTypes = {
   navigation: PropTypes.shape({
