@@ -9,12 +9,19 @@ import OrangeButton from '../../components/OrangeButton';
 
 const failureImage = require('../../../assets/images/Dashboard/failure.png');
 
-const Failure = ({ recentChallenge, updateChallengeStateRequest, refreshDashboard }) => (
+const Failure = ({
+  recentChallenge,
+  updateChallengeStateRequest,
+  refreshDashboard,
+  handleIsFailure,
+  isFailure,
+}) => (
   <Modal style={styles.container} isVisible>
     <View style={styles.headerContainer}>
       <Text style={{ fontSize: 18 }}>{recentChallenge.title}</Text>
     </View>
     <View style={{ flex: 1 }} />
+    {isFailure && <Text style={{ fontSize: 15 }}>심판의 거절로 도전이 실패했어요</Text>}
     <View style={styles.titleContainer}>
       <Text style={styles.title}>Failure</Text>
     </View>
@@ -25,10 +32,17 @@ const Failure = ({ recentChallenge, updateChallengeStateRequest, refreshDashboar
       <OrangeButton
         text="확인"
         onPress={async () => {
-          await updateChallengeStateRequest('success');
+          await updateChallengeStateRequest('failure');
           await AsyncStorage.removeItem('recentChallenge');
-          await refreshDashboard();
-          Alert.alert('완료되었습니다');
+          Alert.alert('완료되었습니다', null, [
+            {
+              text: 'OK',
+              onPress: async () => {
+                handleIsFailure();
+                await refreshDashboard();
+              },
+            },
+          ]);
         }}
       />
     </View>
@@ -42,6 +56,8 @@ Failure.propTypes = {
   }).isRequired,
   updateChallengeStateRequest: PropTypes.func.isRequired,
   refreshDashboard: PropTypes.func.isRequired,
+  handleIsFailure: PropTypes.func.isRequired,
+  isFailure: PropTypes.bool.isRequired,
 };
 
 export default Failure;

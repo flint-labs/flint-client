@@ -195,7 +195,7 @@ class SignUp extends Component {
     if (validations.password !== isValid) validations.password = isValid;
     const message = isValid
       ? '안전한 비밀번호에요!'
-      : '1자리 이상의 대,소문자 영어 및 숫자를 입력해주세요 :(';
+      : '대소문자, 숫자 조합 8자리 이상 입력해주세요.';
     return (
       <View key="password">
         <AuthInput
@@ -339,11 +339,11 @@ class SignUp extends Component {
   renderHeaders = page => {
     switch (page) {
       case 0:
-        return '🤗환영합니다🤗';
+        return '환영합니다';
       case 1:
-        return '🎂태어난 연도를 선택해주세요🎂';
+        return '태어난 연도를 선택해주세요';
       case 2:
-        return '👨성별을 선택해주세요👩';
+        return '성별을 선택해주세요';
       default:
         return null;
     }

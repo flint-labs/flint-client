@@ -15,19 +15,31 @@ class EndChallenge extends React.Component {
   };
 
   render() {
-    const { recentChallenge, progress, refreshDashboard } = this.props;
+    const {
+      recentChallenge,
+      progress,
+      refreshDashboard,
+      handleIsFailure,
+      isFailure,
+      handleIsSuccess,
+      isSuccess,
+    } = this.props;
 
-    return progress === 1 ? (
+    return isSuccess || progress === 1 ? (
       <Success
         recentChallenge={recentChallenge}
         updateChallengeStateRequest={this.updateChallengeStateRequest}
         refreshDashboard={refreshDashboard}
+        handleIsSuccess={handleIsSuccess}
+        handleIsFailure={handleIsFailure}
       />
     ) : (
       <Failure
         recentChallenge={recentChallenge}
         updateChallengeStateRequest={this.updateChallengeStateRequest}
         refreshDashboard={refreshDashboard}
+        handleIsFailure={handleIsFailure}
+        isFailure={isFailure}
       />
     );
   }
@@ -39,6 +51,10 @@ EndChallenge.propTypes = {
   }).isRequired,
   progress: PropTypes.number.isRequired,
   refreshDashboard: PropTypes.func.isRequired,
+  handleIsFailure: PropTypes.func.isRequired,
+  isFailure: PropTypes.bool.isRequired,
+  handleIsSuccess: PropTypes.func.isRequired,
+  isSuccess: PropTypes.bool.isRequired,
 };
 
 export default EndChallenge;

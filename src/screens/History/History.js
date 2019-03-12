@@ -76,28 +76,22 @@ class History extends Component {
             </View>
           </SafeAreaView>
         );
-      } else {
-        return this.renderToSignInPage();
       }
-    } else {
-      return (
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <Text>완료된 도전이 없습니다.</Text>
-        </View>
-      );
+      return this.renderToSignInPage();
     }
-  };
-
-  render = () => {
     return (
-      <View style={{ flex: 1 }}>
-        <NavigationEvents onWillFocus={this.handleWillFocus} />
-        {this.renderInCondition()}
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
       </View>
     );
   };
+
+  render = () => (
+    <View style={{ flex: 1 }}>
+      <NavigationEvents onWillFocus={this.handleWillFocus} />
+      {this.renderInCondition()}
+    </View>
+  );
 }
 
 export default History;
