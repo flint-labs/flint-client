@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {
-  View, Text, SafeAreaView, findNodeHandle, TextInput, AsyncStorage,
+  View, Text, SafeAreaView, findNodeHandle, TextInput, AsyncStorage, ActivityIndicator,
 } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 import { CheckBox } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -17,15 +18,18 @@ class Mode extends Component {
   state = {
     isSolo: false,
     isValid: false,
-    referee: '',
+    loading: false,
   }
+
+  nickname = '';
 
   scrollToInput = node => {
     this.scroll.props.scrollToFocusedInput(node);
   }
 
   componentDidUpdate = async () => {
-    const { referee, isValid } = this.state;
+    const { isValid } = this.state;
+    const { referee } = this.props;
 
     if (referee !== '') {
       try {
@@ -40,26 +44,62 @@ class Mode extends Component {
   };
 
   handleNext = async () => {
-    const { isSolo, referee } = this.state;
-    const { navigation, setReferee } = this.props;
+    const { isValid, isSolo } = this.state;
+    const { navigation } = this.props;
+    if ((!isSolo && isValid) || isSolo) {
+      navigation.navigate('CheckingPeriod', {
+        setting: navigation.state.params.setting,
+      });
+    }
+  };
+
+  handleWillFocus = async () => {
+    this.setState({ loading: true });
+    const { isValid } = this.state;
+    const { referee, setReferee } = this.props;
+    const { nickname } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+    this.nickname = nickname;
+    if (this.nickname === referee) {
+      this.setState({ isSolo: true });
+      setReferee('');
+    }
+    if (referee !== '') {
+      const { data: { isExist } } = await axios.get(`http://13.209.19.196:3000/api/users/checkNickname/${referee}`);
+      if (isExist !== isValid) {
+        this.setState({ isValid: isExist });
+      }
+    }
+    this.setState({ loading: false });
+  }
+
+  handleWillBlur = async () => {
+    const { isSolo } = this.state;
+    const { setReferee, referee } = this.props;
     if (isSolo) {
-      const { nickname } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      setReferee(nickname);
+      setReferee(this.nickname);
     } else {
       setReferee(referee);
     }
-    navigation.navigate('CheckingPeriod', {
-      setting: navigation.state.params.setting,
-    });
-  };
+  }
+
+  renderLoading = () => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator />
+    </View>
+  )
 
   render = () => {
-    const {
-      isSolo, isValid, referee,
-    } = this.state;
+    const { isSolo, isValid, loading } = this.state;
+    const { referee, setReferee } = this.props;
+
+    if (loading) return this.renderLoading();
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        <NavigationEvents
+          onWillFocus={this.handleWillFocus}
+          onWillBlur={this.handleWillBlur}
+        />
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           contentContainerStyle={{ flex: 1 }}
@@ -100,12 +140,12 @@ class Mode extends Component {
                     </Text>
                     <TextInput
                       style={styles.textInput}
-                      onChangeText={text => this.setState({ referee: text })}
+                      onChangeText={text => setReferee(text)}
                       blurOnSubmit={false}
                       value={referee}
                       returnKeyType="next"
                       placeholder="심판 아이디"
-                      onSubmitEditing={this.buttonHandler}
+                      onSubmitEditing={this.handleNext}
                       onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
                     />
                     {isValid ? (
@@ -137,11 +177,14 @@ Mode.propTypes = {
     navigate: PropTypes.func,
     goBack: PropTypes.func,
   }).isRequired,
+  referee: PropTypes.string.isRequired,
   setReferee: PropTypes.func.isRequired,
 };
 
 export default connect(
-  null,
+  state => ({
+    referee: state.challenge.referee,
+  }),
   dispatch => ({
     setReferee: referee => {
       dispatch({ type: SET_REFEREE, payload: { referee } });
