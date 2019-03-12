@@ -16,8 +16,8 @@ import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 
-const { width, height } = Dimensions.get('window');
-const runIcon = require('../../../assets/images/Dashboard/run.png');
+const { width } = Dimensions.get('window');
+// const runIcon = require('../../../assets/images/Dashboard/run.png');
 const readyRun2Image = require('../../../assets/images/Dashboard/readyRun2.png');
 
 class Dashboard extends Component {
@@ -71,7 +71,12 @@ class Dashboard extends Component {
 
   render() {
     const { modalVisible, isLoaded } = this.state;
-    const { recentChallenge, reports, progress } = this.props;
+    const {
+      recentChallenge,
+      reports,
+      progress,
+      refreshDashboard,
+    } = this.props;
 
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
@@ -88,6 +93,7 @@ class Dashboard extends Component {
                 modalVisible={modalVisible}
                 toggleModal={this.toggleModal}
                 recentChallenge={recentChallenge}
+                refreshDashboard={refreshDashboard}
               />
 
               <View style={{ flexDirection: 'row', flex: 4 }}>
@@ -276,6 +282,7 @@ Dashboard.propTypes = {
     }).isRequired,
   ).isRequired,
   progress: PropTypes.number.isRequired,
+  refreshDashboard: PropTypes.func.isRequired,
 };
 
 export default Dashboard;

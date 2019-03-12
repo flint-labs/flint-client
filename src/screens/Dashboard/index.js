@@ -233,6 +233,7 @@ class component extends React.Component {
                   handleRecentChallenge={this.handleRecentChallenge}
                   reports={reports}
                   progress={progress}
+                  refreshDashboard={this.componentDidMount}
                 />
               ) : (
                 <EndChallenge

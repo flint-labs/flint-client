@@ -7,7 +7,6 @@ import {
   Image,
   SafeAreaView,
   Text,
-  AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
@@ -29,7 +28,7 @@ class DoIt extends React.Component {
   state = { text: null, photo: null };
 
   submitBtnHandler = async () => {
-    const { recentChallenge } = this.props;
+    const { recentChallenge, refreshDashboard } = this.props;
     const { text, photo } = this.state;
     if (text !== null && text.length <= 50 && text.length > 0 && photo) {
       sendRequest('post', '/api/reports/postReport', null, {
@@ -41,10 +40,12 @@ class DoIt extends React.Component {
       Alert.alert('제출되었습니다.', null, [
         {
           text: 'OK',
-          onPress: this.closeModal,
+          onPress: () => {
+            this.closeModal();
+            refreshDashboard();
+          },
         },
       ]);
-      await AsyncStorage.setItem('recentReportDate', new Date().toISOString().slice(0, 10));
     } else {
       Alert.alert('내용과 사진을 채워주세요');
     }
@@ -132,6 +133,7 @@ DoIt.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
   recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
+  refreshDashboard: PropTypes.func.isRequired,
 }; // 꼭 필요하면 isRequired 써주기
 
 export default DoIt;
