@@ -12,7 +12,7 @@ const AuthInput = ({ state, setState, renderIcon, customProps }) => (
       blurOnSubmit={false}
       value={state.toString()}
       autoCorrect={false}
-      autoCapitalize={false}
+      autoCapitalize={'none'}
       {...customProps}
     />
   </View>
