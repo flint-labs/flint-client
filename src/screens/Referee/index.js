@@ -93,7 +93,7 @@ class Referee extends Component {
         null,
         {
           reportId: requestReportId,
-          check: 'true',
+          check: 'false',
         },
       );
 
