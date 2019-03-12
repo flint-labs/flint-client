@@ -13,7 +13,7 @@ const Success = ({
   recentChallenge,
   updateChallengeStateRequest,
   refreshDashboard,
-  handleIsFailure,
+  handleIsSuccess,
 }) => (
   <Modal style={styles.container} isVisible>
     <View style={styles.headerContainer}>
@@ -32,9 +32,15 @@ const Success = ({
         onPress={async () => {
           await updateChallengeStateRequest('success');
           await AsyncStorage.removeItem('recentChallenge');
-          handleIsFailure();
-          await refreshDashboard();
-          Alert.alert('완료되었습니다');
+          Alert.alert('완료되었습니다', null, [
+            {
+              text: 'OK',
+              onPress: async () => {
+                handleIsSuccess();
+                await refreshDashboard();
+              },
+            },
+          ]);
         }}
       />
     </View>
@@ -48,7 +54,7 @@ Success.propTypes = {
   }).isRequired,
   updateChallengeStateRequest: PropTypes.func.isRequired,
   refreshDashboard: PropTypes.func.isRequired,
-  handleIsFailure: PropTypes.func.isRequired,
+  handleIsSuccess: PropTypes.func.isRequired,
 };
 
 export default Success;
