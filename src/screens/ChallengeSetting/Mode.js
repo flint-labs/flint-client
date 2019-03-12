@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Text, SafeAreaView, findNodeHandle, TextInput, AsyncStorage, ActivityIndicator,
+  View, Text, SafeAreaView, findNodeHandle, TextInput, AsyncStorage, ActivityIndicator, AlertIOS,
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { CheckBox } from 'react-native-elements';
@@ -16,9 +16,10 @@ const { SET_REFEREE } = challengeAction;
 
 class Mode extends Component {
   state = {
-    isSolo: false,
+    isSolo: true,
     isValid: false,
     loading: false,
+    alerted: false,
   }
 
   nickname = '';
@@ -28,7 +29,7 @@ class Mode extends Component {
   }
 
   componentDidUpdate = async () => {
-    const { isValid } = this.state;
+    const { isValid, isSolo, alerted } = this.state;
     const { referee } = this.props;
 
     if (referee !== '') {
@@ -40,6 +41,11 @@ class Mode extends Component {
       } catch (error) {
         throw error;
       }
+    }
+
+    if (!isSolo && !alerted) {
+      AlertIOS.alert('Referee 모드', 'Referee 모드 선택 시 해당 referee 에게 달성보고를 해야하며 보고가 누락되거나 referee 가 인정하지 않을 경우 도전이 실패할 수 있습니다.');
+      this.setState({ alerted: true });
     }
   };
 
