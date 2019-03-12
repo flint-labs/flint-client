@@ -42,6 +42,7 @@ class component extends React.Component {
     user: null,
     reports: [],
     progress: null,
+    isFailure: false,
   };
 
   toggleSubView = async () => {
@@ -76,6 +77,11 @@ class component extends React.Component {
       );
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      // 실패한 reports가 하나라도 있으면 fail
+      const failureResponse = await sendRequest('get', `/api/reports/getFailureReport/${user.id}`);
+      if (failureResponse.data.length) {
+        this.setState({ recentChallenge: failureResponse.data[0].challenge, isFailure: true });
+      }
       const shouldChangeChallenges = [];
       challenges.forEach(el => {
         if (new Date(el.startAt) - new Date() <= 0) {
@@ -96,15 +102,18 @@ class component extends React.Component {
         this.setState({ challenges: data.challenges });
       }
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
-      if (EndChallengeArray.length > 0) {
-        this.setState({
-          recentChallenge: EndChallengeArray[0],
-        });
-      } else {
-        this.setState({
-          recentChallenge:
-            JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
-        });
+      const { isFailure } = this.state;
+      if (!isFailure) {
+        if (EndChallengeArray.length > 0) {
+          this.setState({
+            recentChallenge: EndChallengeArray[0],
+          });
+        } else {
+          this.setState({
+            recentChallenge:
+              JSON.parse(await AsyncStorage.getItem('recentChallenge')) || challenges[0],
+          });
+        }
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
@@ -191,11 +200,18 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) / (86400000 * 7);
+    const week = (new Date(recentChallenge.endAt)
+     - new Date(recentChallenge.startAt)) / (86400000 * 7);
     const result = await (reports.filter(el => el.isConfirmed === 'true').length
       / (week * recentChallenge.checkingPeriod));
     return result;
   };
+
+  handleIsFailure = () => {
+    this.setState({
+      isFailure: false,
+    });
+  }
 
   renderMethod = () => {
     const {
@@ -206,6 +222,7 @@ class component extends React.Component {
       recentChallenge,
       reports,
       progress,
+      isFailure,
     } = this.state;
     if (isLoaded) {
       if (user) {
@@ -223,7 +240,7 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Animated.View>
-              {new Date(recentChallenge.endAt) - new Date() > 0 ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0 && !isFailure ? (
                 <Dashboard
                   bounceValue={bounceValue}
                   toggleSubView={this.toggleSubView}
@@ -240,6 +257,8 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                   progress={progress}
                   refreshDashboard={this.componentDidMount}
+                  handleIsFailure={this.handleIsFailure}
+                  isFailure={isFailure}
                 />
               )}
             </>

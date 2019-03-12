@@ -264,15 +264,6 @@ Dashboard.propTypes = {
   bounceValue: PropTypes.shape({
     _value: PropTypes.number.isRequired,
   }).isRequired,
-  toggleSubView: PropTypes.func.isRequired,
-  challenges: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      slogan: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
-  handleChallenges: PropTypes.func.isRequired,
-  handleRecentChallenge: PropTypes.func.isRequired,
   recentChallenge: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
