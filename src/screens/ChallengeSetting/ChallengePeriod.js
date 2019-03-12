@@ -14,7 +14,7 @@ const { width } = Dimensions.get('window');
 
 const ChallengePeriod = ({ navigation, challengePeriod, setChallengePeriod }) => {
   const handleNext = () => {
-    navigation.navigate('StartAt', {
+    navigation.navigate('Mode', {
       setting: navigation.state.params.setting,
     });
   };

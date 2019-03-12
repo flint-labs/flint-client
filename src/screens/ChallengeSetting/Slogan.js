@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   View, Text, SafeAreaView, findNodeHandle, TextInput,
 } from 'react-native';
@@ -11,11 +11,22 @@ import styles from './style';
 
 const { SET_SLOGAN } = challengeAction;
 
-const Slogan = ({
-  navigation, slogan, setSlogan, amount,
-}) => {
-  const handleNext = () => {
-    if (amount !== '0') {
+class Slogan extends Component {
+  state = {
+    warn: false,
+  }
+
+  componentDidUpdate = () => {
+    const { warn } = this.state;
+    const { slogan } = this.props;
+    if (warn && slogan !== '') this.setState({ warn: false });
+  }
+
+  handleNext = () => {
+    const { navigation, amount, slogan } = this.props;
+    if (slogan === '') {
+      this.setState({ warn: true });
+    } else if (amount !== '0') {
       navigation.navigate('PaymentMethod', {
         setting: navigation.state.params.setting,
       });
@@ -26,43 +37,49 @@ const Slogan = ({
     }
   };
 
-  let scroll;
-  const scrollToInput = node => {
-    if (scroll) scroll.props.scrollToFocusedInput(node);
-  };
+  scrollToInput = node => {
+    this.scroll.props.scrollToFocusedInput(node);
+  }
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAwareScrollView
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        contentContainerStyle={{ flex: 1 }}
-        enableAutomaticScroll
-        extraHeight={235}
-        innerRef={ref => { scroll = ref; }}
-      >
-        <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
-          <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
-            <Text style={{ fontSize: 20 }}>각오 한마디</Text>
+  render = () => {
+    const { slogan, setSlogan } = this.props;
+    const { warn } = this.state;
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={{ flex: 1 }}
+          enableAutomaticScroll
+          extraHeight={235}
+          innerRef={ref => { this.scroll = ref; }}
+        >
+          <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 2, alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Text style={{ fontSize: 20 }}>각오 한마디</Text>
+            </View>
+            <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
+              <View>
+                <TextInput
+                  style={styles.textInput}
+                  onChangeText={text => setSlogan(text)}
+                  blurOnSubmit={false}
+                  value={slogan}
+                  returnKeyType="next"
+                  onSubmitEditing={this.handleNext}
+                  onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
+                />
+                <Text style={{ ...styles.warning, marginTop: 10 }}>{warn ? '각오를 입력해주세요!' : ' '}</Text>
+              </View>
+            </View>
+            <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
+              <OrangeButton text="시작하기" onPress={this.handleNext} marginTop={0} />
+            </View>
           </View>
-          <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
-            <TextInput
-              style={styles.textInput}
-              onChangeText={text => setSlogan(text)}
-              blurOnSubmit={false}
-              value={slogan}
-              returnKeyType="next"
-              onSubmitEditing={handleNext}
-              onFocus={event => scrollToInput(findNodeHandle(event.target))}
-            />
-          </View>
-          <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
-            <OrangeButton text="Next" onPress={handleNext} marginTop={0} />
-          </View>
-        </View>
-      </KeyboardAwareScrollView>
-    </SafeAreaView>
-  );
-};
+        </KeyboardAwareScrollView>
+      </SafeAreaView>
+    );
+  }
+}
 
 Slogan.propTypes = {
   navigation: PropTypes.shape({
