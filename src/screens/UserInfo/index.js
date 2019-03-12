@@ -96,7 +96,7 @@ class UserInfo extends Component {
         await AsyncStorage.removeItem('recentChallenge');
         await SecureStore.deleteItemAsync('refreshToken');
         this.setState({ user: null });
-        Alert.alert('감사합니다.');
+        Alert.alert('탈퇴가 완료되었습니다');
       } else {
         Alert.alert('이메일이 일치하지 않습니다.');
       }

@@ -25,7 +25,7 @@ const Failure = ({ recentChallenge, updateChallengeStateRequest, refreshDashboar
       <OrangeButton
         text="확인"
         onPress={async () => {
-          await updateChallengeStateRequest('success');
+          await updateChallengeStateRequest('failure');
           await AsyncStorage.removeItem('recentChallenge');
           await refreshDashboard();
           Alert.alert('완료되었습니다');

@@ -24,11 +24,11 @@ class component extends React.Component {
     return {
       headerTitle: (
         <TouchableOpacity onPress={() => params.handleBottomModal()}>
-          <Text style={{ fontSize: 20 }}>
+          <Text style={{ fontSize: 17 }}>
             {params.dashboardTitle
               ? ` ${params.dashboardTitle} `
               : ' 선택된 도전이 없어요 '}
-            <Icon name="ios-arrow-dropdown" size={20} />
+            <Icon name="ios-arrow-dropdown" size={17} />
           </Text>
         </TouchableOpacity>
       ),
@@ -259,9 +259,9 @@ class component extends React.Component {
             </>
           );
         }
-        return <Text>새로운 도전을 시작하세요!</Text>;
+        return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>새로운 도전을 시작하세요!</Text></View>;
       }
-      return <Text>로그인을 먼저 해주세요</Text>;
+      return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>로그인을 먼저 해주세요</Text></View>;
     }
     return <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}><ActivityIndicator /></View>;
   };

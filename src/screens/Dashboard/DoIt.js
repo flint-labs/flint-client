@@ -1,6 +1,13 @@
 import React from 'react';
 import {
-  TouchableOpacity, View, TextInput, Alert, Image, SafeAreaView, Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  Alert,
+  Image,
+  SafeAreaView,
+  Text,
+  AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
@@ -21,7 +28,7 @@ class DoIt extends React.Component {
 
   state = { text: null, photo: null };
 
-  submitBtnHandler = () => {
+  submitBtnHandler = async () => {
     const { recentChallenge } = this.props;
     const { text, photo } = this.state;
     if (text !== null && text.length <= 50 && text.length > 0 && photo) {
@@ -37,6 +44,7 @@ class DoIt extends React.Component {
           onPress: this.closeModal,
         },
       ]);
+      await AsyncStorage.setItem('recentReportDate', new Date().toISOString().slice(0, 10));
     } else {
       Alert.alert('내용과 사진을 채워주세요');
     }
@@ -79,9 +87,7 @@ class DoIt extends React.Component {
                 <TouchableOpacity onPress={this.closeModal} style={{ flex: 0.5, height: '100%' }}>
                   <Icon size={35} name="ios-arrow-round-back" />
                 </TouchableOpacity>
-                <View
-                  style={styles.doItHeaderTitleContainer}
-                >
+                <View style={styles.doItHeaderTitleContainer}>
                   <Text style={{ fontSize: 20 }}>{recentChallenge.title}</Text>
                 </View>
                 <View style={{ flex: 0.5, height: '100%' }}>
