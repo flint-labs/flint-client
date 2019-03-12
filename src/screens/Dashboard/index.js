@@ -15,7 +15,7 @@ import styles from './style';
 import Select from './Select';
 import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
-import UserInfo from '../UserInfo';
+import SignIn from '../SignIn';
 
 let isHidden = true;
 
@@ -38,11 +38,17 @@ class component extends React.Component {
     bounceValue: new Animated.Value(0),
     challenges: [],
     isLoaded: false,
-    recentChallenge: {},
+    recentChallenge: null,
     user: null,
     reports: [],
     progress: null,
     isFailure: false,
+    isSuccess: false,
+  };
+
+  goTo = screen => {
+    const { navigation } = this.props;
+    navigation.navigate(screen);
   };
 
   toggleSubView = async () => {
@@ -77,6 +83,10 @@ class component extends React.Component {
       );
       this.setState({ challenges: response.data.challenges });
       const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      const successReponse = await sendRequest('get', `/api/reports/getSuccessOneShot/${user.id}`);
+      if (successReponse.data.length) {
+        this.setState({ recentChallenge: successReponse.data[0].challenge, isSuccess: true });
+      }
       // 실패한 reports가 하나라도 있으면 fail
       const failureResponse = await sendRequest('get', `/api/reports/getFailureReport/${user.id}`);
       if (failureResponse.data.length) {
@@ -102,8 +112,8 @@ class component extends React.Component {
         this.setState({ challenges: data.challenges });
       }
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
-      const { isFailure } = this.state;
-      if (!isFailure) {
+      const { isFailure, isSuccess } = this.state;
+      if (!isFailure && !isSuccess) {
         if (EndChallengeArray.length > 0) {
           this.setState({
             recentChallenge: EndChallengeArray[0],
@@ -117,7 +127,7 @@ class component extends React.Component {
       }
     }
     const { recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
-    if (Object.keys(recentChallenge).length) {
+    if (recentChallenge) {
       const res = await sendRequest('get', `/api/reports/getReports/${recentChallenge.id}`);
       let reports = res ? res.data.reports : [];
       const shouldConfirmReportsId = [];
@@ -213,6 +223,12 @@ class component extends React.Component {
     });
   }
 
+  handleIsSuccess = () => {
+    this.setState({
+      isSuccess: false,
+    });
+  }
+
   renderMethod = () => {
     const {
       bounceValue,
@@ -223,6 +239,7 @@ class component extends React.Component {
       reports,
       progress,
       isFailure,
+      isSuccess,
     } = this.state;
     if (isLoaded) {
       if (user) {
@@ -240,7 +257,7 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Animated.View>
-              {new Date(recentChallenge.endAt) - new Date() > 0 && !isFailure ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0 && !isFailure && !isSuccess ? (
                 <Dashboard
                   bounceValue={bounceValue}
                   toggleSubView={this.toggleSubView}
@@ -259,6 +276,8 @@ class component extends React.Component {
                   refreshDashboard={this.componentDidMount}
                   handleIsFailure={this.handleIsFailure}
                   isFailure={isFailure}
+                  handleIsSuccess={this.handleIsSuccess}
+                  isSuccess={isSuccess}
                 />
               )}
             </>
@@ -272,13 +291,11 @@ class component extends React.Component {
       }
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <TouchableOpacity onPress={() => this.goTo('SignIn')}>
-              <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
-                Flint 회원이신가요?
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity onPress={() => this.goTo('SignIn')}>
+            <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
+              Flint 회원이신가요?
+            </Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -305,4 +322,4 @@ component.propTypes = {
   }).isRequired,
 };
 
-export default createStackNavigator({ component, UserInfo });
+export default createStackNavigator({ component, SignIn });

@@ -34,9 +34,15 @@ const Failure = ({
         onPress={async () => {
           await updateChallengeStateRequest('failure');
           await AsyncStorage.removeItem('recentChallenge');
-          handleIsFailure();
-          await refreshDashboard();
-          Alert.alert('완료되었습니다');
+          Alert.alert('완료되었습니다', null, [
+            {
+              text: 'OK',
+              onPress: async () => {
+                handleIsFailure();
+                await refreshDashboard();
+              },
+            },
+          ]);
         }}
       />
     </View>

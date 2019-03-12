@@ -23,10 +23,7 @@ class History extends Component {
   handleWillFocus = async () => {
     try {
       const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      const { data } = await sendRequest(
-        'get',
-        `/api/history/completeList/${id}`,
-      );
+      const { data } = await sendRequest('get', `/api/history/completeList/${id}`);
       this.setState({
         isLoading: true,
         isSignIn: true,
@@ -68,37 +65,28 @@ class History extends Component {
                 data={completeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={itemData => (
-                  <HistoryEntry
-                    data={itemData.item}
-                    handlePress={switchScreen}
-                  />
+                  <HistoryEntry data={itemData.item} handlePress={switchScreen} />
                 )}
               />
             </View>
           </SafeAreaView>
         );
-      } else {
-        return this.renderToSignInPage();
       }
-    } else {
-      return (
-        <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-        >
-          <ActivityIndicator />
-        </View>
-      );
+      return this.renderToSignInPage();
     }
-  };
-
-  render = () => {
     return (
-      <View style={{ flex: 1 }}>
-        <NavigationEvents onWillFocus={this.handleWillFocus} />
-        {this.renderInCondition()}
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
       </View>
     );
   };
+
+  render = () => (
+    <View style={{ flex: 1 }}>
+      <NavigationEvents onWillFocus={this.handleWillFocus} />
+      {this.renderInCondition()}
+    </View>
+  );
 }
 
 export default History;
