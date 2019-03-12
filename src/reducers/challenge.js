@@ -2,11 +2,10 @@ import { challengeAction } from '../actions';
 
 const {
   SET_IS_ONGOING, SET_TITLE, SET_CHALLENGE_PERIOD, SET_START_AT, SET_REFEREE, SET_CHECKING_PERIOD,
-  SET_AMOUNT, SET_RECEIPIENT, SET_SLOGAN, SET_CATEGORY,
+  SET_AMOUNT, SET_RECEIPIENT, SET_SLOGAN, SET_CATEGORY, RESET_CHALLENGE,
 } = challengeAction;
 
-const date = new Date();
-const TODAY = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+const TODAY = new Date();
 
 const initialState = {
   category: '',
@@ -38,6 +37,8 @@ const challengeReducer = (state = initialState, action) => {
         ...state,
         ...payload,
       };
+    case RESET_CHALLENGE:
+      return { ...initialState };
     default:
       return state;
   }

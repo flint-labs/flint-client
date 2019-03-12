@@ -30,4 +30,10 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
   },
+  warning: {
+    color: 'rgba(255,102,0,0.7)',
+    fontSize: 12,
+    margin: 0,
+    padding: 0,
+  },
 });

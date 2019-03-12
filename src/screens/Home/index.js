@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Dimensions, Text } from 'react-native';
+import {
+  View, ScrollView, Dimensions, Text,
+} from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 
@@ -9,6 +11,8 @@ import Feedback from './Feedback';
 import ChallengeSetting from '../ChallengeSetting';
 import Payment from '../Payment';
 import Success from '../Payment/Success';
+import StartChallenge from '../ChallengeSetting/StartChallenge';
+import SignIn from '../SignIn';
 
 import styles from './Styles';
 
@@ -48,7 +52,7 @@ class Home extends Component {
       <View style={styles.indexContainer}>
         <ScrollView style={{ flex: 1, width }}>
           <Intro goToScreen={this.goToScreen} />
-          {/*<Feedback />*/}
+          {/* <Feedback /> */}
         </ScrollView>
       </View>
     </View>
@@ -88,6 +92,15 @@ export default createStackNavigator(
       navigationOptions: {
         header: null,
       },
+    },
+    StartChallenge: {
+      screen: StartChallenge,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SignIn: {
+      screen: SignIn,
     },
   },
   {

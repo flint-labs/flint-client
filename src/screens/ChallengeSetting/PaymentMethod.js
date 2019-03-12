@@ -8,7 +8,9 @@ import { connect } from 'react-redux';
 import styles from './style';
 import { OrangeButton } from '../../components';
 import sendRequest from '../../modules/sendRequest';
+import { challengeAction } from '../../actions';
 
+const { RESET_CHALLENGE } = challengeAction;
 const KAKAO_PAY_ICON = require('../../../assets/images/ChallengeSetting/kakao-icon.png');
 const PAYPAL_ICON = require('../../../assets/images/ChallengeSetting/paypal-icon.png');
 
@@ -45,10 +47,11 @@ class PaymentMethod extends Component {
 
   handleNext = async () => {
     const { isKakao } = this.state;
-    const { navigation, amount } = this.props;
+    const { navigation, amount, resetChallenge } = this.props;
     const challenge = await this.makeChallenge();
     await sendRequest('post', '/api/challenges/setting', null, { challenge });
 
+    resetChallenge();
     navigation.navigate('Payment', {
       setting: navigation.state.params.setting,
       amount,
@@ -117,11 +120,15 @@ PaymentMethod.propTypes = {
     receipient: PropTypes.number,
     slogan: PropTypes.string,
   }).isRequired,
+  resetChallenge: PropTypes.func.isRequired,
 };
 
 export default connect(
   state => ({
     amount: state.challenge.amount,
     challenge: state.challenge,
+  }),
+  dispatch => ({
+    resetChallenge: () => dispatch({ type: RESET_CHALLENGE }),
   }),
 )(PaymentMethod);
