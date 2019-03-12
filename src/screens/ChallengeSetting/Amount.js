@@ -18,6 +18,8 @@ class Amount extends Component {
   state = {
     isFree: false,
     warn: false,
+    textLoading: false,
+    prevAmount: '',
   }
 
   componentDidUpdate = () => {
@@ -60,13 +62,39 @@ class Amount extends Component {
   }
 
   handleInputChange = input => {
-    const { setAmount } = this.props;
-    const { isFree } = this.state;
-    if (!isFree) setAmount(input);
+    this.setState({ textLoading: true });
+    const { setAmount, amount } = this.props;
+    if (input.split(',').join('').length > amount.length) {
+      if (input.length === 1) {
+        const newAmount = Number(input) * 1000;
+        setAmount(newAmount.toString());
+        this.setState({ prevAmount: newAmount.toString() });
+      } else {
+        const lastChar = input.charAt(input.length - 1);
+        const prevInput = input.slice(0, input.length - 1);
+        const newAmount = Number(`${Number(prevInput.split(',').join('')) / 1000}${lastChar}`) * 1000;
+        setAmount(newAmount.toString());
+        this.setState({ prevAmount: newAmount.toString() });
+      }
+    } else {
+      const newInput = input.split(',').join('');
+      if (newInput.length < 4) {
+        setAmount('');
+        this.setState({ prevAmount: '' });
+      } else {
+        const sliced = `${Number(newInput) / 100}`;
+        const newAmount = Number(sliced.slice(0, sliced.length - 1)) * 1000;
+        setAmount(newAmount.toString());
+        this.setState({ prevAmount: newAmount.toString() });
+      }
+    }
+    this.setState({ textLoading: false });
   }
 
   render = () => {
-    const { isFree, warn } = this.state;
+    const {
+      isFree, warn, textLoading, prevAmount,
+    } = this.state;
     const { amount } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -87,7 +115,7 @@ class Amount extends Component {
                 placeholder="금액(원)"
                 onChangeText={input => this.handleInputChange(input)}
                 blurOnSubmit={false}
-                value={numberWithCommas(amount)}
+                value={textLoading ? numberWithCommas(prevAmount) : numberWithCommas(amount)}
                 keyboardType="numeric"
                 returnKeyType="next"
                 onSubmitEditing={this.handleNext}
