@@ -60,29 +60,43 @@ class Dashboard extends Component {
       end = new Date(start.getTime() + A_DAY * 7);
       if (start <= today && end > today) {
         if (
-          reports.filter(el => new Date(el.createdAt) >= start && new Date(el.createdAt) < end)
-            .length >= recentChallenge.checkingPeriod
-        ) return 'thisWeekWasDoIt';
+          reports.filter(
+            el =>
+              new Date(el.createdAt) >= start && new Date(el.createdAt) < end,
+          ).length >= recentChallenge.checkingPeriod
+        )
+          return 'thisWeekWasDoIt';
       }
     }
-    if (recentReportDate === new Date().toISOString().slice(0, 10)) return 'todayWasDoIt';
+    if (recentReportDate === new Date().toISOString().slice(0, 10))
+      return 'todayWasDoIt';
     return 'none';
   };
 
   render() {
     const { modalVisible, isLoaded } = this.state;
-    const {
-      recentChallenge,
-      reports,
-      progress,
-      refreshDashboard,
-    } = this.props;
+    const { recentChallenge, reports, progress, refreshDashboard } = this.props;
 
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
 
-    const startTime = `${start.getFullYear()}-${start.getMonth() + 1}-${start.getDate()}`;
-    const endTime = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`;
+    const startTime = `${start.getFullYear()}-${start.getMonth() +
+      1}-${start.getDate()}`;
+    const endTime = `${end.getFullYear()}-${end.getMonth() +
+      1}-${end.getDate()}`;
+
+    const amountHigh = parseInt(recentChallenge.amount / 10000);
+    const amountLow = parseInt((recentChallenge.amount % 10000) / 1000);
+
+    let viewAmount = '의지';
+
+    if (amountHigh !== 0 && amountLow === 0) {
+      viewAmount = `${amountHigh}만원`;
+    } else if (amountHigh !== 0 && amountLow !== 0) {
+      viewAmount = `${amountHigh}.${amountLow}만원`;
+    } else if (amountLow !== 0) {
+      viewAmount = `0.${amountLow}만원`;
+    }
 
     if (isLoaded) {
       if (recentChallenge.state === 'inProgress') {
@@ -126,7 +140,9 @@ class Dashboard extends Component {
                         }}
                       >
                         <Text style={{ color: '#888' }}>체크 주기</Text>
-                        <View style={{ justifyContent: 'center', marginTop: 5 }}>
+                        <View
+                          style={{ justifyContent: 'center', marginTop: 5 }}
+                        >
                           <Text style={{ fontSize: 25, fontWeight: '500' }}>
                             {recentChallenge.checkingPeriod}
                           </Text>
@@ -155,7 +171,7 @@ class Dashboard extends Component {
                             allowFontScaling
                             numberOfLines={1}
                           >
-                            5만원
+                            {viewAmount}
                           </Text>
                         </View>
                       </View>
@@ -191,13 +207,14 @@ class Dashboard extends Component {
                         marginLeft: 20,
                       }}
                     >
-                      진행 상황 |
-                      {' '}
-                      {(progress * 100).toFixed(1)}
-%
+                      진행 상황 | {(progress * 100).toFixed(1)}%
                     </Text>
                     <View style={{ marginLeft: 20 }}>
-                      <Progress.Bar progress={progress} color="#ffb69b" width={width - 40} />
+                      <Progress.Bar
+                        progress={progress}
+                        color="#ffb69b"
+                        width={width - 40}
+                      />
                     </View>
                   </View>
                 </View>
@@ -224,12 +241,24 @@ class Dashboard extends Component {
               <View style={[styles.doItContainer]}>
                 {this.wasDoIt() !== 'none' ? (
                   <TouchableOpacity style={styles.blockButton}>
-                    <Text style={{ color: 'white', fontSize: 17, fontWeight: '600' }}>
-                      {this.wasDoIt() === 'todayWasDoIt' ? '오늘 달성 완료' : '이번주 달성 완료'}
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 17,
+                        fontWeight: '600',
+                      }}
+                    >
+                      {this.wasDoIt() === 'todayWasDoIt'
+                        ? '오늘 달성 완료'
+                        : '이번주 달성 완료'}
                     </Text>
                   </TouchableOpacity>
                 ) : (
-                  <OrangeButton text="오늘 달성" onPress={this.doItHandler} width={width - 40} />
+                  <OrangeButton
+                    text="오늘 달성"
+                    onPress={this.doItHandler}
+                    width={width - 40}
+                  />
                 )}
               </View>
             </View>
@@ -237,7 +266,9 @@ class Dashboard extends Component {
         );
       }
       return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <View
+          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+        >
           <View style={{ flex: 1, justifyContent: 'flex-end' }}>
             <Image
               source={readyRun2Image}
@@ -248,7 +279,9 @@ class Dashboard extends Component {
               }}
             />
           </View>
-          <Text style={{ fontSize: 20, flex: 1 }}>아직 시작되지 않은 도전입니다</Text>
+          <Text style={{ fontSize: 20, flex: 1 }}>
+            아직 시작되지 않은 도전입니다
+          </Text>
         </View>
       );
     }

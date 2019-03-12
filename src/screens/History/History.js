@@ -6,6 +6,7 @@ import {
   Text,
   AsyncStorage,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import sendRequest from '../../modules/sendRequest';
