@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Progress from 'react-native-progress';
@@ -15,8 +16,8 @@ import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
 
-const { width, height } = Dimensions.get('window');
-const runIcon = require('../../../assets/images/Dashboard/run.png');
+const { width } = Dimensions.get('window');
+// const runIcon = require('../../../assets/images/Dashboard/run.png');
 const readyRun2Image = require('../../../assets/images/Dashboard/readyRun2.png');
 
 class Dashboard extends Component {
@@ -43,9 +44,39 @@ class Dashboard extends Component {
     });
   };
 
+  wasDoIt = () => {
+    const { recentChallenge, reports } = this.props;
+    const recentReportDate = reports.length
+      ? reports[reports.length - 1].createdAt.slice(0, 10)
+      : '';
+    const { endAt, startAt } = recentChallenge;
+    const A_DAY = 86400000;
+    const challengesWeeks = (new Date(endAt) - new Date(startAt)) / A_DAY / 7;
+    for (let i = 0; i < challengesWeeks; i += 1) {
+      let start = new Date(startAt);
+      let end = new Date(startAt);
+      const today = new Date();
+      start = new Date(start.getTime() + A_DAY * i * 7);
+      end = new Date(start.getTime() + A_DAY * 7);
+      if (start <= today && end > today) {
+        if (
+          reports.filter(el => new Date(el.createdAt) >= start && new Date(el.createdAt) < end)
+            .length >= recentChallenge.checkingPeriod
+        ) return 'thisWeekWasDoIt';
+      }
+    }
+    if (recentReportDate === new Date().toISOString().slice(0, 10)) return 'todayWasDoIt';
+    return 'none';
+  };
+
   render() {
     const { modalVisible, isLoaded } = this.state;
-    const { recentChallenge, reports, progress } = this.props;
+    const {
+      recentChallenge,
+      reports,
+      progress,
+      refreshDashboard,
+    } = this.props;
 
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
@@ -62,6 +93,7 @@ class Dashboard extends Component {
                 modalVisible={modalVisible}
                 toggleModal={this.toggleModal}
                 recentChallenge={recentChallenge}
+                refreshDashboard={refreshDashboard}
               />
 
               <View style={{ flexDirection: 'row', flex: 4 }}>
@@ -80,9 +112,7 @@ class Dashboard extends Component {
                       >
                         {recentChallenge.slogan}
                       </Text>
-                      <Text
-                        style={{ marginTop: 5, color: '#d0d0d0' }}
-                      >
+                      <Text style={{ marginTop: 5, color: '#d0d0d0' }}>
                         {`도전 기간 | ${startTime} - ${endTime}`}
                       </Text>
                     </View>
@@ -167,7 +197,7 @@ class Dashboard extends Component {
 %
                     </Text>
                     <View style={{ marginLeft: 20 }}>
-                      <Progress.Bar progress={progress} color="#dcdcdc" width={width - 40} />
+                      <Progress.Bar progress={progress} color="#ffb69b" width={width - 40} />
                     </View>
                   </View>
                 </View>
@@ -192,7 +222,15 @@ class Dashboard extends Component {
                 </View>
               )}
               <View style={[styles.doItContainer]}>
-                <OrangeButton text="오늘 달성" onPress={this.doItHandler} width={width - 40} />
+                {this.wasDoIt() !== 'none' ? (
+                  <TouchableOpacity style={styles.blockButton}>
+                    <Text style={{ color: 'white', fontSize: 17, fontWeight: '600' }}>
+                      {this.wasDoIt() === 'todayWasDoIt' ? '오늘 달성 완료' : '이번주 달성 완료'}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <OrangeButton text="오늘 달성" onPress={this.doItHandler} width={width - 40} />
+                )}
               </View>
             </View>
           </ScrollView>
@@ -226,15 +264,6 @@ Dashboard.propTypes = {
   bounceValue: PropTypes.shape({
     _value: PropTypes.number.isRequired,
   }).isRequired,
-  toggleSubView: PropTypes.func.isRequired,
-  challenges: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      slogan: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
-  handleChallenges: PropTypes.func.isRequired,
-  handleRecentChallenge: PropTypes.func.isRequired,
   recentChallenge: PropTypes.shape({
     id: PropTypes.number.isRequired,
   }).isRequired,
@@ -244,6 +273,7 @@ Dashboard.propTypes = {
     }).isRequired,
   ).isRequired,
   progress: PropTypes.number.isRequired,
+  refreshDashboard: PropTypes.func.isRequired,
 };
 
 export default Dashboard;

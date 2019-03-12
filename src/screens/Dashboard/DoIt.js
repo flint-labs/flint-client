@@ -1,6 +1,12 @@
 import React from 'react';
 import {
-  TouchableOpacity, View, TextInput, Alert, Image, SafeAreaView, Text,
+  TouchableOpacity,
+  View,
+  TextInput,
+  Alert,
+  Image,
+  SafeAreaView,
+  Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
@@ -21,8 +27,8 @@ class DoIt extends React.Component {
 
   state = { text: null, photo: null };
 
-  submitBtnHandler = () => {
-    const { recentChallenge } = this.props;
+  submitBtnHandler = async () => {
+    const { recentChallenge, refreshDashboard } = this.props;
     const { text, photo } = this.state;
     if (text !== null && text.length <= 50 && text.length > 0 && photo) {
       sendRequest('post', '/api/reports/postReport', null, {
@@ -34,7 +40,10 @@ class DoIt extends React.Component {
       Alert.alert('제출되었습니다.', null, [
         {
           text: 'OK',
-          onPress: this.closeModal,
+          onPress: () => {
+            this.closeModal();
+            refreshDashboard();
+          },
         },
       ]);
     } else {
@@ -79,9 +88,7 @@ class DoIt extends React.Component {
                 <TouchableOpacity onPress={this.closeModal} style={{ flex: 0.5, height: '100%' }}>
                   <Icon size={35} name="ios-arrow-round-back" />
                 </TouchableOpacity>
-                <View
-                  style={styles.doItHeaderTitleContainer}
-                >
+                <View style={styles.doItHeaderTitleContainer}>
                   <Text style={{ fontSize: 20 }}>{recentChallenge.title}</Text>
                 </View>
                 <View style={{ flex: 0.5, height: '100%' }}>
@@ -126,6 +133,7 @@ DoIt.propTypes = {
   modalVisible: PropTypes.bool.isRequired,
   toggleModal: PropTypes.func.isRequired,
   recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
+  refreshDashboard: PropTypes.func.isRequired,
 }; // 꼭 필요하면 isRequired 써주기
 
 export default DoIt;

@@ -8,6 +8,7 @@ import {
   ImageBackground,
   ActivityIndicator,
   AlertIOS,
+  Alert,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
@@ -103,8 +104,8 @@ class UserInfo extends Component {
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.removeItem('recentChallenge');
         await SecureStore.deleteItemAsync('refreshToken');
-        this.setState({ user: null, pending: false });
-        AlertIOS.alert('감사합니다.');
+        this.setState({ user: null });
+        Alert.alert('탈퇴가 완료되었습니다');
       } else {
         AlertIOS.alert('이메일이 일치하지 않습니다.');
         this.setState({ pending: false });
