@@ -39,7 +39,9 @@ class SignIn extends Component {
   };
 
   goToScreen = screen => {
-    const { navigation: { navigate } } = this.props;
+    const {
+      navigation: { navigate },
+    } = this.props;
     navigate(screen);
   };
 
@@ -50,7 +52,9 @@ class SignIn extends Component {
   handleSignInbutton = async () => {
     try {
       const { email, password } = this.state;
-      if (email === '' || password === '') { return Alert.alert('모든 정보를 입력해주세요!'); }
+      if (email === '' || password === '') {
+        return Alert.alert('모든 정보를 입력해주세요!');
+      }
       const {
         navigation: { goBack },
       } = this.props;
@@ -105,6 +109,7 @@ class SignIn extends Component {
         returnKeyType: 'next',
         onSubmitEditing: () => this.secondTextInput.focus(),
         onFocus: event => this.scrollToInput(findNodeHandle(event.target)),
+        keyboardType: 'email-address',
       }}
     />
   );
@@ -113,7 +118,8 @@ class SignIn extends Component {
     <AuthInput
       state={password}
       setState={text => this.setState({ password: text })}
-      renderIcon={() => this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
+      renderIcon={() =>
+        this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
       }
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',
