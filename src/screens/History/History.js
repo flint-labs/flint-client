@@ -5,8 +5,8 @@ import {
   FlatList,
   Text,
   AsyncStorage,
-  ActivityIndicator,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import sendRequest from '../../modules/sendRequest';
@@ -23,7 +23,10 @@ class History extends Component {
   handleWillFocus = async () => {
     try {
       const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      const { data } = await sendRequest('get', `/api/history/completeList/${id}`);
+      const { data } = await sendRequest(
+        'get',
+        `/api/history/completeList/${id}`,
+      );
       this.setState({
         isLoading: true,
         isSignIn: true,
@@ -65,7 +68,10 @@ class History extends Component {
                 data={completeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={itemData => (
-                  <HistoryEntry data={itemData.item} handlePress={switchScreen} />
+                  <HistoryEntry
+                    data={itemData.item}
+                    handlePress={switchScreen}
+                  />
                 )}
               />
             </View>

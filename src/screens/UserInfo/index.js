@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   AsyncStorage,
   SafeAreaView,
-  ImageBackground,
   ActivityIndicator,
   AlertIOS,
   Alert,
@@ -13,7 +12,6 @@ import {
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { SecureStore } from 'expo';
 import PropTypes from 'prop-types';
-import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 
 import sendRequest from '../../modules/sendRequest';
@@ -39,6 +37,7 @@ class UserInfo extends Component {
   };
 
   handleWillFocus = async () => {
+    const { user, totalAmount } = this.state;
     try {
       this.setState({ pending: true });
       const userInfo = await AsyncStorage.getItem('userInfo');
@@ -56,15 +55,11 @@ class UserInfo extends Component {
       );
       console.log(error.message);
     } finally {
-      const totalAmount =
-        this.state.user !== null
-          ? this.state.totalAmount + Number(this.state.user.change)
-          : this.state.totalAmount;
-
-      console.log(this.state.totalAmount);
+      const Amount =
+        user !== null ? totalAmount + Number(user.change) : totalAmount;
       this.setState({
         pending: false,
-        totalAmount,
+        totatAmount: Amount,
       });
     }
   };

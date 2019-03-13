@@ -36,7 +36,10 @@ class Referee extends Component {
   componentDidMount = async () => {
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     try {
-      const list = await sendRequest('get', `/api/reports/getRequireList/${id}`);
+      const list = await sendRequest(
+        'get',
+        `/api/reports/getRequireList/${id}`,
+      );
 
       this.setState({ reqData: list ? list.data : [] });
     } catch (error) {
@@ -59,10 +62,15 @@ class Referee extends Component {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = await sendRequest('post', '/api/reports/responseReport', null, {
-        reportId: requestReportId,
-        check: 'true',
-      });
+      const { status } = await sendRequest(
+        'post',
+        '/api/reports/responseReport',
+        null,
+        {
+          reportId: requestReportId,
+          check: 'true',
+        },
+      );
 
       if (status === 200) {
         this.setState({
@@ -79,10 +87,15 @@ class Referee extends Component {
     const { isVisible, requestReportId, reqData } = this.state;
 
     try {
-      const { status } = await sendRequest('post', '/api/reports/responseReport', null, {
-        reportId: requestReportId,
-        check: 'true',
-      });
+      const { status } = await sendRequest(
+        'post',
+        '/api/reports/responseReport',
+        null,
+        {
+          reportId: requestReportId,
+          check: 'false',
+        },
+      );
 
       if (status === 200) {
         this.setState({
@@ -107,7 +120,9 @@ class Referee extends Component {
         style={{ flex: 1, alignItems: 'center' }}
       >
         <View style={{ flex: 1 }}>
-          <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}>
+          <View
+            style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}
+          >
             <Image
               source={{ uri: image }}
               style={{
@@ -248,7 +263,9 @@ export default createStackNavigator({
   Referee: {
     screen: Referee,
     navigationOptions: {
-      headerTitle: () => <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>,
+      headerTitle: () => (
+        <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+      ),
     },
   },
 
