@@ -40,12 +40,13 @@ class Home extends Component {
     const { isSetting } = this.state;
     const { navigation, newChallenge } = this.props;
 
-    console.log('Home newChallenge', newChallenge);
+    // console.log('Home newChallenge', newChallenge);
 
     if (isSetting) {
+      console.log('여기가 맞아연?');
       this.setState({ isSetting: false });
-      navigation.navigate('Dashboard', {
-        newChallenge,
+      navigation.navigate('MyPage', {
+        newChallenge: 'string',
       });
     }
   };
@@ -102,9 +103,7 @@ export default createStackNavigator(
     Home: {
       screen: connect(mapStateToProps)(Home),
       navigationOptions: {
-        headerTitle: () => (
-          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        ),
+        headerTitle: () => <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>,
       },
     },
     ChallengeSetting: {
