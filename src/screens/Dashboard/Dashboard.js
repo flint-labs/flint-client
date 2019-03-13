@@ -76,7 +76,6 @@ class Dashboard extends Component {
   render() {
     const { modalVisible, isLoaded } = this.state;
     const { recentChallenge, reports, progress, refreshDashboard } = this.props;
-
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
 
