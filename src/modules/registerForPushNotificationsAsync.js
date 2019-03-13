@@ -1,4 +1,4 @@
-import { Permissions } from 'expo';
+import { Permissions, Notifications } from 'expo';
 
 // const PUSH_ENDPOINT = 'https://exp.host/--/api/v2/push/send';
 
@@ -17,7 +17,13 @@ export default async function registerPushToken() {
 
   // Stop here if the user did not grant permissions
   if (finalStatus !== 'granted') return;
-  return true;
+  try {
+    const pushToken = await Notifications.getExpoPushTokenAsync();
+    console.log('pushToken 확인', pushToken);
+    return pushToken;
+  } catch (error) {
+    return '';
+  }
   // Get the token that uniquely identifies this device
 }
 

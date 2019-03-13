@@ -102,9 +102,7 @@ class SignUp extends Component {
         navigation: { goBack },
       } = this.props;
       // 푸시알림 막아놓은 경우는 pushToken ''
-      const pushToken = (await registerPushToken())
-        ? await Notifications.getExpoPushTokenAsync()
-        : '';
+      const pushToken = (await registerPushToken()) || '';
       const user = {
         email,
         password,
