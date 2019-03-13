@@ -18,6 +18,7 @@ import axios from 'axios';
 
 import { emailCheck, passwordCheck, confirmCheck } from './schema';
 import { AuthInput, OrangeButton } from '../../components';
+import registerPushToken from '../../modules/registerForPushNotificationsAsync';
 import styles from './styles';
 
 const { width: WIDTH } = Dimensions.get('window');
@@ -49,7 +50,6 @@ class SignUp extends Component {
     showWarning: false,
     gender: 'man',
     birth: THIS_YEAR,
-    pushToken: '',
     // location: '',
   };
 
@@ -61,9 +61,7 @@ class SignUp extends Component {
 
   isValidAll = () => {
     const { emailDuplication, nicknameDuplication } = this.state;
-    const isValid = Object.values(this.validations).every(
-      validation => validation,
-    );
+    const isValid = Object.values(this.validations).every(validation => validation);
     return isValid && !emailDuplication && !nicknameDuplication;
   };
 
@@ -71,8 +69,7 @@ class SignUp extends Component {
     const { navigation } = this.props;
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     navigation.setParams({ handleBackButton: this.handleBackButton });
-    const pushToken = await Notifications.getExpoPushTokenAsync();
-    this.setState({ pushToken });
+    // this.setState({ pushToken });
   };
 
   componentDidUpdate = async () => {
@@ -82,8 +79,7 @@ class SignUp extends Component {
     if (page === 0) {
       if (validations.email && this.firstTextInput.isFocused()) {
         const isDuplicated = await this.checkEmailDuplication(email);
-        if (isDuplicated !== emailDuplication)
-          this.setState({ emailDuplication: isDuplicated });
+        if (isDuplicated !== emailDuplication) this.setState({ emailDuplication: isDuplicated });
       }
       if (nickname !== '' && this.fourthTextInput.isFocused()) {
         const isDuplicated = await this.checkNicknameDuplication(nickname);
@@ -100,11 +96,15 @@ class SignUp extends Component {
 
   handleSignupButton = async () => {
     try {
-      const { email, password, pushToken } = this.state;
+      const { email, password } = this.state;
       const { nickname, gender, birth } = this.state;
       const {
         navigation: { goBack },
       } = this.props;
+      // 푸시알림 막아놓은 경우는 pushToken ''
+      const pushToken = (await registerPushToken())
+        ? await Notifications.getExpoPushTokenAsync()
+        : '';
       const user = {
         email,
         password,
@@ -114,9 +114,7 @@ class SignUp extends Component {
         pushToken,
       };
       await axios.post(`${BASE_URL}/api/users/signUp`, { user });
-      Alert.alert('회원가입 성공', '회원가입을 축하합니다 🎉', [
-        { text: 'OK', onPress: goBack },
-      ]);
+      Alert.alert('회원가입 성공', '회원가입을 축하합니다 🎉', [{ text: 'OK', onPress: goBack }]);
     } catch (error) {
       const { data } = error.response;
       Alert.alert(`⚠️\n${data}`);
@@ -150,18 +148,14 @@ class SignUp extends Component {
     this.scroll.props.scrollToFocusedInput(node);
   }
 
-  renderIcon = ({ name, style }) => (
-    <Icon name={name} size={20} color="#333" style={style} />
-  );
+  renderIcon = ({ name, style }) => <Icon name={name} size={20} color="#333" style={style} />;
 
   renderEmailInput = email => {
     const { validations } = this;
     const { emailDuplication } = this.state;
     const isValid = emailCheck(email);
     if (validations.email !== isValid) validations.email = isValid;
-    let message = isValid
-      ? '좋은 이메일이에요!'
-      : '이메일 형식에 맞지 않아요 :(';
+    let message = isValid ? '좋은 이메일이에요!' : '이메일 형식에 맞지 않아요 :(';
     if (isValid && emailDuplication) message = '이미 사용된 이메일이에요 :(';
 
     return (
@@ -182,11 +176,7 @@ class SignUp extends Component {
           }}
         />
         {
-          <Text
-            style={
-              isValid && !emailDuplication ? styles.success : styles.warning
-            }
-          >
+          <Text style={isValid && !emailDuplication ? styles.success : styles.warning}>
             {email === '' ? ' ' : message}
           </Text>
         }
@@ -231,9 +221,7 @@ class SignUp extends Component {
     const { validations } = this;
     const isValid = confirmCheck(password, confirm);
     if (validations.confirm !== isValid) validations.confirm = isValid;
-    const message = isValid
-      ? '정확히 입력하셨어요!'
-      : '비밀번호가 일치하지 않아요 :(';
+    const message = isValid ? '정확히 입력하셨어요!' : '비밀번호가 일치하지 않아요 :(';
     return (
       <View key="confirm">
         <AuthInput
@@ -262,17 +250,13 @@ class SignUp extends Component {
 
   renderNameInput = nickname => {
     const { nicknameDuplication } = this.state;
-    const message = nicknameDuplication
-      ? '이미 사용된 닉네임이에요 :('
-      : '좋은 닉네임이에요!';
+    const message = nicknameDuplication ? '이미 사용된 닉네임이에요 :(' : '좋은 닉네임이에요!';
     return (
       <View key="nickname">
         <AuthInput
           state={nickname}
           setState={text => this.setState({ nickname: text })}
-          renderIcon={() =>
-            this.renderIcon({ name: 'ios-person', style: { paddingLeft: 2 } })
-          }
+          renderIcon={() => this.renderIcon({ name: 'ios-person', style: { paddingLeft: 2 } })}
           customProps={{
             placeholder: '닉네임을 정해주세요.',
             onSubmitEditing: () => {
@@ -383,9 +367,7 @@ class SignUp extends Component {
   renderWarningText = () => {
     const { page, showWarning } = this.state;
     if (page === 0 && showWarning && !this.isValidAll()) {
-      return (
-        <Text style={styles.warning}>모든 항목을 정확히 입력해주세요 :(</Text>
-      );
+      return <Text style={styles.warning}>모든 항목을 정확히 입력해주세요 :(</Text>;
     }
     return null;
   };

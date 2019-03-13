@@ -17,6 +17,7 @@ export default async function registerPushToken() {
 
   // Stop here if the user did not grant permissions
   if (finalStatus !== 'granted') return;
+  return true;
   // Get the token that uniquely identifies this device
 }
 

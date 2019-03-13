@@ -76,20 +76,24 @@ class component extends React.Component {
     });
     this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
     const { user } = this.state;
+    const newChallenge = navigation.getParam('newChallenge');
+    if (newChallenge) {
+      this.setState({ recentChallenge: newChallenge });
+    }
     if (user) {
       const response = await sendRequest(
         'get',
         `/api/challenges/getInProgressChallenges/${user.id}`,
       );
       this.setState({ challenges: response.data.challenges });
-      const { challenges } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      const { challenges, recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
       const successReponse = await sendRequest('get', `/api/reports/getSuccessOneShot/${user.id}`);
-      if (successReponse.data.length) {
+      if (!recentChallenge && successReponse.data.length) {
         this.setState({ recentChallenge: successReponse.data[0].challenge, isSuccess: true });
       }
       // 실패한 reports가 하나라도 있으면 fail
       const failureResponse = await sendRequest('get', `/api/reports/getFailureReport/${user.id}`);
-      if (failureResponse.data.length) {
+      if (!recentChallenge && failureResponse.data.length) {
         this.setState({ recentChallenge: failureResponse.data[0].challenge, isFailure: true });
       }
       const shouldChangeChallenges = [];
@@ -113,7 +117,7 @@ class component extends React.Component {
       }
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
       const { isFailure, isSuccess } = this.state;
-      if (!isFailure && !isSuccess) {
+      if (!recentChallenge && !isFailure && !isSuccess) {
         if (EndChallengeArray.length > 0) {
           this.setState({
             recentChallenge: EndChallengeArray[0],
