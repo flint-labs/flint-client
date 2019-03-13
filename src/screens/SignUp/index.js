@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Notifications } from 'expo';
 import Icon from 'react-native-vector-icons/Ionicons';
 import PropTypes from 'prop-types';
 import axios from 'axios';
@@ -48,6 +49,7 @@ class SignUp extends Component {
     showWarning: false,
     gender: 'man',
     birth: THIS_YEAR,
+    pushToken: '',
     // location: '',
   };
 
@@ -63,10 +65,12 @@ class SignUp extends Component {
     return isValid && !emailDuplication && !nicknameDuplication;
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const { navigation } = this.props;
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     navigation.setParams({ handleBackButton: this.handleBackButton });
+    const pushToken = await Notifications.getExpoPushTokenAsync();
+    this.setState({ pushToken });
   };
 
   componentDidUpdate = async () => {
@@ -93,7 +97,7 @@ class SignUp extends Component {
 
   handleSignupButton = async () => {
     try {
-      const { email, password } = this.state;
+      const { email, password, pushToken } = this.state;
       const { nickname, gender, birth } = this.state;
       const {
         navigation: { goBack },
@@ -104,6 +108,7 @@ class SignUp extends Component {
         nickname,
         gender,
         birth,
+        pushToken,
       };
       await axios.post(`${BASE_URL}/api/users/signUp`, { user });
       Alert.alert('회원가입 성공', '회원가입을 축하합니다 🎉', [{ text: 'OK', onPress: goBack }]);
