@@ -8,9 +8,11 @@ import { OrangeButton } from '../../components';
 import sendRequest from '../../modules/sendRequest';
 import { challengeAction } from '../../actions';
 
-const { RESET_CHALLENGE } = challengeAction;
+const { RESET_CHALLENGE, SET_NEW_CHALLENGE } = challengeAction;
 
-const StartChallenge = ({ navigation, challenge, resetChallenge }) => {
+const StartChallenge = ({
+  navigation, challenge, resetChallenge, setNewChallenge,
+}) => {
   const makeChallenge = async () => {
     const { startAt, challengePeriod } = challenge;
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
@@ -39,9 +41,11 @@ const StartChallenge = ({ navigation, challenge, resetChallenge }) => {
   const handleSubmit = async () => {
     try {
       const newChallenge = await makeChallenge();
-      await sendRequest('post', '/api/challenges/setting', null, { challenge: newChallenge });
+      const { data } = await sendRequest('post', '/api/challenges/setting', null, { challenge: newChallenge });
 
       resetChallenge();
+      setNewChallenge(data);
+
       navigation.state.params.setting();
       navigation.popToTop();
     } catch (error) {
@@ -84,6 +88,7 @@ StartChallenge.propTypes = {
     slogan: PropTypes.string,
   }).isRequired,
   resetChallenge: PropTypes.func.isRequired,
+  setNewChallenge: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -92,5 +97,8 @@ export default connect(
   }),
   dispatch => ({
     resetChallenge: () => dispatch({ type: RESET_CHALLENGE }),
+    setNewChallenge: newChallenge => dispatch({
+      type: SET_NEW_CHALLENGE, payload: { newChallenge },
+    }),
   }),
 )(StartChallenge);
