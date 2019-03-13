@@ -44,6 +44,7 @@ class component extends React.Component {
     progress: null,
     isFailure: false,
     isSuccess: false,
+    isNew: false,
   };
 
   goTo = screen => {
@@ -78,7 +79,7 @@ class component extends React.Component {
     const { user } = this.state;
     const newChallenge = navigation.getParam('newChallenge');
     if (newChallenge) {
-      this.setState({ recentChallenge: newChallenge });
+      this.setState({ recentChallenge: newChallenge, isNew: true });
     }
     if (user) {
       const response = await sendRequest(
@@ -86,14 +87,14 @@ class component extends React.Component {
         `/api/challenges/getInProgressChallenges/${user.id}`,
       );
       this.setState({ challenges: response.data.challenges });
-      const { challenges, recentChallenge } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      const { challenges, recentChallenge, isNew } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
       const successReponse = await sendRequest('get', `/api/reports/getSuccessOneShot/${user.id}`);
       if (!recentChallenge && successReponse.data.length) {
         this.setState({ recentChallenge: successReponse.data[0].challenge, isSuccess: true });
       }
       // 실패한 reports가 하나라도 있으면 fail
       const failureResponse = await sendRequest('get', `/api/reports/getFailureReport/${user.id}`);
-      if (!recentChallenge && failureResponse.data.length) {
+      if (!isNew && failureResponse.data.length) {
         this.setState({ recentChallenge: failureResponse.data[0].challenge, isFailure: true });
       }
       const shouldChangeChallenges = [];
@@ -117,7 +118,7 @@ class component extends React.Component {
       }
       const EndChallengeArray = challenges.filter(el => new Date(el.endAt) - new Date() <= 0);
       const { isFailure, isSuccess } = this.state;
-      if (!recentChallenge && !isFailure && !isSuccess) {
+      if (!isNew && !isFailure && !isSuccess) {
         if (EndChallengeArray.length > 0) {
           this.setState({
             recentChallenge: EndChallengeArray[0],
@@ -169,6 +170,10 @@ class component extends React.Component {
       });
       navigation.setParams({
         dashboardTitle: user ? recentChallenge.title : '선택된 도전이 없습니다',
+      });
+    } else {
+      navigation.setParams({
+        dashboardTitle: '선택된 도전이 없습니다',
       });
     }
     this.setState({ isLoaded: true });
