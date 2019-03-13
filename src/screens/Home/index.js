@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  View, ScrollView, Dimensions, Text,
-} from 'react-native';
+import { View, ScrollView, Dimensions, Text } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -43,11 +41,8 @@ class Home extends Component {
     // console.log('Home newChallenge', newChallenge);
 
     if (isSetting) {
-      console.log('여기가 맞아연?');
       this.setState({ isSetting: false });
-      navigation.navigate('MyPage', {
-        newChallenge: 'string',
-      });
+      navigation.navigate('Dashboard');
     }
   };
 
@@ -103,7 +98,9 @@ export default createStackNavigator(
     Home: {
       screen: connect(mapStateToProps)(Home),
       navigationOptions: {
-        headerTitle: () => <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>,
+        headerTitle: () => (
+          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        ),
       },
     },
     ChallengeSetting: {
