@@ -27,7 +27,6 @@ class UserInfo extends Component {
   state = {
     user: null,
     pending: false,
-    isDialogVisible: false,
     totalAmount: 0,
   };
 
@@ -37,30 +36,21 @@ class UserInfo extends Component {
   };
 
   handleWillFocus = async () => {
-    const { user, totalAmount } = this.state;
     try {
+      const { totalAmount } = this.state;
       this.setState({ pending: true });
       const userInfo = await AsyncStorage.getItem('userInfo');
       if (!userInfo) return;
       const { id } = JSON.parse(userInfo);
       if (!id) return;
-      const {
-        data: { user },
-      } = await sendRequest('get', `/api/users/${id}`);
-      if (user) this.setState({ user });
+      const { data: { user } } = await sendRequest('get', `/api/users/${id}`);
+      const amount = user !== null ? totalAmount + Number(user.change) : totalAmount;
+      if (user) this.setState({ user, totalAmount: amount });
     } catch (error) {
-      AlertIOS.alert(
-        '⚠️',
-        '서버에 문제가 생겼습니다 :( \n 잠시 후 다시 시도해주세요!',
-      );
+      AlertIOS.alert('⚠️', '서버에 문제가 생겼습니다 :( \n 잠시 후 다시 시도해주세요!');
       console.log(error.message);
     } finally {
-      const Amount =
-        user !== null ? totalAmount + Number(user.change) : totalAmount;
-      this.setState({
-        pending: false,
-        totatAmount: Amount,
-      });
+      this.setState({ pending: false });
     }
   };
 
@@ -164,7 +154,7 @@ class UserInfo extends Component {
           </Text>
           <View style={styles.change}>
             <Text style={{ fontSize: 30, fontWeight: '600' }}>
-              ₩ {this.numberWithCommas(totalAmount.toString())}
+              {`₩ ${this.numberWithCommas(totalAmount.toString())}`}
             </Text>
           </View>
         </View>
@@ -192,9 +182,7 @@ class UserInfo extends Component {
           <TouchableOpacity
             style={styles.userInfoEtc}
             onPress={() => {
-              AlertIOS.prompt('Email을 한 번 더 입력해 주세요.', null, text =>
-                this.handleDeleteAccountButton(text),
-              );
+              AlertIOS.prompt('Email을 한 번 더 입력해 주세요.', null, text => this.handleDeleteAccountButton(text));
             }}
           >
             <Text style={{ marginLeft: 15, fontSize: 15, color: 'red' }}>

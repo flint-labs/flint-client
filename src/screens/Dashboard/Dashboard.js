@@ -94,7 +94,7 @@ class Dashboard extends Component {
     } else if (amountHigh !== 0 && amountLow !== 0) {
       viewAmount = `${amountHigh}.${amountLow}만원`;
     } else if (amountLow !== 0) {
-      viewAmount = `0.${amountLow}만원`;
+      viewAmount = `${amountLow}천원`;
     }
 
     if (isLoaded) {
@@ -125,7 +125,7 @@ class Dashboard extends Component {
                       >
                         {recentChallenge.slogan}
                       </Text>
-                      <Text style={{ marginTop: 5, color: '#d0d0d0' }}>
+                      <Text style={{ marginTop: 5, color: '#999' }}>
                         {`도전 기간 | ${startTime} - ${endTime}`}
                       </Text>
                     </View>
@@ -138,13 +138,26 @@ class Dashboard extends Component {
                           marginVertical: 5,
                         }}
                       >
-                        <Text style={{ color: '#888' }}>체크 주기</Text>
+                        <Text style={{ color: '#888' }}>체크 횟수</Text>
                         <View
                           style={{ justifyContent: 'center', marginTop: 5 }}
                         >
-                          <Text style={{ fontSize: 25, fontWeight: '500' }}>
-                            {recentChallenge.checkingPeriod}
-                          </Text>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'flex-end',
+                            }}
+                          >
+                            <Text style={{ fontSize: 25, fontWeight: '500' }}>
+                              {recentChallenge.checkingPeriod}
+                            </Text>
+                            <Text style={{ fontSize: 25, color: '#dcdcdc' }}>
+                              /
+                            </Text>
+                            <Text style={{ fontSize: 15, color: '#aaa' }}>
+                              회
+                            </Text>
+                          </View>
                         </View>
                       </View>
                       <View
@@ -201,7 +214,7 @@ class Dashboard extends Component {
                   <View style={{}}>
                     <Text
                       style={{
-                        color: '#d0d0d0',
+                        color: '#999',
                         marginVertical: 10,
                         marginLeft: 20,
                       }}
