@@ -10,7 +10,7 @@ import { OrangeButton } from '../../components';
 import sendRequest from '../../modules/sendRequest';
 import { challengeAction } from '../../actions';
 
-const { RESET_CHALLENGE } = challengeAction;
+const { RESET_CHALLENGE, SET_NEW_CHALLENGE } = challengeAction;
 const KAKAO_PAY_ICON = require('../../../assets/images/ChallengeSetting/kakao-icon.png');
 const PAYPAL_ICON = require('../../../assets/images/ChallengeSetting/paypal-icon.png');
 
@@ -47,11 +47,15 @@ class PaymentMethod extends Component {
 
   handleNext = async () => {
     const { isKakao } = this.state;
-    const { navigation, amount, resetChallenge } = this.props;
+    const {
+      navigation, amount, resetChallenge, setNewChallenge,
+    } = this.props;
     const challenge = await this.makeChallenge();
-    await sendRequest('post', '/api/challenges/setting', null, { challenge });
+    const { data } = await sendRequest('post', '/api/challenges/setting', null, { challenge });
 
     resetChallenge();
+    setNewChallenge(data);
+
     navigation.navigate('Payment', {
       setting: navigation.state.params.setting,
       amount,
@@ -121,6 +125,7 @@ PaymentMethod.propTypes = {
     slogan: PropTypes.string,
   }).isRequired,
   resetChallenge: PropTypes.func.isRequired,
+  setNewChallenge: PropTypes.func.isRequired,
 };
 
 export default connect(
@@ -130,5 +135,8 @@ export default connect(
   }),
   dispatch => ({
     resetChallenge: () => dispatch({ type: RESET_CHALLENGE }),
+    setNewChallenge: newChallenge => dispatch({
+      type: SET_NEW_CHALLENGE, payload: { newChallenge },
+    }),
   }),
 )(PaymentMethod);

@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import Intro from './Intro';
 import Feedback from './Feedback';
@@ -37,11 +38,16 @@ class Home extends Component {
 
   handleWillFocus = () => {
     const { isSetting } = this.state;
-    const { navigation } = this.props;
+    const { navigation, newChallenge } = this.props;
+
+    // console.log('Home newChallenge', newChallenge);
 
     if (isSetting) {
+      console.log('여기가 맞아연?');
       this.setState({ isSetting: false });
-      navigation.navigate('Dashboard');
+      navigation.navigate('MyPage', {
+        newChallenge: 'string',
+      });
     }
   };
 
@@ -63,16 +69,41 @@ Home.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func,
   }).isRequired,
+  newChallenge: PropTypes.shape({
+    amount: PropTypes.number,
+    category: PropTypes.string,
+    checkingPeriod: PropTypes.number,
+    createdAt: PropTypes.string,
+    description: PropTypes.string,
+    endAt: PropTypes.string,
+    id: PropTypes.number,
+    isOnGoing: PropTypes.bool,
+    receipient_charity_id: PropTypes.number,
+    receipient_user_id: PropTypes.number,
+    refereeId: PropTypes.number,
+    slogan: PropTypes.string,
+    startAt: PropTypes.string,
+    state: PropTypes.string,
+    title: PropTypes.string,
+    updatedAt: PropTypes.string,
+    userId: PropTypes.number,
+  }),
 };
+
+Home.defaultProps = {
+  newChallenge: {},
+};
+
+const mapStateToProps = state => ({
+  newChallenge: state.challenge.newChallenge,
+});
 
 export default createStackNavigator(
   {
     Home: {
-      screen: Home,
+      screen: connect(mapStateToProps)(Home),
       navigationOptions: {
-        headerTitle: () => (
-          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-        ),
+        headerTitle: () => <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>,
       },
     },
     ChallengeSetting: {
