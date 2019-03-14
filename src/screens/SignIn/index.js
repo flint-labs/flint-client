@@ -118,8 +118,7 @@ class SignIn extends Component {
     <AuthInput
       state={password}
       setState={text => this.setState({ password: text })}
-      renderIcon={() =>
-        this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
+      renderIcon={() => this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
       }
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',

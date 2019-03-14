@@ -59,9 +59,11 @@ class SignUp extends Component {
   };
 
   isValidAll = () => {
-    const { emailDuplication, nicknameDuplication } = this.state;
+    const {
+      emailDuplication, nicknameDuplication, email, nickname, password, confirm,
+    } = this.state;
     const isValid = Object.values(this.validations).every(validation => validation);
-    return isValid && !emailDuplication && !nicknameDuplication;
+    return isValid && !emailDuplication && !nicknameDuplication && email !== '' && nickname !== '' && password !== '' && confirm !== '';
   };
 
   componentDidMount = async () => {
