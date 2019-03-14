@@ -7,6 +7,7 @@ import {
   Image,
   SafeAreaView,
   Text,
+  AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';
@@ -14,9 +15,11 @@ import { ImagePicker, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { RNS3 } from 'react-native-aws3';
 import styles from './style';
 import { OrangeButton } from '../../components';
 import sendRequest from '../../modules/sendRequest';
+import aws from '../../../config.json';
 
 const cameraImage = require('../../../assets/images/Dashboard/camera.png');
 
@@ -31,12 +34,32 @@ class DoIt extends React.Component {
     const { recentChallenge, refreshDashboard } = this.props;
     const { text, photo } = this.state;
     if (text !== null && text.length <= 50 && text.length > 0 && photo) {
-      sendRequest('post', '/api/reports/postReport', null, {
-        image: photo,
+      const res = await sendRequest('post', '/api/reports/postReport', null, {
         isConfirmed: 'pending',
         description: text,
         challengeId: recentChallenge.id,
+        image: `${recentChallenge.id}${new Date()}`,
       });
+      // console.log(res.data.reported.id === 10, );
+      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
+      const file = {
+        uri: photo.uri,
+        name: `${id}-${recentChallenge.id}-${res.data.reported.id}`,
+        type: 'image/png',
+      };
+      const config = {
+        keyPrefix: 's3/',
+        bucket: 'flint-s3',
+        region: 'ap-northeast-2',
+        accessKey: aws.accessKey,
+        secretKey: aws.secretKey,
+        successActionStatus: 201,
+      };
+
+      RNS3.put(file, config).then(response => {
+        console.log(response);
+      });
+
       Alert.alert('제출되었습니다.', null, [
         {
           text: 'OK',
@@ -59,11 +82,11 @@ class DoIt extends React.Component {
 
   selectPicture = async () => {
     await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    const { cancelled, uri } = await ImagePicker.launchImageLibraryAsync({
+    const photo = await ImagePicker.launchImageLibraryAsync({
       aspect: [4, 3],
       allowsEditing: true,
     });
-    if (!cancelled) this.setState({ photo: uri });
+    if (!photo.cancelled) this.setState({ photo });
   };
 
   render() {
@@ -111,7 +134,7 @@ class DoIt extends React.Component {
                 <View style={{ flex: 1, marginLeft: '5%' }}>
                   <TouchableOpacity style={styles.imageRefBtn} onPress={this.selectPicture}>
                     <Image
-                      source={photo ? { uri: photo } : cameraImage}
+                      source={photo ? { uri: photo.uri } : cameraImage}
                       style={{ width: 80, height: 80 }}
                     />
                   </TouchableOpacity>
