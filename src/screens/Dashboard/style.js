@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   statusBox: {
     backgroundColor: 'white',
     width: width - 40,
-    height: 80,
+    height: 75,
     marginTop: 10,
     borderRadius: 5,
     borderWidth: 1,

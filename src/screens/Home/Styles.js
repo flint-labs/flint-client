@@ -37,6 +37,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 10,
     borderRadius: 10,
+
+    shadowOffset: { width: 0, height: 1.5 },
+    shadowColor: 'black',
+    shadowOpacity: 0.6,
+    elevation: 1,
   },
   categoryEntryImage: {
     flex: 1,

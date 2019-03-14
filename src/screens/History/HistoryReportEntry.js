@@ -3,7 +3,9 @@ import { View, Image, Text, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './style';
 
-const img = require('../../../assets/images/Home/cate1.jpg');
+const img = {
+  uri: 'https://s3.ap-northeast-2.amazonaws.com/flint-s3/images/kakaopay.jpeg',
+};
 
 const HistoryReportEntry = ({ data }) => (
   <View style={styles.refereeEntry}>
