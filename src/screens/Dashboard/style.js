@@ -75,11 +75,9 @@ const styles = StyleSheet.create({
   },
   subView: {
     position: 'absolute',
-
     left: 0,
     right: 0,
     backgroundColor: '#FFFFFF',
-
     borderRadius: 5,
   },
   ChallengeListButton: {

@@ -6,7 +6,11 @@ import styles from './style';
 
 const ReportEntry = ({ data }) => (
   <ImageBackground
-    source={{ uri: data.image }}
+    source={{
+      uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${
+        data.challengeId
+      }-${data.id}`,
+    }}
     style={styles.reportEntryBackgroundImg}
     imageStyle={{ borderRadius: 5 }}
     blurRadius={4}
@@ -41,7 +45,11 @@ const ReportEntry = ({ data }) => (
           justifyContent: 'center',
         }}
       >
-        <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
+        <Icon
+          name="ios-checkmark-circle"
+          size={30}
+          style={{ color: 'white' }}
+        />
       </View>
     </View>
   </ImageBackground>
