@@ -1,10 +1,14 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import {
   WebView, SafeAreaView, Linking, Alert, AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
 const source = require('./payment.html');
+
+const BASE_URL = 'http://13.209.19.196:3000';
 
 const propTypes = {
   navigation: PropTypes.shape({
@@ -25,7 +29,7 @@ class Payment extends Component {
       buyer_name: nickname,
       app_scheme: 'flint',
       pay_method: 'card',
-      merchant_uid: `merchant_${new Date().getTime()}`,
+      merchant_uid: `flint_merchant_${new Date().getTime()}`,
       name: 'Flint Challenge',
       currency: !isKakao ? 'USD' : 'KRW',
       amount: !isKakao ? amount / 1000 : amount,
@@ -46,11 +50,18 @@ class Payment extends Component {
     return `(${String(patchPostMessageFunction)})();`;
   }
 
-  onMessage = e => {
+  onMessage = async e => {
     const { navigation } = this.props;
+    const { state: { params: { challengeId } } } = navigation;
     try {
       const response = JSON.parse(e.nativeEvent.data);
-      if (response.success) {
+      const { imp_uid, merchant_uid } = response;
+
+      const { data: { status } } = await axios.post(`${BASE_URL}/payment/complete/${challengeId}`, {
+        imp_uid, merchant_uid,
+      });
+
+      if (status === 'success') {
         navigation.navigate('Success', {
           setting: navigation.state.params.setting,
         });
@@ -76,19 +87,35 @@ class Payment extends Component {
     }
   }
 
-  openExternalLink = req => {
+  openExternalLink = async req => {
     const { navigation } = this.props;
     const { url } = req;
     const isFlint = url.search('flint://payment/success') !== -1;
     const isKakao = url.search('kakaotalk://') !== -1;
-    const isPaypal = url.search('paypal://') !== -1;
     if (isFlint) {
-      navigation.navigate('Success', {
-        setting: navigation.state.params.setting,
+      const { state: { params: { challengeId } } } = navigation;
+      const newUrl = new URL(url);
+      const imp_uid = newUrl.searchParams.get('imp_uid');
+      const merchant_uid = newUrl.searchParams.get('merchant_uid');
+
+      const { data: { status } } = await axios.post(`${BASE_URL}/payment/complete/${challengeId}`, {
+        imp_uid, merchant_uid,
       });
+
+      if (status === 'success') {
+        navigation.navigate('Success', {
+          setting: navigation.state.params.setting,
+        });
+      } else {
+        Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
+          text: '보러가기',
+          onPress: () => navigation.goBack(),
+        }]);
+      }
+
       return false;
     }
-    if (isKakao || isPaypal) {
+    if (isKakao) {
       Linking.openURL(url);
       return false;
     }

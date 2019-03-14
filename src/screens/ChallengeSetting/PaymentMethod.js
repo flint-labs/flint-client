@@ -60,6 +60,7 @@ class PaymentMethod extends Component {
       setting: navigation.state.params.setting,
       amount,
       isKakao,
+      challengeId: data.id,
     });
   }
 
