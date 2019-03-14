@@ -40,11 +40,9 @@ class DoIt extends React.Component {
         challengeId: recentChallenge.id,
         image: `${recentChallenge.id}${new Date()}`,
       });
-      // console.log(res.data.reported.id === 10, );
-      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
       const file = {
         uri: photo.uri,
-        name: `${id}-${recentChallenge.id}-${res.data.reported.id}`,
+        name: `${recentChallenge.id}-${res.data.reported.id}`,
         type: 'image/png',
       };
       const config = {
