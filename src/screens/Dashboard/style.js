@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nonReportsTextContainer: {
-    width,
+    width: width - 40,
+    marginLeft: 20,
     height: 220,
     flex: 3,
     alignItems: 'center',
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
   },
   blockButton: {
     width: width - 40,
-    backgroundColor: 'grey',
+    backgroundColor: '#ffccaa',
     marginTop: 30,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -147,9 +148,9 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     borderRadius: 5,
-    shadowOffset: { width: 5, height: 5 },
+    shadowOffset: { width: 3, height: 3 },
     shadowColor: '#dcdcdc',
-    shadowOpacity: 1.0,
+    shadowOpacity: 0.8,
   },
 });
 

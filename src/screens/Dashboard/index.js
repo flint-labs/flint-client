@@ -317,10 +317,10 @@ class component extends React.Component {
                   {
                     transform: [{ translateY: bounceValue }],
                     zIndex: 300,
-                    top: -height * 0.8,
-                    // -height * 0.8 < challenges.length * -52
-                    //   ? -height * 0.8
-                    //   : challenges.length * -52,
+                    top:
+                      -height * 0.8 < challenges.length * -52
+                        ? challenges.length * -52
+                        : -height * 0.8,
 
                     height:
                       height * 0.8 > challenges.length * 52
@@ -345,6 +345,7 @@ class component extends React.Component {
                   style={{
                     flex: 1,
                     opacity: isHidden ? 1 : 0.2,
+                    backgroundColor: isHidden ? 'white' : 'black',
                   }}
                 >
                   <Dashboard

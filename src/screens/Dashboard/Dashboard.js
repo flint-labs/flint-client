@@ -133,9 +133,8 @@ class Dashboard extends Component {
                       <View
                         style={{
                           flex: 1,
-
                           alignItems: 'center',
-                          marginVertical: 5,
+                          marginTop: 10,
                           height: 60,
                         }}
                       >
@@ -168,7 +167,7 @@ class Dashboard extends Component {
                           borderLeftWidth: 1,
                           borderRightWidth: 1,
                           borderColor: '#dcdcdc',
-                          marginVertical: 5,
+                          marginTop: 10,
                           height: 60,
                         }}
                       >
@@ -195,7 +194,7 @@ class Dashboard extends Component {
                           flex: 1,
                           height: 60,
                           alignItems: 'center',
-                          marginVertical: 5,
+                          marginTop: 10,
                         }}
                       >
                         <Text style={{ color: '#888' }}>카테고리</Text>
@@ -227,7 +226,7 @@ class Dashboard extends Component {
                     <View style={{ marginLeft: 20 }}>
                       <Progress.Bar
                         progress={progress}
-                        color="#ffb69b"
+                        color="#FF6600"
                         width={width - 40}
                       />
                     </View>
@@ -242,8 +241,8 @@ class Dashboard extends Component {
                     swipeThreshold={5}
                     data={reports}
                     renderItem={({ item }) => <ReportEntry data={item} />}
-                    sliderWidth={width - 80}
-                    itemWidth={width - 100}
+                    sliderWidth={width - 40}
+                    itemWidth={width - 40}
                     sliderHeight={270}
                     style={{ transform: [{ scaleY: -1 }] }}
                   />
