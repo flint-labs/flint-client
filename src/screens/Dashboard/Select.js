@@ -40,6 +40,7 @@ const Select = ({
       style={{
         flex: 1,
         backgroundColor: 'white',
+        marginTop: 60,
       }}
     >
       <FlatList

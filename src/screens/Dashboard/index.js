@@ -345,6 +345,7 @@ class component extends React.Component {
                   style={{
                     flex: 1,
                     opacity: isHidden ? 1 : 0.2,
+                    backgroundColor: isHidden ? 'white' : 'black',
                   }}
                 >
                   <Dashboard
