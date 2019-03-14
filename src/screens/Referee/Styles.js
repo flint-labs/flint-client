@@ -14,18 +14,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#dcdcdc',
     borderBottomWidth: 0.5,
     marginVertical: 10,
-    // backgroundColor: 'red',
     flexDirection: 'row',
     paddingVertical: 13,
   },
   imageContainer: {
     flex: 2,
     borderRadius: 5,
-    // backgroundColor: 'blue',
   },
   bodyContainer: {
     flex: 3,
-    // backgroundColor: 'green',
     color: '#333',
   },
   titleText: { fontSize: 20, fontWeight: 'bold' },

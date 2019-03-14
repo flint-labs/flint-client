@@ -1,6 +1,11 @@
 import React from 'react';
 import {
-  TouchableOpacity, Text, FlatList, View, Dimensions, AsyncStorage,
+  TouchableOpacity,
+  Text,
+  FlatList,
+  View,
+  Dimensions,
+  AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,7 +25,10 @@ const Select = ({
   const handleChallengeListButton = async item => {
     // item은 최근 challenge
     const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-    const { data } = await sendRequest('get', `/api/challenges/getInProgressChallenges/${id}`);
+    const { data } = await sendRequest(
+      'get',
+      `/api/challenges/getInProgressChallenges/${id}`,
+    );
     await handleChallenges(data.challenges);
     await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
     await handleRecentChallenge(item);
@@ -31,6 +39,7 @@ const Select = ({
     <View
       style={{
         flex: 1,
+        backgroundColor: 'white',
       }}
     >
       <FlatList
@@ -66,7 +75,8 @@ Select.propTypes = {
       slogan: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
-  recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired }).isRequired,
+  recentChallenge: PropTypes.shape({ id: PropTypes.number.isRequired })
+    .isRequired,
 };
 
 export default Select;

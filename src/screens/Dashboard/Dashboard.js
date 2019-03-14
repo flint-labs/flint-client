@@ -133,9 +133,10 @@ class Dashboard extends Component {
                       <View
                         style={{
                           flex: 1,
-                          // backgroundColor: 'red',
+
                           alignItems: 'center',
                           marginVertical: 5,
+                          height: 60,
                         }}
                       >
                         <Text style={{ color: '#888' }}>체크 횟수</Text>
@@ -148,10 +149,10 @@ class Dashboard extends Component {
                               alignItems: 'flex-end',
                             }}
                           >
-                            <Text style={{ fontSize: 25, fontWeight: '500' }}>
+                            <Text style={{ fontSize: 23, fontWeight: '500' }}>
                               {recentChallenge.checkingPeriod}
                             </Text>
-                            <Text style={{ fontSize: 25, color: '#dcdcdc' }}>
+                            <Text style={{ fontSize: 22, color: '#ccc' }}>
                               /
                             </Text>
                             <Text style={{ fontSize: 15, color: '#aaa' }}>
@@ -168,17 +169,19 @@ class Dashboard extends Component {
                           borderRightWidth: 1,
                           borderColor: '#dcdcdc',
                           marginVertical: 5,
+                          height: 60,
                         }}
                       >
                         <Text style={{ color: '#888' }}>금액</Text>
                         <View
                           style={{
+                            flex: 1,
                             justifyContent: 'center',
-                            marginTop: 5,
+                            alignItems: 'flex-end',
                           }}
                         >
                           <Text
-                            style={{ fontSize: 25, fontWeight: '500' }}
+                            style={{ fontSize: 22, fontWeight: '500' }}
                             adjustsFontSizeToFit
                             allowFontScaling
                             numberOfLines={1}
@@ -190,7 +193,7 @@ class Dashboard extends Component {
                       <View
                         style={{
                           flex: 1,
-                          // backgroundColor: 'pink',
+                          height: 60,
                           alignItems: 'center',
                           marginVertical: 5,
                         }}
@@ -199,8 +202,8 @@ class Dashboard extends Component {
                         <View
                           style={{
                             justifyContent: 'center',
-                            alignItems: 'center',
-                            marginTop: 5,
+                            alignItems: 'flex-end',
+                            flex: 1,
                           }}
                         >
                           <Text style={{ fontSize: 22, fontWeight: '500' }}>

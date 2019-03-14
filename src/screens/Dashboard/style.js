@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -75,11 +75,9 @@ const styles = StyleSheet.create({
   },
   subView: {
     position: 'absolute',
-    top: -200,
     left: 0,
     right: 0,
     backgroundColor: '#FFFFFF',
-    height: 200,
     borderRadius: 5,
   },
   ChallengeListButton: {
@@ -126,7 +124,7 @@ const styles = StyleSheet.create({
   statusBox: {
     backgroundColor: 'white',
     width: width - 40,
-    height: 80,
+    height: 75,
     marginTop: 10,
     borderRadius: 5,
     borderWidth: 1,
