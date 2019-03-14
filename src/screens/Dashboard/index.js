@@ -317,14 +317,15 @@ class component extends React.Component {
                   {
                     transform: [{ translateY: bounceValue }],
                     zIndex: 300,
-                    top:
-                      -height * 0.8 < challenges.length * -52
-                        ? challenges.length * -52
-                        : -height * 0.8,
+                    top: -height * 0.8,
+                    // -height * 0.8 < challenges.length * -52
+                    //   ? -height * 0.8
+                    //   : challenges.length * -52,
+
                     height:
                       height * 0.8 > challenges.length * 52
                         ? challenges.length * 52
-                        : -height * 0.8,
+                        : height * 0.8,
                   },
                 ]}
               >

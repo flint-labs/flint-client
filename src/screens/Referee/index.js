@@ -124,7 +124,7 @@ class Referee extends Component {
             style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}
           >
             <Image
-              source={{ uri: image }}
+              source={image}
               style={{
                 flex: 1,
                 width: width - 70,
