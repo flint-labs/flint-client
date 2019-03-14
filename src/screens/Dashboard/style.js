@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   nonReportsTextContainer: {
-    width,
+    width: width - 40,
+    marginLeft: 20,
     height: 220,
     flex: 3,
     alignItems: 'center',

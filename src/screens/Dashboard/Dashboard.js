@@ -241,8 +241,8 @@ class Dashboard extends Component {
                     swipeThreshold={5}
                     data={reports}
                     renderItem={({ item }) => <ReportEntry data={item} />}
-                    sliderWidth={width - 80}
-                    itemWidth={width - 100}
+                    sliderWidth={width - 40}
+                    itemWidth={width - 40}
                     sliderHeight={270}
                     style={{ transform: [{ scaleY: -1 }] }}
                   />
