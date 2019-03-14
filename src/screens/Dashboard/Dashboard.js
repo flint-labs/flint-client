@@ -152,7 +152,7 @@ class Dashboard extends Component {
                             <Text style={{ fontSize: 23, fontWeight: '500' }}>
                               {recentChallenge.checkingPeriod}
                             </Text>
-                            <Text style={{ fontSize: 22, color: '#dcdcdc' }}>
+                            <Text style={{ fontSize: 22, color: '#ccc' }}>
                               /
                             </Text>
                             <Text style={{ fontSize: 15, color: '#aaa' }}>

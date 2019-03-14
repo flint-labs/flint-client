@@ -6,19 +6,20 @@ import {
   AsyncStorage,
   ActivityIndicator,
   View,
+  Dimensions,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { connect } from 'react-redux';
 import Dashboard from './Dashboard';
 import styles from './style';
 import Select from './Select';
 import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
-import { connect } from 'react-redux';
 
-let isHidden = true;
+const { width, height } = Dimensions.get('window');
 
 class component extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -48,6 +49,7 @@ class component extends React.Component {
     isFailure: false,
     isSuccess: false,
     isNew: false,
+    isHidden: true,
   };
 
   goTo = screen => {
@@ -56,20 +58,28 @@ class component extends React.Component {
   };
 
   toggleSubView = async () => {
-    const { bounceValue } = this.state;
+    const { bounceValue, isHidden, challenges } = this.state;
     let toValue = 0;
     if (isHidden) {
-      toValue = 200;
+      toValue =
+        height * 0.8 > challenges.length * 52
+          ? challenges.length * 52
+          : height * 0.8;
     }
-    console.log(toValue);
     await Animated.spring(bounceValue, {
       toValue,
       velocity: 3,
       tension: 2,
       friction: 8,
     }).start();
-    // console.log(isHidden);
-    isHidden = !isHidden;
+    this.setState({ isHidden: !isHidden });
+  };
+
+  componentBlur = async () => {
+    await Animated.spring(this.state.bounceValue, {
+      toValue: 0,
+    }).start();
+    this.setState({ isHidden: true });
   };
 
   componentDidMount = async () => {
@@ -294,6 +304,7 @@ class component extends React.Component {
       progress,
       isFailure,
       isSuccess,
+      isHidden,
     } = this.state;
     if (isLoaded) {
       if (user) {
@@ -303,7 +314,18 @@ class component extends React.Component {
               <Animated.View
                 style={[
                   styles.subView,
-                  { transform: [{ translateY: bounceValue }], zIndex: 300 },
+                  {
+                    transform: [{ translateY: bounceValue }],
+                    zIndex: 300,
+                    top:
+                      -height * 0.8 < challenges.length * -52
+                        ? challenges.length * -52
+                        : -height * 0.8,
+                    height:
+                      height * 0.8 > challenges.length * 52
+                        ? challenges.length * 52
+                        : -height * 0.8,
+                  },
                 ]}
               >
                 <Select
@@ -314,20 +336,28 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Animated.View>
+
               {new Date(recentChallenge.endAt) - new Date() > 0 &&
               !isFailure &&
               !isSuccess ? (
-                <Dashboard
-                  bounceValue={bounceValue}
-                  toggleSubView={this.toggleSubView}
-                  challenges={challenges}
-                  recentChallenge={recentChallenge}
-                  handleChallenges={this.handleChallenges}
-                  handleRecentChallenge={this.handleRecentChallenge}
-                  reports={reports}
-                  progress={progress}
-                  refreshDashboard={this.componentDidMount}
-                />
+                <View
+                  style={{
+                    flex: 1,
+                    opacity: isHidden ? 1 : 0.2,
+                  }}
+                >
+                  <Dashboard
+                    bounceValue={bounceValue}
+                    toggleSubView={this.toggleSubView}
+                    challenges={challenges}
+                    recentChallenge={recentChallenge}
+                    handleChallenges={this.handleChallenges}
+                    handleRecentChallenge={this.handleRecentChallenge}
+                    reports={reports}
+                    progress={progress}
+                    refreshDashboard={this.componentDidMount}
+                  />
+                </View>
               ) : (
                 <EndChallenge
                   recentChallenge={recentChallenge}
@@ -374,7 +404,10 @@ class component extends React.Component {
   render() {
     return (
       <>
-        <NavigationEvents onWillFocus={this.componentDidMount} />
+        <NavigationEvents
+          onWillFocus={this.componentDidMount}
+          onWillBlur={this.componentBlur}
+        />
         {this.renderMethod()}
       </>
     );

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styles from './style';
 
 const img = {
-  uri: 'https://s3.ap-northeast-2.amazonaws.com/flint-s3/images/kakaopay.jpeg',
+  uri: 'https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/testnameidaaaaa',
 };
 
 const HistoryReportEntry = ({ data }) => (
