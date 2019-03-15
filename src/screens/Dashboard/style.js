@@ -94,9 +94,8 @@ const styles = StyleSheet.create({
   },
   reportEntryTitle: {
     color: 'white',
-    fontStyle: 'italic',
-    fontSize: 25,
-    // flex: 1,
+    fontWeight: '700',
+    fontSize: 20,
   },
   doItHeaderContainer: {
     flexDirection: 'row',
@@ -152,19 +151,24 @@ const styles = StyleSheet.create({
     shadowColor: '#dcdcdc',
     shadowOpacity: 0.8,
   },
-  blurView: {
+  statusEntry: {
     flex: 1,
+    alignItems: 'center',
+    height: 60,
+    marginTop: 10,
+  },
+  statusEntryBody: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  reportImgBlur: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
     borderRadius: 5,
     padding: 15,
     justifyContent: 'center',
   },
-  checkIconContainer: {
-    alignItems: 'flex-end',
-    flex: 1,
-    justifyContent: 'center',
-  },
-  pendingMessageContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  pendingMessage: { fontSize: 20, color: 'white', fontWeight: '500' },
 });
 
 export default styles;
