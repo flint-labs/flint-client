@@ -240,14 +240,12 @@ class Referee extends Component {
     return this.renderToSignInPage();
   };
 
-  render = () => {
-    return (
-      <View style={{ flex: 1 }}>
-        <NavigationEvents onWillFocus={this.handleWillFocus} />
-        {this.renderInCondition()}
-      </View>
-    );
-  };
+  render = () => (
+    <View style={{ flex: 1 }}>
+      <NavigationEvents onWillFocus={this.handleWillFocus} />
+      {this.renderInCondition()}
+    </View>
+  );
 }
 
 export default createStackNavigator(
