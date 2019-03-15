@@ -50,7 +50,7 @@ const Select = ({
         style={{ width }}
       />
       <View style={{ alignItems: 'center', height: 25 }}>
-        <Icon size={40} color="#dcdcdc" name="ios-remove" />
+        <Icon size={70} color="#dcdcdc" name="ios-remove" />
       </View>
     </View>
   );

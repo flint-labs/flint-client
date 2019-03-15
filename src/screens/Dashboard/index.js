@@ -17,6 +17,7 @@ import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
 import { connect } from 'react-redux';
+import Modal from 'react-native-modalbox';
 
 let isHidden = true;
 
@@ -36,6 +37,12 @@ class component extends React.Component {
       ),
     };
   };
+
+  modal = React.createRef();
+
+  openmodal = () => {
+    this.modal.current.open();
+  }
 
   state = {
     bounceValue: new Animated.Value(0),
@@ -81,7 +88,7 @@ class component extends React.Component {
       this.setState({ recentChallenge: newChallenge, isNew: true });
     }
     navigation.setParams({
-      handleBottomModal: this.toggleSubView,
+      handleBottomModal: this.openmodal,
     });
     if (user) {
       const response = await sendRequest(
@@ -300,12 +307,7 @@ class component extends React.Component {
         if (challenges.length) {
           return (
             <>
-              <Animated.View
-                style={[
-                  styles.subView,
-                  { transform: [{ translateY: bounceValue }], zIndex: 300 },
-                ]}
-              >
+              <Modal style={{height: 300}} entry="top" position="top" ref={this.modal}>
                 <Select
                   toggleSubView={this.toggleSubView}
                   handleChallenges={this.handleChallenges}
@@ -313,7 +315,7 @@ class component extends React.Component {
                   handleRecentChallenge={this.handleRecentChallenge}
                   recentChallenge={recentChallenge}
                 />
-              </Animated.View>
+              </Modal>
               {new Date(recentChallenge.endAt) - new Date() > 0 &&
               !isFailure &&
               !isSuccess ? (
