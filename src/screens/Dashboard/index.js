@@ -350,7 +350,7 @@ class component extends React.Component {
         >
           <TouchableOpacity onPress={() => this.goTo('SignIn')}>
             <Text
-              style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}
+              style={{ fontWeight: '500', textDecorationLine: 'underline' }}
             >
               로그인 하러가기
             </Text>
