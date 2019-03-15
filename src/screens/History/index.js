@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import History from './History';
 import HistoryDetail from './HistoryDetail';
 import SignIn from '../SignIn';
+import SignUp from '../SignUp';
 
 class component extends Component {
   goToScreen = (screenName, data, period) => {
@@ -40,6 +41,9 @@ export default createStackNavigator(
 
     SignIn: {
       screen: SignIn,
+    },
+    SignUp: {
+      screen: SignUp,
     },
   },
   {

@@ -7,18 +7,20 @@ import {
   ActivityIndicator,
   View,
   Dimensions,
+  Easing,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
+import Modal from 'react-native-modalbox';
 import Dashboard from './Dashboard';
 import styles from './style';
 import Select from './Select';
 import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
-import Modal from 'react-native-modalbox';
+import SignUp from '../SignUp';
 
 const { width, height } = Dimensions.get('window');
 
@@ -52,7 +54,6 @@ class component extends React.Component {
     isFailure: false,
     isSuccess: false,
     isNew: false,
-    isHidden: true,
   };
 
   openmodal = () => {
@@ -62,31 +63,6 @@ class component extends React.Component {
   goTo = screen => {
     const { navigation } = this.props;
     navigation.navigate(screen);
-  };
-
-  toggleSubView = async () => {
-    const { bounceValue, isHidden, challenges } = this.state;
-    let toValue = 0;
-    if (isHidden) {
-      toValue =
-        height * 0.8 > challenges.length * 52
-          ? challenges.length * 52
-          : height * 0.8;
-    }
-    await Animated.spring(bounceValue, {
-      toValue,
-      velocity: 3,
-      tension: 2,
-      friction: 8,
-    }).start();
-    this.setState({ isHidden: !isHidden });
-  };
-
-  componentBlur = async () => {
-    await Animated.spring(this.state.bounceValue, {
-      toValue: 0,
-    }).start();
-    this.setState({ isHidden: true });
   };
 
   componentDidMount = async () => {
@@ -164,8 +140,8 @@ class component extends React.Component {
         } else {
           this.setState({
             recentChallenge:
-              JSON.parse(await AsyncStorage.getItem('recentChallenge')) ||
-              challenges[0],
+              JSON.parse(await AsyncStorage.getItem('recentChallenge'))
+              || challenges[0],
           });
         }
       }
@@ -180,8 +156,8 @@ class component extends React.Component {
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
         if (
-          el.isConfirmed === 'pending' &&
-          new Date() - new Date(el.createdAt) > 86400000
+          el.isConfirmed === 'pending'
+          && new Date() - new Date(el.createdAt) > 86400000
         ) {
           shouldConfirmReportsId.push(el.id);
         }
@@ -207,7 +183,6 @@ class component extends React.Component {
         });
       }
       reports = reports
-        .filter(el => el.isConfirmed === 'true')
         .map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
@@ -247,8 +222,8 @@ class component extends React.Component {
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
       if (
-        el.isConfirmed === 'pending' &&
-        new Date() - new Date(el.createdAt) > 86400000
+        el.isConfirmed === 'pending'
+        && new Date() - new Date(el.createdAt) > 86400000
       ) {
         shouldConfirmReportsId.push(el.id);
       }
@@ -260,7 +235,6 @@ class component extends React.Component {
       });
     }
     reports = reports
-      .filter(el => el.isConfirmed === 'true')
       .map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
@@ -279,12 +253,11 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week =
-      (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
-      (86400000 * 7);
+    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
+      / (86400000 * 7);
     const result = await (reports.filter(el => el.isConfirmed === 'true')
-      .length /
-      (week * recentChallenge.checkingPeriod));
+      .length
+      / (week * recentChallenge.checkingPeriod));
     return result;
   };
 
@@ -311,7 +284,6 @@ class component extends React.Component {
       progress,
       isFailure,
       isSuccess,
-      isHidden,
     } = this.state;
     const { navigation } = this.props;
     if (isLoaded) {
@@ -319,18 +291,23 @@ class component extends React.Component {
         if (challenges.length) {
           return (
             <>
-              <Modal style={{ height: 300 }} entry="bottom" position="bottom" ref={this.modal}>
+              <Modal
+                style={{ height: 300 }}
+                entry="bottom"
+                position="bottom"
+                ref={this.modal}
+                easing={Easing.elastic(0)}
+              >
                 <Select
-                  toggleSubView={this.toggleSubView}
                   handleChallenges={this.handleChallenges}
                   challenges={challenges}
                   handleRecentChallenge={this.handleRecentChallenge}
                   recentChallenge={recentChallenge}
                 />
               </Modal>
-              {new Date(recentChallenge.endAt) - new Date() > 0 &&
-              !isFailure &&
-              !isSuccess ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0
+              && !isFailure
+              && !isSuccess ? (
                 <View
                   style={{
                     flex: 1,
@@ -338,7 +315,6 @@ class component extends React.Component {
                 >
                   <Dashboard
                     bounceValue={bounceValue}
-                    toggleSubView={this.toggleSubView}
                     challenges={challenges}
                     recentChallenge={recentChallenge}
                     handleChallenges={this.handleChallenges}
@@ -348,17 +324,17 @@ class component extends React.Component {
                     refreshDashboard={this.componentDidMount}
                   />
                 </View>
-              ) : (
-                <EndChallenge
-                  recentChallenge={recentChallenge}
-                  progress={progress}
-                  refreshDashboard={this.componentDidMount}
-                  handleIsFailure={this.handleIsFailure}
-                  isFailure={isFailure}
-                  handleIsSuccess={this.handleIsSuccess}
-                  isSuccess={isSuccess}
-                />
-              )}
+                ) : (
+                  <EndChallenge
+                    recentChallenge={recentChallenge}
+                    progress={progress}
+                    refreshDashboard={this.componentDidMount}
+                    handleIsFailure={this.handleIsFailure}
+                    isFailure={isFailure}
+                    handleIsSuccess={this.handleIsSuccess}
+                    isSuccess={isSuccess}
+                  />
+                )}
             </>
           );
         }
@@ -410,6 +386,9 @@ component.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
   }).isRequired,
+  newChallenge: PropTypes.shape({
+    id: PropTypes.number,
+  }).isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -419,4 +398,11 @@ const mapStateToProps = state => ({
 export default createStackNavigator({
   component: { screen: connect(mapStateToProps)(component) },
   SignIn,
+  SignUp: {
+    screen: SignUp,
+  },
+}, {
+  navigationOptions: ({ navigation: { state } }) => ({
+    tabBarVisible: !(state.index > 0),
+  }),
 });

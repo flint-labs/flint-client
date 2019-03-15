@@ -3,7 +3,9 @@ import { View, TextInput } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './styles';
 
-const AuthInput = ({ state, setState, renderIcon, customProps }) => (
+const AuthInput = ({
+  state, setState, renderIcon, customProps,
+}) => (
   <View style={styles.input}>
     {renderIcon()}
     <TextInput
@@ -12,7 +14,7 @@ const AuthInput = ({ state, setState, renderIcon, customProps }) => (
       blurOnSubmit={false}
       value={state.toString()}
       autoCorrect={false}
-      autoCapitalize={'none'}
+      autoCapitalize="none"
       {...customProps}
     />
   </View>

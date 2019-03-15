@@ -9,6 +9,7 @@ import {
   BackHandler,
   Alert,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -49,6 +50,7 @@ class SignUp extends Component {
     showWarning: false,
     gender: 'man',
     birth: THIS_YEAR,
+    loading: false,
     // location: '',
   };
 
@@ -97,6 +99,7 @@ class SignUp extends Component {
 
   handleSignupButton = async () => {
     try {
+      this.setState({ loading: true });
       const { email, password } = this.state;
       const { nickname, gender, birth } = this.state;
       const {
@@ -118,6 +121,7 @@ class SignUp extends Component {
       const { data } = error.response;
       Alert.alert(`⚠️\n${data}`);
     }
+    this.setState({ loading: false });
   };
 
   handleBackButton = () => {
@@ -371,8 +375,15 @@ class SignUp extends Component {
     return null;
   };
 
+  renderLoading = () => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator />
+    </View>
+  )
+
   render = () => {
-    const { page } = this.state;
+    const { page, loading } = this.state;
+    if (loading) return this.renderLoading();
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAwareScrollView

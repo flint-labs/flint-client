@@ -54,25 +54,29 @@ class UserInfo extends Component {
     }
   };
 
-  handleSignOutButton = async () => {
+  handleSignOutButton = () => {
     try {
       this.setState({ pending: true });
-      await AsyncStorage.removeItem('userInfo');
-      await AsyncStorage.removeItem('accessToken');
-      await AsyncStorage.removeItem('recentChallenge');
-      await SecureStore.deleteItemAsync('refreshToken');
-      await SecureStore.deleteItemAsync('keyChain');
-      this.setState({ user: null });
-      AlertIOS.alert('로그아웃 성공!', '보고싶을 거에요 🥺', [
+      Alert.alert('정말 로그아웃 하시겠어요?', '', [
         {
           text: 'OK',
-          onPress: () => this.goTo('Home'),
+          onPress: async () => {
+            await AsyncStorage.removeItem('userInfo');
+            await AsyncStorage.removeItem('accessToken');
+            await AsyncStorage.removeItem('recentChallenge');
+            await SecureStore.deleteItemAsync('refreshToken');
+            await SecureStore.deleteItemAsync('keyChain');
+            this.setState({ user: null, pending: false });
+            this.goTo('Home');
+          },
         },
-      ]);
+        {
+          text: 'Cancel',
+          onPress: () => this.setState({ pending: false }),
+        },
+      ], { cancelable: false });
     } catch (error) {
       AlertIOS.alert(error.message);
-    } finally {
-      this.setState({ pending: false });
     }
   };
 
@@ -121,12 +125,12 @@ class UserInfo extends Component {
         </View>
 
         <View style={styles.userChallengeStateContainer}>
-          <View style={styles.inProgressChallenge}>
+          <TouchableOpacity style={styles.inProgressChallenge} onPress={() => this.goTo('Dashboard')}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.inProgress}
             </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>진행중</Text>
-          </View>
+          </TouchableOpacity>
           <View style={styles.totalChallenges}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.totalChallenges}
@@ -198,7 +202,7 @@ class UserInfo extends Component {
   renderToSignInPage = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TouchableOpacity onPress={() => this.goTo('SignIn')}>
-        <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
+        <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
           Flint 회원이신가요?
         </Text>
       </TouchableOpacity>

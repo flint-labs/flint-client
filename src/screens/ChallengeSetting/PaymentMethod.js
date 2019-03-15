@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import {
-  View, Text, SafeAreaView, Image, AsyncStorage,
+  View, Text, SafeAreaView, AsyncStorage, ImageBackground, TouchableOpacity, Image,
 } from 'react-native';
-import { CheckBox } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styles from './style';
@@ -12,11 +11,18 @@ import { challengeAction } from '../../actions';
 
 const { RESET_CHALLENGE, SET_NEW_CHALLENGE } = challengeAction;
 const KAKAO_PAY_ICON = require('../../../assets/images/ChallengeSetting/kakao-icon.png');
-const PAYPAL_ICON = require('../../../assets/images/ChallengeSetting/paypal-icon.png');
+const PAYPAL_ICON = require('../../../assets/images/ChallengeSetting/paypal-icon.jpg');
 
 class PaymentMethod extends Component {
   state = {
     isKakao: false,
+    isPaypal: false,
+    warn: false,
+  }
+
+  componentDidUpdate = () => {
+    const { isKakao, isPaypal, warn } = this.state;
+    if ((isKakao || isPaypal) && warn) this.setState({ warn: false });
   }
 
   makeChallenge = async () => {
@@ -46,26 +52,54 @@ class PaymentMethod extends Component {
   };
 
   handleNext = async () => {
-    const { isKakao } = this.state;
-    const {
-      navigation, amount, resetChallenge, setNewChallenge,
-    } = this.props;
-    const challenge = await this.makeChallenge();
-    const { data } = await sendRequest('post', '/api/challenges/setting', null, { challenge });
+    const { isKakao, isPaypal } = this.state;
+    if (!isKakao && !isPaypal) {
+      this.setState({ warn: true });
+    } else {
+      const {
+        navigation, amount, resetChallenge, setNewChallenge,
+      } = this.props;
+      const challenge = await this.makeChallenge();
+      const { data } = await sendRequest('post', '/api/challenges/setting', null, { challenge });
 
-    resetChallenge();
-    setNewChallenge(data);
+      resetChallenge();
+      setNewChallenge(data);
 
-    navigation.navigate('Payment', {
-      setting: navigation.state.params.setting,
-      amount,
-      isKakao,
-      challengeId: data.id,
-    });
+      navigation.navigate('Payment', {
+        setting: navigation.state.params.setting,
+        amount,
+        isKakao,
+        challengeId: data.id,
+      });
+    }
   }
 
+  iconStyle = flag => (flag
+    ? {
+      ...styles.paymentIcon,
+      shadowOffset: { width: 0, height: 1.5 },
+      shadowColor: '#47C83E',
+      shadowOpacity: 0.6,
+      elevation: 1,
+    }
+    : styles.paymentIcon)
+
+  renderCheck = () => (
+    <View style={{
+      width: 110,
+      borderRadius: 30,
+      flex: 1,
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+    >
+      {/* <Image source={CHECK_ICON} style={{ width: 50, height: 50 }} /> */}
+    </View>
+  )
+
   render = () => {
-    const { isKakao } = this.state;
+    const { isKakao, isPaypal, warn } = this.state;
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
@@ -74,33 +108,46 @@ class PaymentMethod extends Component {
           </View>
           <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
             <View style={styles.paymentMethodBox}>
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Image
+              <TouchableOpacity
+                onPress={() => this.setState({ isKakao: true, isPaypal: false })}
+                style={{ justifyContent: 'center', alignItems: 'center' }}
+              >
+                <ImageBackground
                   source={KAKAO_PAY_ICON}
                   style={styles.paymentIcon}
-                />
-                <CheckBox
-                  title="Kakao Pay"
-                  checked={isKakao}
-                  onPress={() => this.setState({ isKakao: true })}
-                />
-              </View>
-              <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Image
+                  imageStyle={{
+                    borderColor: '#DCDCDC',
+                    borderWidth: 1,
+                    borderRadius: 30,
+                  }}
+                  // blurRadius={isKakao ? 3 : 0}
+                >
+                  { !isKakao && this.renderCheck()}
+                </ImageBackground>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.setState({ isKakao: false, isPaypal: true })}
+                style={{ justifyContent: 'center', alignItems: 'center' }}
+              >
+                <ImageBackground
                   source={PAYPAL_ICON}
                   style={styles.paymentIcon}
-                />
-                <CheckBox
-                  title="Paypal"
-                  checked={!isKakao}
-                  onPress={() => this.setState({ isKakao: false })}
-                />
-              </View>
+                  imageStyle={{
+                    borderColor: '#DCDCDC',
+                    borderWidth: 1,
+                    borderRadius: 30,
+                  }}
+                  // blurRadius={!isKakao ? 3 : 0}
+                >
+                  {!isPaypal && this.renderCheck()}
+                </ImageBackground>
+              </TouchableOpacity>
             </View>
 
           </View>
           <View style={{ flex: 3, alignItems: 'center', justifyContent: 'flex-start' }}>
             <OrangeButton text="Next" onPress={this.handleNext} marginTop={0} />
+            <Text style={{ ...styles.warning }}>{warn ? '결제수단을 선택해주세요!' : ' '}</Text>
           </View>
         </View>
       </SafeAreaView>

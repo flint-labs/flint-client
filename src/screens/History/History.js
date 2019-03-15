@@ -43,7 +43,7 @@ class History extends Component {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity onPress={() => switchScreen('SignIn')}>
-          <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
+          <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
             Flint 회원이신가요?
           </Text>
         </TouchableOpacity>

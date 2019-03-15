@@ -16,6 +16,7 @@ import styles from './Styles';
 import RefereeEntry from './RefereeEntry';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
+import SignUp from '../SignUp';
 
 const { width, height } = Dimensions.get('window');
 
@@ -195,8 +196,8 @@ class Referee extends Component {
   renderToSignInPage = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TouchableOpacity onPress={() => this.goToScreen('SignIn')}>
-        <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
-          Flint 회원이신가요?
+        <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
+          로그인 하러가기
         </Text>
       </TouchableOpacity>
     </View>
@@ -249,17 +250,27 @@ class Referee extends Component {
   };
 }
 
-export default createStackNavigator({
-  Referee: {
-    screen: Referee,
-    navigationOptions: {
-      headerTitle: () => (
-        <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-      ),
+export default createStackNavigator(
+  {
+    Referee: {
+      screen: Referee,
+      navigationOptions: {
+        headerTitle: () => (
+          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        ),
+      },
+    },
+
+    SignIn: {
+      screen: SignIn,
+    },
+    SignUp: {
+      screen: SignUp,
     },
   },
-
-  SignIn: {
-    screen: SignIn,
+  {
+    navigationOptions: ({ navigation: { state } }) => ({
+      tabBarVisible: !(state.index > 0),
+    }),
   },
-});
+);
