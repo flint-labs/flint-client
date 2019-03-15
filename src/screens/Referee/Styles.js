@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -25,9 +25,30 @@ const styles = StyleSheet.create({
     flex: 3,
     color: '#333',
   },
-  titleText: { fontSize: 20, fontWeight: 'bold' },
+  titleText: { fontSize: 15, fontWeight: 'bold' },
   descriptionText: { fontSize: 13, marginTop: 5 },
   stateText: { fontSize: 15, fontWeight: 'bold', marginTop: 5 },
+  refereeRequestButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  refereeRequestImage: {
+    flex: 1,
+    width: width - 90,
+    height: (height - 80) / 2,
+    resizeMode: 'cover',
+    borderRadius: 5,
+  },
+  refereeRequestMessage: {
+    flex: 3,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 export default styles;
