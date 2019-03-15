@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CheckBox } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Toast, { DURATION } from 'react-native-easy-toast';
 import { OrangeButton } from '../../components';
 import { challengeAction } from '../../actions';
 import styles from './style';
@@ -20,6 +21,10 @@ class Amount extends Component {
     warn: false,
     textLoading: false,
     prevAmount: '',
+  }
+
+  componentDidMount = () => {
+    this.showToast = this.throttle(() => this.toast.show('최대 100만원 까지 가능합니다.', DURATION.LENGTH_LONG), 2000);
   }
 
   componentDidUpdate = () => {
@@ -61,6 +66,19 @@ class Amount extends Component {
     if (!isFree) setAmount('');
   }
 
+  throttle = (func, wait) => {
+    let isCalled = false;
+    return function ineer(...args) {
+      if (!isCalled) {
+        isCalled = !isCalled;
+        func.apply(this, args);
+        setTimeout(() => {
+          isCalled = !isCalled;
+        }, wait);
+      }
+    };
+  }
+
   handleInputChange = input => {
     this.setState({ textLoading: true });
     const { setAmount, amount } = this.props;
@@ -73,8 +91,15 @@ class Amount extends Component {
         const lastChar = input.charAt(input.length - 1);
         const prevInput = input.slice(0, input.length - 1);
         const newAmount = Number(`${Number(prevInput.split(',').join('')) / 1000}${lastChar}`) * 1000;
-        setAmount(newAmount.toString());
-        this.setState({ prevAmount: newAmount.toString() });
+
+        if (newAmount > 1000000) {
+          this.showToast();
+          setAmount('1000000');
+          this.setState({ prevAmount: newAmount.toString() });
+        } else {
+          setAmount(newAmount.toString());
+          this.setState({ prevAmount: newAmount.toString() });
+        }
       }
     } else {
       const newInput = input.split(',').join('');
@@ -138,6 +163,15 @@ class Amount extends Component {
               <OrangeButton text="Next" onPress={this.handleNext} marginTop={0} />
               <Text style={{ ...styles.warning }}>{warn ? '금액을 입력해주세요!' : ' '}</Text>
             </View>
+            <Toast
+              ref={ref => { this.toast = ref; }}
+              style={{ backgroundColor: 'white' }}
+              position="top"
+              positionValue={180}
+              fadeInDuration={500}
+              fadeOutDuration={500}
+              textStyle={{ color: 'rgba(255,102,0,0.7)' }}
+            />
           </View>
         </KeyboardAwareScrollView>
       </SafeAreaView>
