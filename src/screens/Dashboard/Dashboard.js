@@ -60,28 +60,34 @@ class Dashboard extends Component {
       if (start <= today && end > today) {
         if (
           reports.filter(
-            el =>
-              new Date(el.createdAt) >= start && new Date(el.createdAt) < end,
+            el => new Date(el.createdAt) >= start && new Date(el.createdAt) < end,
           ).length >= recentChallenge.checkingPeriod
-        )
+        ) {
           return 'thisWeekWasDoIt';
+        }
       }
     }
-    if (recentReportDate === new Date().toISOString().slice(0, 10))
+    if (recentReportDate === new Date().toISOString().slice(0, 10)) {
       return 'todayWasDoIt';
+    }
     return 'none';
   };
 
   render() {
     const { modalVisible, isLoaded } = this.state;
-    const { recentChallenge, reports, progress, refreshDashboard } = this.props;
+    const {
+      recentChallenge,
+      reports,
+      progress,
+      refreshDashboard,
+    } = this.props;
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
 
-    const startTime = `${start.getFullYear()}-${start.getMonth() +
-      1}-${start.getDate()}`;
-    const endTime = `${end.getFullYear()}-${end.getMonth() +
-      1}-${end.getDate()}`;
+    const startTime = `${start.getFullYear()}-${start.getMonth()
+      + 1}-${start.getDate()}`;
+    const endTime = `${end.getFullYear()}-${end.getMonth()
+      + 1}-${end.getDate()}`;
 
     const amountHigh = parseInt(recentChallenge.amount / 10000);
     const amountLow = parseInt((recentChallenge.amount % 10000) / 1000);
@@ -193,7 +199,9 @@ class Dashboard extends Component {
                         marginLeft: 20,
                       }}
                     >
-                      진행 상황 | {(progress * 100).toFixed(1)}%
+                      진행 상황 |
+                      {(progress * 100).toFixed(1)}
+                      %
                     </Text>
                     <View style={{ marginLeft: 20 }}>
                       <Progress.Bar

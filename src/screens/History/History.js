@@ -24,10 +24,7 @@ class History extends Component {
   handleWillFocus = async () => {
     try {
       const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      const { data } = await sendRequest(
-        'get',
-        `/api/history/completeList/${id}`,
-      );
+      const { data } = await sendRequest('get', `/api/history/completeList/${id}`);
       this.setState({
         isLoading: true,
         isSignIn: true,
@@ -44,7 +41,7 @@ class History extends Component {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity onPress={() => switchScreen('SignIn')}>
           <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
-            Flint 회원이신가요?
+            로그인 하러가기
           </Text>
         </TouchableOpacity>
       </View>
@@ -63,18 +60,13 @@ class History extends Component {
                 data={completeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={itemData => (
-                  <HistoryEntry
-                    data={itemData.item}
-                    handlePress={switchScreen}
-                  />
+                  <HistoryEntry data={itemData.item} handlePress={switchScreen} />
                 )}
               />
             </View>
           </SafeAreaView>
         ) : (
-          <View
-            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
-          >
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <View
               style={{
                 flex: 1,
