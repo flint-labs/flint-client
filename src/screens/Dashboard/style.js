@@ -152,6 +152,19 @@ const styles = StyleSheet.create({
     shadowColor: '#dcdcdc',
     shadowOpacity: 0.8,
   },
+  blurView: {
+    flex: 1,
+    borderRadius: 5,
+    padding: 15,
+    justifyContent: 'center',
+  },
+  checkIconContainer: {
+    alignItems: 'flex-end',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  pendingMessageContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  pendingMessage: { fontSize: 20, color: 'white', fontWeight: '500' },
 });
 
 export default styles;

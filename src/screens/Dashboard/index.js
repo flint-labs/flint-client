@@ -53,7 +53,6 @@ class component extends React.Component {
     isFailure: false,
     isSuccess: false,
     isNew: false,
-    isHidden: true,
   };
 
   openmodal = () => {
@@ -63,30 +62,6 @@ class component extends React.Component {
   goTo = screen => {
     const { navigation } = this.props;
     navigation.navigate(screen);
-  };
-
-  toggleSubView = async () => {
-    const { bounceValue, isHidden, challenges } = this.state;
-    let toValue = 0;
-    if (isHidden) {
-      toValue = height * 0.8 > challenges.length * 52
-        ? challenges.length * 52
-        : height * 0.8;
-    }
-    await Animated.spring(bounceValue, {
-      toValue,
-      velocity: 3,
-      tension: 2,
-      friction: 8,
-    }).start();
-    this.setState({ isHidden: !isHidden });
-  };
-
-  componentBlur = async () => {
-    await Animated.spring(this.state.bounceValue, {
-      toValue: 0,
-    }).start();
-    this.setState({ isHidden: true });
   };
 
   componentDidMount = async () => {
@@ -308,7 +283,6 @@ class component extends React.Component {
       progress,
       isFailure,
       isSuccess,
-      isHidden,
     } = this.state;
     const { navigation } = this.props;
     if (isLoaded) {
@@ -318,7 +292,6 @@ class component extends React.Component {
             <>
               <Modal style={{ height: 300 }} entry="bottom" position="bottom" ref={this.modal}>
                 <Select
-                  toggleSubView={this.toggleSubView}
                   handleChallenges={this.handleChallenges}
                   challenges={challenges}
                   handleRecentChallenge={this.handleRecentChallenge}
@@ -335,7 +308,6 @@ class component extends React.Component {
                 >
                   <Dashboard
                     bounceValue={bounceValue}
-                    toggleSubView={this.toggleSubView}
                     challenges={challenges}
                     recentChallenge={recentChallenge}
                     handleChallenges={this.handleChallenges}
@@ -406,6 +378,9 @@ class component extends React.Component {
 component.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
+  }).isRequired,
+  newChallenge: PropTypes.shape({
+    id: PropTypes.number,
   }).isRequired,
 };
 

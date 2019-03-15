@@ -11,11 +11,7 @@ import styles from './style';
 const { width } = Dimensions.get('window');
 
 const Select = ({
-  toggleSubView,
-  handleChallenges,
-  challenges,
-  handleRecentChallenge,
-  recentChallenge,
+  handleChallenges, challenges, handleRecentChallenge, recentChallenge,
 }) => {
   const handleChallengeListButton = async item => {
     // item은 최근 challenge
@@ -24,7 +20,6 @@ const Select = ({
     await handleChallenges(data.challenges);
     await AsyncStorage.setItem('recentChallenge', JSON.stringify(item));
     await handleRecentChallenge(item);
-    toggleSubView();
   };
 
   return (
@@ -49,13 +44,11 @@ const Select = ({
         keyExtractor={item => item.id.toString()}
         style={{ width }}
       />
-      
     </View>
   );
 };
 
 Select.propTypes = {
-  toggleSubView: PropTypes.func.isRequired,
   handleChallenges: PropTypes.func.isRequired,
   handleRecentChallenge: PropTypes.func.isRequired,
   challenges: PropTypes.arrayOf(

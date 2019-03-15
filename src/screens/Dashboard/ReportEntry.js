@@ -14,13 +14,10 @@ const ReportEntry = ({ data }) => (
     blurRadius={4}
   >
     <View
-      style={{
-        backgroundColor: data.isConfirmed === 'true' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.8)',
-        flex: 1,
-        borderRadius: 5,
-        padding: 15,
-        justifyContent: 'center',
-      }}
+      style={[
+        styles.blurView,
+        { backgroundColor: data.isConfirmed === 'true' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.8)' },
+      ]}
     >
       {data.isConfirmed === 'true' ? (
         <View style={{ flex: 1 }}>
@@ -38,21 +35,13 @@ const ReportEntry = ({ data }) => (
             </Text>
           </View>
 
-          <View
-            style={{
-              alignItems: 'flex-end',
-              flex: 1,
-              justifyContent: 'center',
-            }}
-          >
+          <View style={styles.checkIconContainer}>
             <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
           </View>
         </View>
       ) : (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, color: 'white', fontWeight: '500' }}>
-            심판의 응답을 기다리는 중...
-          </Text>
+        <View style={styles.pendingMessageContainer}>
+          <Text style={styles.pendingMessage}>심판의 응답을 기다리는 중...</Text>
         </View>
       )}
     </View>
