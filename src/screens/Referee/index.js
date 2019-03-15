@@ -15,6 +15,7 @@ import styles from './Styles';
 import RefereeEntry from './RefereeEntry';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
+import SignUp from '../SignUp';
 
 const { width, height } = Dimensions.get('window');
 
@@ -204,17 +205,15 @@ class Referee extends Component {
     }
   };
 
-  renderToSignInPage = () => {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <TouchableOpacity onPress={() => this.goToScreen('SignIn')}>
+  renderToSignInPage = () => (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <TouchableOpacity onPress={() => this.goToScreen('SignIn')}>
           <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
             Flint 회원이신가요?
           </Text>
         </TouchableOpacity>
-      </View>
-    );
-  };
+    </View>
+  );
 
   renderInCondition = () => {
     const { isLogin, reqData } = this.state;
@@ -272,4 +271,12 @@ export default createStackNavigator({
   SignIn: {
     screen: SignIn,
   },
+  SignUp: {
+    screen: SignUp,
+  },
+},
+{
+  navigationOptions: ({ navigation: { state } }) => ({
+    tabBarVisible: !(state.index > 0),
+  }),
 });
