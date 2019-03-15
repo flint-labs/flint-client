@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   View,
   Dimensions,
+  Easing,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
@@ -290,7 +291,13 @@ class component extends React.Component {
         if (challenges.length) {
           return (
             <>
-              <Modal style={{ height: 300 }} entry="bottom" position="bottom" ref={this.modal}>
+              <Modal
+                style={{ height: 300 }}
+                entry="bottom"
+                position="bottom"
+                ref={this.modal}
+                easing={Easing.elastic(0)}
+              >
                 <Select
                   handleChallenges={this.handleChallenges}
                   challenges={challenges}
