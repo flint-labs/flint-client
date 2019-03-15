@@ -37,8 +37,8 @@ class Referee extends Component {
   };
 
   componentDidMount = async () => {
-    const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
     try {
+      const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
       const list = await sendRequest(
         'get',
         `/api/reports/getRequireList/${id}`,

@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   bodyContainer: {
     flex: 3,
     color: '#333',
+    justifyContent: 'center',
   },
   titleText: { fontSize: 15, fontWeight: 'bold' },
   descriptionText: { fontSize: 13, marginTop: 5 },
