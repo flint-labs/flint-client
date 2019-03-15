@@ -25,10 +25,7 @@ class SignIn extends Component {
     tabBarVisible: false,
     title: 'Sign In',
     headerLeft: (
-      <TouchableOpacity
-        style={styles.headerButton}
-        onPress={() => navigation.goBack()}
-      >
+      <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
         <Icon name="ios-arrow-round-back" size={35} />
       </TouchableOpacity>
     ),
@@ -70,15 +67,10 @@ class SignIn extends Component {
       await AsyncStorage.setItem('accessToken', accessToken);
       await SecureStore.setItemAsync('refreshToken', refreshToken);
 
-      await SecureStore.setItemAsync(
-        'keyChain',
-        JSON.stringify({ email, password }),
-      );
-      return Alert.alert(
-        '로그인 성공!',
-        `${data.user.nickname}님 환영합니다 🤗`,
-        [{ text: 'OK', onPress: () => goBack() }],
-      );
+      await SecureStore.setItemAsync('keyChain', JSON.stringify({ email, password }));
+      return Alert.alert('로그인 성공!', `${data.user.nickname}님 환영합니다 🤗`, [
+        { text: 'OK', onPress: () => goBack() },
+      ]);
     } catch (error) {
       const { data } = error.response;
       return Alert.alert(`⚠️\n${data}`);
@@ -87,9 +79,7 @@ class SignIn extends Component {
     }
   };
 
-  renderIcon = ({ name, style }) => (
-    <Icon name={name} size={20} color="#333" style={style} />
-  );
+  renderIcon = ({ name, style }) => <Icon name={name} size={20} color="#333" style={style} />;
 
   renderRegisterButton = () => (
     <View style={styles.registerButtonBox}>
@@ -123,8 +113,7 @@ class SignIn extends Component {
     <AuthInput
       state={password}
       setState={text => this.setState({ password: text })}
-      renderIcon={() => this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })
-      }
+      renderIcon={() => this.renderIcon({ name: 'ios-lock', style: { paddingLeft: 4 } })}
       customProps={{
         placeholder: '비밀번호를 입력해주세요.',
         secureTextEntry: true,
@@ -141,7 +130,7 @@ class SignIn extends Component {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <ActivityIndicator />
     </View>
-  )
+  );
 
   render = () => {
     const { email, password, loading } = this.state;

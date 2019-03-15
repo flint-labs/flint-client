@@ -287,12 +287,15 @@ class component extends React.Component {
           return (
             <>
               <Modal
-                style={{ height: 300 }}
+                style={{ height: 300, borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
                 entry="bottom"
                 position="bottom"
                 ref={this.modal}
                 easing={Easing.elastic(0)}
               >
+                <View style={{ height: 30, alignItems: 'center' }}>
+                  <Icon name="ios-remove" size={50} color="#aaa" />
+                </View>
                 <Select
                   handleChallenges={this.handleChallenges}
                   challenges={challenges}
