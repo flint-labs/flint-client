@@ -318,7 +318,7 @@ class component extends React.Component {
         if (challenges.length) {
           return (
             <>
-              <Modal style={{ height: 300 }} entry="top" position="top" ref={this.modal}>
+              <Modal style={{ height: 300 }} entry="bottom" position="bottom" ref={this.modal}>
                 <Select
                   toggleSubView={this.toggleSubView}
                   handleChallenges={this.handleChallenges}
