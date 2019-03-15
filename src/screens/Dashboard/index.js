@@ -207,7 +207,6 @@ class component extends React.Component {
         });
       }
       reports = reports
-        .filter(el => el.isConfirmed === 'true')
         .map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
@@ -260,7 +259,6 @@ class component extends React.Component {
       });
     }
     reports = reports
-      .filter(el => el.isConfirmed === 'true')
       .map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
