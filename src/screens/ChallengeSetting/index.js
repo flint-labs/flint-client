@@ -12,7 +12,6 @@ import Amount from './Amount';
 import Receipient from './Receipient';
 import Slogan from './Slogan';
 import PaymentMethod from './PaymentMethod';
-import StartChallenge from './StartChallenge';
 
 const headerOptions = isFirst => ({ navigation }) => ({
   headerTitle: () => (
