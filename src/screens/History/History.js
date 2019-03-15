@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { NavigationEvents } from 'react-navigation';
 import sendRequest from '../../modules/sendRequest';
 import HistoryEntry from './HistoryEntry';
@@ -34,7 +35,6 @@ class History extends Component {
       });
     } catch (err) {
       this.setState({ isSignIn: false, isLoading: true });
-      console.log('요기요기');
     }
   };
 
@@ -61,7 +61,7 @@ class History extends Component {
     const { switchScreen } = this.props;
     if (isLoading) {
       if (isSignIn) {
-        return (
+        return completeList.length !== 0 ? (
           <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
               <FlatList
@@ -76,6 +76,12 @@ class History extends Component {
               />
             </View>
           </SafeAreaView>
+        ) : (
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Text> 아직 완료된 도전이 없습니다. </Text>
+          </View>
         );
       }
       return this.renderToSignInPage();
@@ -94,5 +100,12 @@ class History extends Component {
     </View>
   );
 }
+
+History.propTypes = {
+  switchScreen: PropTypes.func.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default History;
