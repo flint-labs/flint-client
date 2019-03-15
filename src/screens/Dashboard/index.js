@@ -6,7 +6,6 @@ import {
   AsyncStorage,
   ActivityIndicator,
   View,
-  Dimensions,
   Easing,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
@@ -15,14 +14,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux';
 import Modal from 'react-native-modalbox';
 import Dashboard from './Dashboard';
-import styles from './style';
 import Select from './Select';
 import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
 import SignUp from '../SignUp';
-
-const { width, height } = Dimensions.get('window');
 
 class component extends React.Component {
   static navigationOptions = ({ navigation }) => {
