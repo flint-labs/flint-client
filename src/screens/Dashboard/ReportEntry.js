@@ -11,51 +11,57 @@ const ReportEntry = ({ data }) => {
   return (
     <ImageBackground
       source={{
-        uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${
-          data.challengeId
-        }-${data.id}`,
+        uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${data.challengeId}-${data.id}`,
       }}
       style={styles.reportEntryBackgroundImg}
       imageStyle={{ borderRadius: 5 }}
       blurRadius={4}
     >
-      <View style={styles.reportImgBlur}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-          }}
-        >
-          <Text style={styles.reportEntryTitle}>{`${
-            data.index
-          }th Record`}</Text>
-          <Text style={{ color: 'white' }}>{`| ${time.join('')}`}</Text>
-        </View>
-        <View style={{ flex: 2, justifyContent: 'center' }}>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 25,
-              fontWeight: '500',
-            }}
-          >
-            {data.description}
-          </Text>
-        </View>
+      <View
+        style={[
+          styles.reportImgBlur,
+          { backgroundColor: data.isConfirmed === 'true' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.8)' },
+        ]}
+      >
+        {data.isConfirmed === 'true' ? (
+          <View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'flex-start',
+              }}
+            >
+              <Text style={styles.reportEntryTitle}>{`${data.index}th Record`}</Text>
+              <Text style={{ color: 'white' }}>{`| ${time.join('')}`}</Text>
+            </View>
 
-        <View
-          style={{
-            alignItems: 'flex-end',
-            flex: 1,
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Icon
-            name="ios-checkmark-circle"
-            size={30}
-            style={{ color: 'white' }}
-          />
-        </View>
+            <View style={{ flex: 2, justifyContent: 'center' }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 25,
+                  fontWeight: '500',
+                }}
+              >
+                {data.description}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                alignItems: 'flex-end',
+                flex: 1,
+                justifyContent: 'flex-end',
+              }}
+            >
+              <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
+            </View>
+          </View>
+        ) : (
+          <View style={styles.pendingMessageContainer}>
+            <Text style={styles.pendingMessage}>심판의 응답을 기다리는 중...</Text>
+          </View>
+        )}
       </View>
     </ImageBackground>
   );

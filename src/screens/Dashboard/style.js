@@ -169,6 +169,8 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'center',
   },
+  pendingMessageContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  pendingMessage: { fontSize: 20, color: 'white', fontWeight: '500' },
 });
 
 export default styles;
