@@ -18,17 +18,16 @@ export default StyleSheet.create({
   },
   paymentMethodBox: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     width: width * 0.7,
   },
   paymentIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 110,
     height: 110,
     marginBottom: 10,
     resizeMode: 'center',
-    borderColor: '#DCDCDC',
-    borderWidth: 1,
-    borderRadius: 20,
   },
   warning: {
     color: 'rgba(255,102,0,0.7)',
