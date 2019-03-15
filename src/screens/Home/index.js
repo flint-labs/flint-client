@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import {
- View, ScrollView, Dimensions, Text 
+  View, ScrollView, Dimensions, Text,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+// import Feedback from './Feedback';
 import Intro from './Intro';
-import Feedback from './Feedback';
-
 import ChallengeSetting from '../ChallengeSetting';
 import Payment from '../Payment';
 import Success from '../Payment/Success';
-import StartChallenge from '../ChallengeSetting/StartChallenge';
 import SignIn from '../SignIn';
-
 import styles from './Styles';
 import SignUp from '../SignUp';
 
@@ -39,9 +36,7 @@ class Home extends Component {
 
   handleWillFocus = () => {
     const { isSetting } = this.state;
-    const { navigation, newChallenge } = this.props;
-
-    // console.log('Home newChallenge', newChallenge);
+    const { navigation } = this.props;
 
     if (isSetting) {
       this.setState({ isSetting: false });
@@ -121,12 +116,7 @@ export default createStackNavigator(
     Success: {
       screen: Success,
       navigationOptions: {
-        header: null,
-      },
-    },
-    StartChallenge: {
-      screen: StartChallenge,
-      navigationOptions: {
+        gesturesEnabled: false,
         header: null,
       },
     },

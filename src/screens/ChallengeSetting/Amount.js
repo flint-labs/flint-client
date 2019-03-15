@@ -28,9 +28,11 @@ class Amount extends Component {
   }
 
   componentDidUpdate = () => {
-    const { warn } = this.state;
+    const { warn, isFree } = this.state;
     const { amount } = this.props;
-    if (amount !== '' && warn) this.setState({ warn: false });
+    if ((amount !== '0' && amount !== '') && warn && !isFree) {
+      this.setState({ warn: false });
+    }
   }
 
   scrollToInput = node => {
@@ -40,7 +42,7 @@ class Amount extends Component {
   handleNext = () => {
     const { navigation, amount } = this.props;
     const { isFree } = this.state;
-    if (amount === '') {
+    if (amount === '' || (!isFree && amount === '0')) {
       this.setState({ warn: true });
     } else if (isFree) {
       navigation.navigate('Slogan', {
@@ -62,7 +64,10 @@ class Amount extends Component {
   handleIsFree = () => {
     const { isFree } = this.state;
     const { setAmount } = this.props;
-    if (isFree) setAmount('0');
+    if (isFree) {
+      setAmount('0');
+      this.setState({ warn: false });
+    }
     if (!isFree) setAmount('');
   }
 
