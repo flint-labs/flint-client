@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Dimensions, Text } from 'react-native';
+import {
+ View, ScrollView, Dimensions, Text 
+} from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -14,6 +16,7 @@ import StartChallenge from '../ChallengeSetting/StartChallenge';
 import SignIn from '../SignIn';
 
 import styles from './Styles';
+import SignUp from '../SignUp';
 
 const { width } = Dimensions.get('window');
 
@@ -129,6 +132,9 @@ export default createStackNavigator(
     },
     SignIn: {
       screen: SignIn,
+    },
+    SignUp: {
+      screen: SignUp,
     },
   },
   {
