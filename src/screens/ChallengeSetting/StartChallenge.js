@@ -35,6 +35,7 @@ const StartChallenge = ({
       receipient_charity_id: null,
       receipient_user_id: null,
       description: 'undefined',
+      merchant_uid: 'Strong-will',
     };
   };
 
