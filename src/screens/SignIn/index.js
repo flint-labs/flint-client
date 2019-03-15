@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   AsyncStorage,
+  ActivityIndicator,
 } from 'react-native';
 import { SecureStore } from 'expo';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -36,6 +37,7 @@ class SignIn extends Component {
   state = {
     email: '',
     password: '',
+    loading: false,
   };
 
   goToScreen = screen => {
@@ -51,6 +53,7 @@ class SignIn extends Component {
 
   handleSignInbutton = async () => {
     try {
+      this.setState({ loading: true });
       const { email, password } = this.state;
       if (email === '' || password === '') {
         return Alert.alert('모든 정보를 입력해주세요!');
@@ -79,6 +82,8 @@ class SignIn extends Component {
     } catch (error) {
       const { data } = error.response;
       return Alert.alert(`⚠️\n${data}`);
+    } finally {
+      this.setState({ loading: false });
     }
   };
 
@@ -132,8 +137,17 @@ class SignIn extends Component {
     />
   );
 
+  renderLoading = () => (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ActivityIndicator />
+    </View>
+  )
+
   render = () => {
-    const { email, password } = this.state;
+    const { email, password, loading } = this.state;
+
+    if (loading) return this.renderLoading();
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <KeyboardAwareScrollView
