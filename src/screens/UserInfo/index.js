@@ -125,12 +125,12 @@ class UserInfo extends Component {
         </View>
 
         <View style={styles.userChallengeStateContainer}>
-          <View style={styles.inProgressChallenge}>
+          <TouchableOpacity style={styles.inProgressChallenge} onPress={() => this.goTo('Dashboard')}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.inProgress}
             </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>진행중</Text>
-          </View>
+          </TouchableOpacity>
           <View style={styles.totalChallenges}>
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.totalChallenges}
