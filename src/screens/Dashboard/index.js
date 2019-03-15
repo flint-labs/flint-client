@@ -97,9 +97,6 @@ class component extends React.Component {
     if (JSON.stringify(newChallenge) !== '{}') {
       this.setState({ recentChallenge: newChallenge, isNew: true });
     }
-    navigation.setParams({
-      handleBottomModal: this.openmodal,
-    });
     if (user) {
       const response = await sendRequest(
         'get',
@@ -107,6 +104,9 @@ class component extends React.Component {
       );
       this.setState({ challenges: response.data.challenges });
       const { challenges, recentChallenge, isNew } = this.state; // 여기서 선언해줘야 값을 바꾼 뒤 사용가능
+      navigation.setParams({
+        handleBottomModal: challenges.length ? this.openmodal : () => {},
+      });
       const successReponse = await sendRequest(
         'get',
         `/api/reports/getSuccessOneShot/${user.id}`,
@@ -313,6 +313,7 @@ class component extends React.Component {
       isSuccess,
       isHidden,
     } = this.state;
+    const { navigation } = this.props;
     if (isLoaded) {
       if (user) {
         if (challenges.length) {
@@ -365,7 +366,9 @@ class component extends React.Component {
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           >
-            <Text>새로운 도전을 시작하세요!</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Text style={{ textDecorationLine: 'underline', fontSize: 15, fontWeight: '500' }}>새로운 도전 시작하기</Text>
+            </TouchableOpacity>
           </View>
         );
       }
@@ -377,7 +380,7 @@ class component extends React.Component {
             <Text
               style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}
             >
-              Flint 회원이신가요?
+              로그인 하러가기
             </Text>
           </TouchableOpacity>
         </View>

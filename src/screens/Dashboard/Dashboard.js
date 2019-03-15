@@ -263,13 +263,13 @@ class Dashboard extends Component {
                       }}
                     >
                       {this.wasDoIt() === 'todayWasDoIt'
-                        ? '오늘 달성 완료'
-                        : '이번주 달성 완료'}
+                        ? '오늘 달성'
+                        : '이번주 달성'}
                     </Text>
                   </TouchableOpacity>
                 ) : (
                   <OrangeButton
-                    text="오늘 달성"
+                    text="기록 남기기"
                     onPress={this.doItHandler}
                     width={width - 40}
                   />
