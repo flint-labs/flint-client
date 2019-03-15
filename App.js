@@ -15,6 +15,7 @@ import UserInfo from './src/screens/UserInfo';
 import sendRequest from './src/modules/sendRequest';
 import registerPushToken from './src/modules/registerForPushNotificationsAsync';
 import store from './store';
+import Example from './Example';
 
 // const io = socketio('http://13.209.19.196:3000');
 YellowBox.ignoreWarnings([

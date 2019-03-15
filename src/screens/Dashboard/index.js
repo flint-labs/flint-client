@@ -18,6 +18,7 @@ import Select from './Select';
 import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
+import Modal from 'react-native-modalbox';
 
 const { width, height } = Dimensions.get('window');
 
@@ -38,6 +39,8 @@ class component extends React.Component {
     };
   };
 
+  modal = React.createRef();
+
   state = {
     bounceValue: new Animated.Value(0),
     challenges: [],
@@ -51,6 +54,10 @@ class component extends React.Component {
     isNew: false,
     isHidden: true,
   };
+
+  openmodal = () => {
+    this.modal.current.open();
+  }
 
   goTo = screen => {
     const { navigation } = this.props;
@@ -91,7 +98,7 @@ class component extends React.Component {
       this.setState({ recentChallenge: newChallenge, isNew: true });
     }
     navigation.setParams({
-      handleBottomModal: this.toggleSubView,
+      handleBottomModal: this.openmodal,
     });
     if (user) {
       const response = await sendRequest(
@@ -311,24 +318,9 @@ class component extends React.Component {
         if (challenges.length) {
           return (
             <>
-              <Animated.View
-                style={[
-                  styles.subView,
-                  {
-                    transform: [{ translateY: bounceValue }],
-                    zIndex: 300,
-                    top:
-                      -height * 0.8 < challenges.length * -52
-                        ? challenges.length * -52
-                        : -height * 0.8,
-
-                    height:
-                      height * 0.8 > challenges.length * 52
+              <Modal style={{height: height * 0.8 > challenges.length * 52
                         ? challenges.length * 52
-                        : height * 0.8,
-                  },
-                ]}
-              >
+                        : height * 0.8,}} entry="top" position="top" ref={this.modal}>
                 <Select
                   toggleSubView={this.toggleSubView}
                   handleChallenges={this.handleChallenges}
@@ -336,8 +328,7 @@ class component extends React.Component {
                   handleRecentChallenge={this.handleRecentChallenge}
                   recentChallenge={recentChallenge}
                 />
-              </Animated.View>
-
+              </Modal>
               {new Date(recentChallenge.endAt) - new Date() > 0 &&
               !isFailure &&
               !isSuccess ? (
