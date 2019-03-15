@@ -151,6 +151,24 @@ const styles = StyleSheet.create({
     shadowColor: '#dcdcdc',
     shadowOpacity: 0.8,
   },
+  statusEntry: {
+    flex: 1,
+    alignItems: 'center',
+    height: 60,
+    marginTop: 10,
+  },
+  statusEntryBody: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  reportImgBlur: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 5,
+    padding: 15,
+    justifyContent: 'center',
+  },
 });
 
 export default styles;

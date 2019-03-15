@@ -19,15 +19,7 @@ const ReportEntry = ({ data }) => {
       imageStyle={{ borderRadius: 5 }}
       blurRadius={4}
     >
-      <View
-        style={{
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          flex: 1,
-          borderRadius: 5,
-          padding: 15,
-          justifyContent: 'center',
-        }}
-      >
+      <View style={styles.reportImgBlur}>
         <View
           style={{
             flex: 1,

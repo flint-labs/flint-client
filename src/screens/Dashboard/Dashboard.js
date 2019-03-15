@@ -130,14 +130,7 @@ class Dashboard extends Component {
                       </Text>
                     </View>
                     <View style={styles.statusBox}>
-                      <View
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          marginTop: 10,
-                          height: 60,
-                        }}
-                      >
+                      <View style={styles.statusEntry}>
                         <Text style={{ color: '#888' }}>체크 횟수</Text>
                         <View
                           style={{ justifyContent: 'center', marginTop: 5 }}
@@ -161,24 +154,17 @@ class Dashboard extends Component {
                         </View>
                       </View>
                       <View
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          borderLeftWidth: 1,
-                          borderRightWidth: 1,
-                          borderColor: '#dcdcdc',
-                          marginTop: 10,
-                          height: 60,
-                        }}
+                        style={[
+                          styles.statusEntry,
+                          {
+                            borderLeftWidth: 1,
+                            borderRightWidth: 1,
+                            borderColor: '#dcdcdc',
+                          },
+                        ]}
                       >
                         <Text style={{ color: '#888' }}>금액</Text>
-                        <View
-                          style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'flex-end',
-                          }}
-                        >
+                        <View style={styles.statusEntryBody}>
                           <Text
                             style={{ fontSize: 22, fontWeight: '500' }}
                             adjustsFontSizeToFit
@@ -189,22 +175,9 @@ class Dashboard extends Component {
                           </Text>
                         </View>
                       </View>
-                      <View
-                        style={{
-                          flex: 1,
-                          height: 60,
-                          alignItems: 'center',
-                          marginTop: 10,
-                        }}
-                      >
+                      <View style={styles.statusEntry}>
                         <Text style={{ color: '#888' }}>카테고리</Text>
-                        <View
-                          style={{
-                            justifyContent: 'center',
-                            alignItems: 'flex-end',
-                            flex: 1,
-                          }}
-                        >
+                        <View style={styles.statusEntryBody}>
                           <Text style={{ fontSize: 22, fontWeight: '500' }}>
                             {recentChallenge.category}
                           </Text>
