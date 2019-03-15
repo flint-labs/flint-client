@@ -318,9 +318,7 @@ class component extends React.Component {
         if (challenges.length) {
           return (
             <>
-              <Modal style={{height: height * 0.8 > challenges.length * 52
-                        ? challenges.length * 52
-                        : height * 0.8,}} entry="top" position="top" ref={this.modal}>
+              <Modal style={{ height: 300 }} entry="top" position="top" ref={this.modal}>
                 <Select
                   toggleSubView={this.toggleSubView}
                   handleChallenges={this.handleChallenges}
@@ -335,8 +333,6 @@ class component extends React.Component {
                 <View
                   style={{
                     flex: 1,
-                    opacity: isHidden ? 1 : 0.2,
-                    backgroundColor: isHidden ? 'white' : 'black',
                   }}
                 >
                   <Dashboard
