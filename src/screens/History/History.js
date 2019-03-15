@@ -38,11 +38,6 @@ class History extends Component {
     }
   };
 
-  goTo = screen => {
-    const { navigation } = this.props;
-    navigation.navigate(screen);
-  };
-
   renderToSignInPage = () => {
     const { switchScreen } = this.props;
     return (
@@ -58,7 +53,7 @@ class History extends Component {
 
   renderInCondition = () => {
     const { isLoading, isSignIn, completeList } = this.state;
-    const { switchScreen } = this.props;
+    const { switchScreen, goToHome } = this.props;
     if (isLoading) {
       if (isSignIn) {
         return completeList.length !== 0 ? (
@@ -80,7 +75,29 @@ class History extends Component {
           <View
             style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
           >
-            <Text> 아직 완료된 도전이 없습니다. </Text>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  goToHome();
+                }}
+              >
+                <Text
+                  style={{
+                    textDecorationLine: 'underline',
+                    fontSize: 15,
+                    fontWeight: '500',
+                  }}
+                >
+                  새로운 도전 시작하기
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         );
       }
@@ -103,9 +120,7 @@ class History extends Component {
 
 History.propTypes = {
   switchScreen: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
+  goToHome: PropTypes.func.isRequired,
 };
 
 export default History;

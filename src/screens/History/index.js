@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { createStackNavigator } from 'react-navigation';
 import { Text } from 'react-native';
+import PropTypes from 'prop-types';
+
 import History from './History';
 import HistoryDetail from './HistoryDetail';
 import SignIn from '../SignIn';
@@ -11,7 +13,14 @@ class component extends Component {
     navigation.navigate(screenName, { detail: data, period });
   };
 
-  render = () => <History switchScreen={this.goToScreen} />;
+  goToHome = () => {
+    const { navigation } = this.props;
+    navigation.navigate('Home');
+  };
+
+  render = () => (
+    <History switchScreen={this.goToScreen} goToHome={this.goToHome} />
+  );
 }
 
 export default createStackNavigator(
@@ -19,7 +28,9 @@ export default createStackNavigator(
     component: {
       screen: component,
       navigationOptions: {
-        headerTitle: () => <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>,
+        headerTitle: () => (
+          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        ),
       },
     },
 
@@ -37,3 +48,9 @@ export default createStackNavigator(
     }),
   },
 );
+
+component.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+};
