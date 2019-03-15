@@ -54,7 +54,7 @@ class component extends React.Component {
 
   openmodal = () => {
     this.modal.current.open();
-  }
+  };
 
   goTo = screen => {
     const { navigation } = this.props;
@@ -136,8 +136,8 @@ class component extends React.Component {
         } else {
           this.setState({
             recentChallenge:
-              JSON.parse(await AsyncStorage.getItem('recentChallenge'))
-              || challenges[0],
+              JSON.parse(await AsyncStorage.getItem('recentChallenge')) ||
+              challenges[0],
           });
         }
       }
@@ -152,8 +152,8 @@ class component extends React.Component {
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
         if (
-          el.isConfirmed === 'pending'
-          && new Date() - new Date(el.createdAt) > 86400000
+          el.isConfirmed === 'pending' &&
+          new Date() - new Date(el.createdAt) > 86400000
         ) {
           shouldConfirmReportsId.push(el.id);
         }
@@ -178,8 +178,7 @@ class component extends React.Component {
           reportsId: pendingReportsId,
         });
       }
-      reports = reports
-        .map((el, index) => ({ ...el, index: index + 1 }));
+      reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
       this.setState({ reports: reports.reverse() });
       this.setState({
         progress:
@@ -218,8 +217,8 @@ class component extends React.Component {
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
       if (
-        el.isConfirmed === 'pending'
-        && new Date() - new Date(el.createdAt) > 86400000
+        el.isConfirmed === 'pending' &&
+        new Date() - new Date(el.createdAt) > 86400000
       ) {
         shouldConfirmReportsId.push(el.id);
       }
@@ -230,8 +229,7 @@ class component extends React.Component {
         reportsId: shouldConfirmReportsId,
       });
     }
-    reports = reports
-      .map((el, index) => ({ ...el, index: index + 1 }));
+    reports = reports.map((el, index) => ({ ...el, index: index + 1 }));
     this.setState({ reports: reports.reverse() });
     this.setState({
       progress:
@@ -249,11 +247,12 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
-      / (86400000 * 7);
+    const week =
+      (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
+      (86400000 * 7);
     const result = await (reports.filter(el => el.isConfirmed === 'true')
-      .length
-      / (week * recentChallenge.checkingPeriod));
+      .length /
+      (week * recentChallenge.checkingPeriod));
     return result;
   };
 
@@ -301,9 +300,9 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Modal>
-              {new Date(recentChallenge.endAt) - new Date() > 0
-              && !isFailure
-              && !isSuccess ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0 &&
+              !isFailure &&
+              !isSuccess ? (
                 <View
                   style={{
                     flex: 1,
@@ -320,17 +319,17 @@ class component extends React.Component {
                     refreshDashboard={this.componentDidMount}
                   />
                 </View>
-                ) : (
-                  <EndChallenge
-                    recentChallenge={recentChallenge}
-                    progress={progress}
-                    refreshDashboard={this.componentDidMount}
-                    handleIsFailure={this.handleIsFailure}
-                    isFailure={isFailure}
-                    handleIsSuccess={this.handleIsSuccess}
-                    isSuccess={isSuccess}
-                  />
-                )}
+              ) : (
+                <EndChallenge
+                  recentChallenge={recentChallenge}
+                  progress={progress}
+                  refreshDashboard={this.componentDidMount}
+                  handleIsFailure={this.handleIsFailure}
+                  isFailure={isFailure}
+                  handleIsSuccess={this.handleIsSuccess}
+                  isSuccess={isSuccess}
+                />
+              )}
             </>
           );
         }
@@ -339,7 +338,15 @@ class component extends React.Component {
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           >
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Text style={{ textDecorationLine: 'underline', fontSize: 15, fontWeight: '500' }}>새로운 도전 시작하기</Text>
+              <Text
+                style={{
+                  textDecorationLine: 'underline',
+                  fontSize: 15,
+                  fontWeight: '500',
+                }}
+              >
+                새로운 도전 시작하기
+              </Text>
             </TouchableOpacity>
           </View>
         );
@@ -350,7 +357,7 @@ class component extends React.Component {
         >
           <TouchableOpacity onPress={() => this.goTo('SignIn')}>
             <Text
-              style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}
+              style={{ fontWeight: '500', textDecorationLine: 'underline' }}
             >
               로그인 하러가기
             </Text>
@@ -391,14 +398,17 @@ const mapStateToProps = state => ({
   newChallenge: state.challenge.newChallenge,
 });
 
-export default createStackNavigator({
-  component: { screen: connect(mapStateToProps)(component) },
-  SignIn,
-  SignUp: {
-    screen: SignUp,
+export default createStackNavigator(
+  {
+    component: { screen: connect(mapStateToProps)(component) },
+    SignIn,
+    SignUp: {
+      screen: SignUp,
+    },
   },
-}, {
-  navigationOptions: ({ navigation: { state } }) => ({
-    tabBarVisible: !(state.index > 0),
-  }),
-});
+  {
+    navigationOptions: ({ navigation: { state } }) => ({
+      tabBarVisible: !(state.index > 0),
+    }),
+  },
+);
