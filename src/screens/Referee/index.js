@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import { Overlay } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './Styles';
 import RefereeEntry from './RefereeEntry';
 import sendRequest from '../../modules/sendRequest';
@@ -27,6 +28,7 @@ class Referee extends Component {
     modalMessage: '',
     isLogin: null,
     requestReportId: null,
+    nickname: '',
   };
 
   goToScreen = screenName => {
@@ -48,7 +50,7 @@ class Referee extends Component {
     }
   };
 
-  renderRefereeModal = (image, description, id) => {
+  renderRefereeModal = (image, description, id, nickname) => {
     const { isVisible } = this.state;
 
     this.setState({
@@ -56,6 +58,7 @@ class Referee extends Component {
       image,
       modalMessage: description,
       requestReportId: id,
+      nickname,
     });
   };
 
@@ -110,7 +113,7 @@ class Referee extends Component {
   };
 
   renderModal = () => {
-    const { isVisible, image, modalMessage } = this.state;
+    const { isVisible, image, modalMessage, nickname } = this.state;
     return (
       <Overlay
         isVisible={isVisible}
@@ -121,30 +124,35 @@ class Referee extends Component {
         style={{ flex: 1, alignItems: 'center' }}
       >
         <View style={{ flex: 1 }}>
-          <View
-            style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}
-          >
-            <Image
-              source={image}
-              style={{
-                flex: 1,
-                width: width - 70,
-                height: (height - 80) / 2,
-                resizeMode: 'cover',
-                borderRadius: 5,
-              }}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                flex: 3,
-                backgroundColor: 'white',
-                alignItems: 'center',
-                justifyContent: 'center',
+          <View style={{ alignItems: 'flex-end' }}>
+            <TouchableOpacity
+              style={{ width: width * 0.1, alignItems: 'center' }}
+              onPress={() => {
+                this.setState({ isVisible: false });
               }}
             >
-              <Text>{modalMessage}</Text>
+              <Icon name="ios-close" size={40} style={{ color: 'black' }} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+            <Text style={{ marginLeft: 10, fontSize: 30, fontWeight: '700' }}>
+              {nickname}
+            </Text>
+            <Text>님 의 요청입니다.</Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'white',
+              alignItems: 'center',
+              marginTop: 10,
+            }}
+          >
+            <Image source={image} style={styles.refereeRequestImage} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <View style={styles.refereeRequestMessage}>
+              <Text style={{ fontSize: 18 }}>{modalMessage}</Text>
             </View>
             <View
               style={{
@@ -155,33 +163,13 @@ class Referee extends Component {
             >
               <TouchableOpacity
                 onPress={() => this.handleAccept()}
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  // backgroundColor: 'blue',
-                  margin: 10,
-
-                  borderWidth: 1,
-                  borderColor: 'green',
-                  borderRadius: 5,
-                }}
+                style={[styles.refereeRequestButton, { borderColor: 'green' }]}
               >
                 <Text style={{ fontSize: 15, color: 'green' }}>Accept</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => this.handleReject()}
-                style={{
-                  flex: 1,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  // backgroundColor: 'yellow',
-                  margin: 10,
-
-                  borderWidth: 1,
-                  borderColor: 'red',
-                  borderRadius: 5,
-                }}
+                style={[styles.refereeRequestButton, { borderColor: 'red' }]}
               >
                 <Text style={{ fontSize: 15, color: 'red' }}>Reject</Text>
               </TouchableOpacity>
@@ -208,10 +196,10 @@ class Referee extends Component {
   renderToSignInPage = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TouchableOpacity onPress={() => this.goToScreen('SignIn')}>
-          <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
-            Flint 회원이신가요?
-          </Text>
-        </TouchableOpacity>
+        <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
+          로그인 하러가기
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -243,40 +231,46 @@ class Referee extends Component {
         <View
           style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
         >
-          <Text> 요청이 모두 처리되었습니다. </Text>
+          <Text style={{ fontSize: 15, fontWeight: '500' }}>
+            들어온 요청이 없습니다.
+          </Text>
         </View>
       );
     }
     return this.renderToSignInPage();
   };
 
-  render = () => (
-    <View style={{ flex: 1 }}>
-      <NavigationEvents onWillFocus={this.handleWillFocus} />
-      {this.renderInCondition()}
-    </View>
-  );
+  render = () => {
+    return (
+      <View style={{ flex: 1 }}>
+        <NavigationEvents onWillFocus={this.handleWillFocus} />
+        {this.renderInCondition()}
+      </View>
+    );
+  };
 }
 
-export default createStackNavigator({
-  Referee: {
-    screen: Referee,
-    navigationOptions: {
-      headerTitle: () => (
-        <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
-      ),
+export default createStackNavigator(
+  {
+    Referee: {
+      screen: Referee,
+      navigationOptions: {
+        headerTitle: () => (
+          <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
+        ),
+      },
+    },
+
+    SignIn: {
+      screen: SignIn,
+    },
+    SignUp: {
+      screen: SignUp,
     },
   },
-
-  SignIn: {
-    screen: SignIn,
+  {
+    navigationOptions: ({ navigation: { state } }) => ({
+      tabBarVisible: !(state.index > 0),
+    }),
   },
-  SignUp: {
-    screen: SignUp,
-  },
-},
-{
-  navigationOptions: ({ navigation: { state } }) => ({
-    tabBarVisible: !(state.index > 0),
-  }),
-});
+);

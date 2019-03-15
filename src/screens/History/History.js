@@ -24,7 +24,10 @@ class History extends Component {
   handleWillFocus = async () => {
     try {
       const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      const { data } = await sendRequest('get', `/api/history/completeList/${id}`);
+      const { data } = await sendRequest(
+        'get',
+        `/api/history/completeList/${id}`,
+      );
       this.setState({
         isLoading: true,
         isSignIn: true,
@@ -33,11 +36,6 @@ class History extends Component {
     } catch (err) {
       this.setState({ isSignIn: false, isLoading: true });
     }
-  };
-
-  goTo = screen => {
-    const { navigation } = this.props;
-    navigation.navigate(screen);
   };
 
   renderToSignInPage = () => {
@@ -55,7 +53,7 @@ class History extends Component {
 
   renderInCondition = () => {
     const { isLoading, isSignIn, completeList } = this.state;
-    const { switchScreen } = this.props;
+    const { switchScreen, goToHome } = this.props;
     if (isLoading) {
       if (isSignIn) {
         return completeList.length !== 0 ? (
@@ -65,14 +63,41 @@ class History extends Component {
                 data={completeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={itemData => (
-                  <HistoryEntry data={itemData.item} handlePress={switchScreen} />
+                  <HistoryEntry
+                    data={itemData.item}
+                    handlePress={switchScreen}
+                  />
                 )}
               />
             </View>
           </SafeAreaView>
         ) : (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text> 아직 완료된 도전이 없습니다. </Text>
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  goToHome();
+                }}
+              >
+                <Text
+                  style={{
+                    textDecorationLine: 'underline',
+                    fontSize: 15,
+                    fontWeight: '500',
+                  }}
+                >
+                  새로운 도전 시작하기
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         );
       }
@@ -95,9 +120,7 @@ class History extends Component {
 
 History.propTypes = {
   switchScreen: PropTypes.func.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-  }).isRequired,
+  goToHome: PropTypes.func.isRequired,
 };
 
 export default History;
