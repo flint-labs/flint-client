@@ -7,50 +7,43 @@ import styles from './style';
 const ReportEntry = ({ data }) => (
   <ImageBackground
     source={{
-      uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${
-        data.challengeId
-      }-${data.id}`,
+      uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${data.challengeId}-${data.id}`,
     }}
     style={styles.reportEntryBackgroundImg}
     imageStyle={{ borderRadius: 5 }}
     blurRadius={4}
   >
     <View
-      style={{
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        flex: 1,
-        borderRadius: 5,
-        padding: 15,
-        justifyContent: 'center',
-      }}
+      style={[
+        styles.blurView,
+        { backgroundColor: data.isConfirmed === 'true' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.8)' },
+      ]}
     >
-      <View style={{ flex: 1, justifyContent: 'center', fontStyle: 'italic' }}>
-        <Text style={styles.reportEntryTitle}>{`${data.index}th Record`}</Text>
-      </View>
-      <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 20,
-          }}
-        >
-          {data.description}
-        </Text>
-      </View>
+      {data.isConfirmed === 'true' ? (
+        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, justifyContent: 'center', fontStyle: 'italic' }}>
+            <Text style={styles.reportEntryTitle}>{`${data.index}th Record`}</Text>
+          </View>
+          <View style={{ flex: 1, justifyContent: 'center' }}>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 20,
+              }}
+            >
+              {data.description}
+            </Text>
+          </View>
 
-      <View
-        style={{
-          alignItems: 'flex-end',
-          flex: 1,
-          justifyContent: 'center',
-        }}
-      >
-        <Icon
-          name="ios-checkmark-circle"
-          size={30}
-          style={{ color: 'white' }}
-        />
-      </View>
+          <View style={styles.checkIconContainer}>
+            <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
+          </View>
+        </View>
+      ) : (
+        <View style={styles.pendingMessageContainer}>
+          <Text style={styles.pendingMessage}>심판의 응답을 기다리는 중...</Text>
+        </View>
+      )}
     </View>
   </ImageBackground>
 );

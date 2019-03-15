@@ -24,7 +24,6 @@ class Dashboard extends Component {
   state = {
     modalVisible: false,
     isLoaded: false,
-    // isHidden: this.props.isHidden,
   };
 
   componentDidMount = async () => {

@@ -202,7 +202,7 @@ class UserInfo extends Component {
   renderToSignInPage = () => (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <TouchableOpacity onPress={() => this.goTo('SignIn')}>
-        <Text style={{ fontWeight: 'bold', textDecorationLine: 'underline' }}>
+        <Text style={{ fontWeight: '500', textDecorationLine: 'underline' }}>
           Flint 회원이신가요?
         </Text>
       </TouchableOpacity>

@@ -16,13 +16,17 @@ const Success = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View animation="zoomInDown" delay={1000} style={{ flex: 5, justifyContent: 'flex-end', alignItems: 'center' }}>
+      <View
+        animation="zoomInDown"
+        delay={1000}
+        style={{ flex: 5, justifyContent: 'flex-end', alignItems: 'center' }}
+      >
         <Image style={{ width: width * 0.4, height: width * 0.4 }} source={{ uri: CHECK_URL }} />
       </View>
 
       <View style={{ flex: 4, alignItems: 'center', marginTop: 30 }}>
         <TouchableOpacity onPress={handleOnPress}>
-          <Text style={{ textDecorationLine: 'underline', fontWeight: 'bold' }}>
+          <Text style={{ textDecorationLine: 'underline', fontWeight: '500' }}>
             Challenge 확인하러 가기
           </Text>
         </TouchableOpacity>
