@@ -94,9 +94,8 @@ const styles = StyleSheet.create({
   },
   reportEntryTitle: {
     color: 'white',
-    fontStyle: 'italic',
-    fontSize: 25,
-    // flex: 1,
+    fontWeight: '700',
+    fontSize: 20,
   },
   doItHeaderContainer: {
     flexDirection: 'row',
