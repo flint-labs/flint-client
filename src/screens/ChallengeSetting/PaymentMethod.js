@@ -39,6 +39,7 @@ class PaymentMethod extends Component {
       userId: id,
       startAt,
       endAt,
+      week: Number(challengePeriod),
       state,
       isOnGoing: challenge.isOnGoing,
       slogan: challenge.slogan,

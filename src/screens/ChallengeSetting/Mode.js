@@ -11,8 +11,10 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { OrangeButton } from '../../components';
 import { challengeAction } from '../../actions';
 import styles from './style';
+import { filterList } from '../../modules/util';
 
 const { SET_REFEREE } = challengeAction;
+const BASE_URL = 'http://13.209.19.196:3000';
 
 class Mode extends Component {
   state = {
@@ -20,7 +22,10 @@ class Mode extends Component {
     isValid: false,
     loading: false,
     alerted: false,
+    filteredNicknames: null,
   }
+
+  userNicknames = null;
 
   nickname = '';
 
@@ -34,7 +39,7 @@ class Mode extends Component {
 
     if (referee !== '') {
       try {
-        const { data: { isExist } } = await axios.get(`http://13.209.19.196:3000/api/users/checkNickname/${referee}`);
+        const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkNickname/${referee}`);
         if (isExist !== isValid) {
           this.setState({ isValid: isExist });
         }
@@ -70,11 +75,13 @@ class Mode extends Component {
       setReferee('');
     }
     if (referee !== '') {
-      const { data: { isExist } } = await axios.get(`http://13.209.19.196:3000/api/users/checkNickname/${referee}`);
+      const { data: { isExist } } = await axios.get(`${BASE_URL}/api/users/checkNickname/${referee}`);
       if (isExist !== isValid) {
         this.setState({ isValid: isExist });
       }
     }
+    const { data: userNicknames } = await axios.get(`${BASE_URL}/api/users?nickname=true`);
+    this.userNicknames = userNicknames;
     this.setState({ loading: false });
   }
 
@@ -94,11 +101,22 @@ class Mode extends Component {
     </View>
   )
 
+  onRefereeChange = text => {
+    const { userNicknames } = this;
+    const { setReferee } = this.props;
+    setReferee(text);
+    this.setState({ filteredNicknames: filterList(userNicknames, 'nickname', text) });
+  }
+
   render = () => {
-    const { isSolo, isValid, loading } = this.state;
-    const { referee, setReferee } = this.props;
+    const {
+      isSolo, isValid, loading, filteredNicknames,
+    } = this.state;
+    const { referee } = this.props;
 
     if (loading) return this.renderLoading();
+
+    console.log(filteredNicknames);
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -142,15 +160,15 @@ class Mode extends Component {
                 ) : (
                   <View>
                     <Text style={{ fontSize: 15, fontWeight: 'bold' }}>
-                      {'심판으로 등록된 사용자가 체크합니다.'}
+                      {'심판을 맡길 유저의 닉네임을 입력해주세요.'}
                     </Text>
                     <TextInput
                       style={styles.textInput}
-                      onChangeText={text => setReferee(text)}
+                      onChangeText={text => this.onRefereeChange(text)}
                       blurOnSubmit={false}
                       value={referee}
                       returnKeyType="next"
-                      placeholder="심판 아이디"
+                      placeholder="심판 닉네임"
                       onSubmitEditing={this.handleNext}
                       onFocus={event => this.scrollToInput(findNodeHandle(event.target))}
                     />
