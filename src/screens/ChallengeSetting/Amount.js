@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { CheckBox } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { OrangeButton } from '../../components';
 import { challengeAction } from '../../actions';
@@ -121,6 +122,10 @@ class Amount extends Component {
     this.setState({ textLoading: false });
   }
 
+  handleDidFocus = () => {
+    this.input.focus();
+  }
+
   render = () => {
     const {
       isFree, warn, textLoading, prevAmount,
@@ -128,6 +133,9 @@ class Amount extends Component {
     const { amount } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        <NavigationEvents
+          onDidFocus={this.handleDidFocus}
+        />
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           contentContainerStyle={{ flex: 1 }}
@@ -141,6 +149,7 @@ class Amount extends Component {
             </View>
             <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
               <TextInput
+                ref={ref => { this.input = ref; }}
                 style={styles.textInput}
                 placeholder="금액(원)"
                 onChangeText={input => this.handleInputChange(input)}
