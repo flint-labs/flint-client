@@ -24,7 +24,10 @@ class History extends Component {
   handleWillFocus = async () => {
     try {
       const { id } = JSON.parse(await AsyncStorage.getItem('userInfo'));
-      const { data } = await sendRequest('get', `/api/history/completeList/${id}`);
+      const { data } = await sendRequest(
+        'get',
+        `/api/history/completeList/${id}`,
+      );
       this.setState({
         isLoading: true,
         isSignIn: true,
@@ -60,13 +63,19 @@ class History extends Component {
                 data={completeList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={itemData => (
-                  <HistoryEntry data={itemData.item} handlePress={switchScreen} />
+                  <HistoryEntry
+                    data={itemData.item}
+                    handlePress={switchScreen}
+                  />
                 )}
+                showsVerticalScrollIndicator={false}
               />
             </View>
           </SafeAreaView>
         ) : (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <View
+            style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          >
             <View
               style={{
                 flex: 1,
