@@ -43,11 +43,17 @@ class UserInfo extends Component {
       if (!userInfo) return;
       const { id } = JSON.parse(userInfo);
       if (!id) return;
-      const { data: { user } } = await sendRequest('get', `/api/users/${id}`);
-      const amount = user !== null ? totalAmount + Number(user.change) : totalAmount;
+      const {
+        data: { user },
+      } = await sendRequest('get', `/api/users/${id}`);
+      const amount =
+        user !== null ? totalAmount + Number(user.change) : totalAmount;
       if (user) this.setState({ user, totalAmount: amount });
     } catch (error) {
-      AlertIOS.alert('⚠️', '서버에 문제가 생겼습니다 :( \n 잠시 후 다시 시도해주세요!');
+      AlertIOS.alert(
+        '⚠️',
+        '서버에 문제가 생겼습니다 :( \n 잠시 후 다시 시도해주세요!',
+      );
       console.log(error.message);
     } finally {
       this.setState({ pending: false });
@@ -57,24 +63,29 @@ class UserInfo extends Component {
   handleSignOutButton = () => {
     try {
       this.setState({ pending: true });
-      Alert.alert('정말 로그아웃 하시겠어요?', '', [
-        {
-          text: 'OK',
-          onPress: async () => {
-            await AsyncStorage.removeItem('userInfo');
-            await AsyncStorage.removeItem('accessToken');
-            await AsyncStorage.removeItem('recentChallenge');
-            await SecureStore.deleteItemAsync('refreshToken');
-            await SecureStore.deleteItemAsync('keyChain');
-            this.setState({ user: null, pending: false });
-            this.goTo('Home');
+      Alert.alert(
+        '정말 로그아웃 하시겠어요?',
+        '',
+        [
+          {
+            text: 'OK',
+            onPress: async () => {
+              await AsyncStorage.removeItem('userInfo');
+              await AsyncStorage.removeItem('accessToken');
+              await AsyncStorage.removeItem('recentChallenge');
+              await SecureStore.deleteItemAsync('refreshToken');
+              await SecureStore.deleteItemAsync('keyChain');
+              this.setState({ user: null, pending: false });
+              this.goTo('Home');
+            },
           },
-        },
-        {
-          text: 'Cancel',
-          onPress: () => this.setState({ pending: false }),
-        },
-      ], { cancelable: false });
+          {
+            text: 'Cancel',
+            onPress: () => this.setState({ pending: false }),
+          },
+        ],
+        { cancelable: false },
+      );
     } catch (error) {
       AlertIOS.alert(error.message);
     }
@@ -125,7 +136,10 @@ class UserInfo extends Component {
         </View>
 
         <View style={styles.userChallengeStateContainer}>
-          <TouchableOpacity style={styles.inProgressChallenge} onPress={() => this.goTo('Dashboard')}>
+          <TouchableOpacity
+            style={styles.inProgressChallenge}
+            onPress={() => this.goTo('Dashboard')}
+          >
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.inProgress}
             </Text>
@@ -137,12 +151,15 @@ class UserInfo extends Component {
             </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>도전 횟수</Text>
           </View>
-          <View style={styles.successChallenge}>
+          <TouchableOpacity
+            style={styles.successChallenge}
+            onPress={() => this.goTo('History')}
+          >
             <Text style={{ fontSize: 25, color: '#FF6600' }}>
               {user.success}
             </Text>
             <Text style={{ fontSize: 12, color: '#333' }}>성공 횟수</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={{ flex: 2, backgroundColor: '#dcdcdc' }}>
@@ -154,7 +171,7 @@ class UserInfo extends Component {
               fontWeight: '600',
             }}
           >
-            총 기부 금액
+            총 성공 금액
           </Text>
           <View style={styles.change}>
             <Text style={{ fontSize: 30, fontWeight: '600' }}>
@@ -186,7 +203,9 @@ class UserInfo extends Component {
           <TouchableOpacity
             style={styles.userInfoEtc}
             onPress={() => {
-              AlertIOS.prompt('Email을 한 번 더 입력해 주세요.', null, text => this.handleDeleteAccountButton(text));
+              AlertIOS.prompt('Email을 한 번 더 입력해 주세요.', null, text =>
+                this.handleDeleteAccountButton(text),
+              );
             }}
           >
             <Text style={{ marginLeft: 15, fontSize: 15, color: 'red' }}>
