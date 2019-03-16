@@ -45,13 +45,18 @@ class HistoryDetail extends Component {
 
   calculateProgress = async () => {
     const { challenge, reportList } = this.state;
-    const week =
-      (new Date(challenge.endAt) - new Date(challenge.startAt)) /
-      (86400000 * 7);
-    const result = await (reportList.filter(el => el.isConfirmed === 'true')
-      .length /
-      (week * challenge.checkingPeriod));
-    return result;
+    if (challenge.isOnGoing) {
+      const week =
+        (new Date(challenge.endAt) - new Date(challenge.startAt)) /
+        (86400000 * 7);
+      const result = await (reportList.filter(el => el.isConfirmed === 'true')
+        .length /
+        (week * challenge.checkingPeriod));
+      return result;
+    }
+    const confirmReport = reportList.filter(el => el.isConfirmed === 'true');
+    if (confirmReport.length) return 1;
+    return 0;
   };
 
   componentDidMount = async () => {
