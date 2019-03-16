@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, ScrollView, Dimensions, Text,
+  View, ScrollView, Dimensions, Text, Easing,
 } from 'react-native';
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
@@ -110,6 +110,7 @@ export default createStackNavigator(
     Payment: {
       screen: Payment,
       navigationOptions: {
+        gesturesEnabled: false,
         header: null,
       },
     },
@@ -132,5 +133,13 @@ export default createStackNavigator(
     navigationOptions: ({ navigation: { state } }) => ({
       tabBarVisible: !(state.index > 0),
     }),
+    transitionConfig: ({ navigation: { state } }) => {
+      console.log(state.index);
+      return ({
+        transitionSpec: {
+          duration: state.index === 1 ? 300 : 0,
+        },
+      });
+    },
   },
 );

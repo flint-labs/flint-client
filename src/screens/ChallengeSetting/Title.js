@@ -3,6 +3,7 @@ import {
   View, Text, SafeAreaView, findNodeHandle, TextInput,
 } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { OrangeButton } from '../../components';
@@ -41,11 +42,18 @@ class Title extends Component {
     this.scroll.props.scrollToFocusedInput(node);
   }
 
+  handleDidFocus = () => {
+    this.input.focus();
+  }
+
   render = () => {
     const { warn } = this.state;
     const { title, setTitle } = this.props;
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        <NavigationEvents
+          onDidFocus={this.handleDidFocus}
+        />
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           contentContainerStyle={{ flex: 1 }}
@@ -60,6 +68,7 @@ class Title extends Component {
             <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
               <View>
                 <TextInput
+                  ref={ref => { this.input = ref; }}
                   style={styles.textInput}
                   onChangeText={text => setTitle(text)}
                   blurOnSubmit={false}
