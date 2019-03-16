@@ -256,6 +256,10 @@ class component extends React.Component {
     this.setState({ isLoaded: true });
   };
 
+  componentBlur = () => {
+    // this.setState({ recentChallenge: null });
+  }
+
   handleChallenges = challenges => {
     this.setState({ challenges });
   };
@@ -404,7 +408,7 @@ class component extends React.Component {
       <>
         <NavigationEvents
           onWillFocus={this.componentDidMount}
-          onWillBlur={this.componentBlur}
+          onDidBlur={this.componentBlur}
         />
         {this.renderMethod()}
       </>
