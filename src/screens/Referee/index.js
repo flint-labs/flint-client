@@ -119,7 +119,7 @@ class Referee extends Component {
         isVisible={isVisible}
         windowBackgroundColor="rgba(0, 0, 0, .5)"
         overlayBackgroundColor="white"
-        width={width - 50}
+        width={width - 40}
         height={height - 80}
         style={{ flex: 1, alignItems: 'center' }}
       >
@@ -134,25 +134,43 @@ class Referee extends Component {
               <Icon name="ios-close" size={40} style={{ color: 'black' }} />
             </TouchableOpacity>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-            <Text style={{ marginLeft: 10, fontSize: 30, fontWeight: '700' }}>
-              {nickname}
-            </Text>
-            <Text>님 의 요청입니다.</Text>
+          <View style={{ flex: 1, marginBottom: 15 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                borderBottomWidth: 1,
+                borderColor: '#dcdcdc',
+                paddingBottom: 10,
+              }}
+            >
+              <Text style={{ marginLeft: 5, fontSize: 30, fontWeight: '700' }}>
+                {nickname}
+              </Text>
+              <Text> 님의 요청입니다.</Text>
+            </View>
+            <View style={{ marginTop: 5, marginLeft: 5 }}>
+              <Text style={{ color: '#999' }}>
+                {' '}
+                마감 기간 | 2019-07-10(데이터연결){' '}
+              </Text>
+            </View>
           </View>
           <View
             style={{
-              flex: 1,
-              backgroundColor: 'white',
+              flex: 5,
               alignItems: 'center',
-              marginTop: 10,
+              marginTop: 25,
             }}
           >
             <Image source={image} style={styles.refereeRequestImage} />
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 6 }}>
             <View style={styles.refereeRequestMessage}>
-              <Text style={{ fontSize: 18 }}>{modalMessage}</Text>
+              <Text style={{ fontSize: 15, color: '#999' }}>Message | </Text>
+              <Text style={{ fontSize: 20, marginTop: 15 }}>
+                {modalMessage}
+              </Text>
             </View>
             <View
               style={{
@@ -240,14 +258,12 @@ class Referee extends Component {
     return this.renderToSignInPage();
   };
 
-  render = () => {
-    return (
-      <View style={{ flex: 1 }}>
-        <NavigationEvents onWillFocus={this.handleWillFocus} />
-        {this.renderInCondition()}
-      </View>
-    );
-  };
+  render = () => (
+    <View style={{ flex: 1 }}>
+      <NavigationEvents onWillFocus={this.handleWillFocus} />
+      {this.renderInCondition()}
+    </View>
+  );
 }
 
 export default createStackNavigator(
