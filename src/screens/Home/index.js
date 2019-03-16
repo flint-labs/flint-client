@@ -5,6 +5,7 @@ import {
 import { createStackNavigator, NavigationEvents } from 'react-navigation';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { challengeAction } from '../../actions';
 
 // import Feedback from './Feedback';
 import Intro from './Intro';
@@ -14,6 +15,8 @@ import Success from '../Payment/Success';
 import SignIn from '../SignIn';
 import styles from './Styles';
 import SignUp from '../SignUp';
+
+const { RESET_CHALLENGE } = challengeAction;
 
 const { width } = Dimensions.get('window');
 
@@ -36,7 +39,9 @@ class Home extends Component {
 
   handleWillFocus = () => {
     const { isSetting } = this.state;
-    const { navigation } = this.props;
+    const { navigation, resetChallenge } = this.props;
+
+    resetChallenge();
 
     if (isSetting) {
       this.setState({ isSetting: false });
@@ -81,6 +86,7 @@ Home.propTypes = {
     updatedAt: PropTypes.string,
     userId: PropTypes.number,
   }),
+  resetChallenge: PropTypes.func.isRequired,
 };
 
 Home.defaultProps = {
@@ -91,10 +97,14 @@ const mapStateToProps = state => ({
   newChallenge: state.challenge.newChallenge,
 });
 
+const mapDispatchToProps = dispatch => ({
+  resetChallenge: dispatch({ type: RESET_CHALLENGE }),
+});
+
 export default createStackNavigator(
   {
     Home: {
-      screen: connect(mapStateToProps)(Home),
+      screen: connect(mapStateToProps, mapDispatchToProps)(Home),
       navigationOptions: {
         headerTitle: () => (
           <Text style={{ fontFamily: 'Fontrust', fontSize: 30 }}>Flint</Text>
@@ -110,6 +120,7 @@ export default createStackNavigator(
     Payment: {
       screen: Payment,
       navigationOptions: {
+        gesturesEnabled: false,
         header: null,
       },
     },
@@ -131,6 +142,11 @@ export default createStackNavigator(
     initialRouteName: 'Home',
     navigationOptions: ({ navigation: { state } }) => ({
       tabBarVisible: !(state.index > 0),
+    }),
+    transitionConfig: ({ navigation: { state } }) => ({
+      transitionSpec: {
+        duration: state.index === 1 ? 300 : 0,
+      },
     }),
   },
 );
