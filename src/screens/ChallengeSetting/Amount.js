@@ -87,6 +87,7 @@ class Amount extends Component {
 
   handleInputChange = input => {
     this.setState({ textLoading: true });
+    if (input.charAt(input.length - 1) === '.') return;
     const { setAmount, amount } = this.props;
     if (input.split(',').join('').length > amount.length) {
       if (input.length === 1) {
