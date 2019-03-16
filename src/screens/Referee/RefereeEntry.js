@@ -14,7 +14,7 @@ const RefereeEntry = ({ data, modal }) => {
   return (
     <TouchableOpacity
       onPress={() => {
-        modal(img, data.description, data.id, data.nickname);
+        modal(img, data.description, data.id, data.nickname, data.createdAt);
       }}
     >
       <View style={styles.refereeEntry}>
