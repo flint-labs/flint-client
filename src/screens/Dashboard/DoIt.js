@@ -7,7 +7,6 @@ import {
   Image,
   SafeAreaView,
   Text,
-  AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 // import { createStackNavigator } from 'react-navigation';

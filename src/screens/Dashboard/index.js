@@ -262,13 +262,18 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week
-    = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
-      (86400000 * 7);
-    const result = await (reports.filter(el => el.isConfirmed === 'true')
-      .length /
-      (week * recentChallenge.checkingPeriod));
-    return result;
+    console.log(typeof recentChallenge.isOnGoing);
+    if (recentChallenge.isOnGoing) {
+      const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
+      / (86400000 * 7);
+      const result = await (reports.filter(el => el.isConfirmed === 'true')
+        .length
+        / (week * recentChallenge.checkingPeriod));
+      return result;
+    }
+    const confirmReport = reports.filter(el => el.isConfirmed === 'true');
+    if (confirmReport.length) return 1;
+    return 0;
   };
 
   handleIsFailure = () => {
@@ -322,9 +327,9 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Modal>
-              {new Date(recentChallenge.endAt) - new Date() > 0 &&
-              !isFailure &&
-              !isSuccess ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0
+              && !isFailure
+              && !isSuccess ? (
                 <View
                   style={{
                     flex: 1,
@@ -341,17 +346,17 @@ class component extends React.Component {
                     refreshDashboard={this.componentDidMount}
                   />
                 </View>
-              ) : (
-                <EndChallenge
-                  recentChallenge={recentChallenge}
-                  progress={progress}
-                  refreshDashboard={this.componentDidMount}
-                  handleIsFailure={this.handleIsFailure}
-                  isFailure={isFailure}
-                  handleIsSuccess={this.handleIsSuccess}
-                  isSuccess={isSuccess}
-                />
-              )}
+                ) : (
+                  <EndChallenge
+                    recentChallenge={recentChallenge}
+                    progress={progress}
+                    refreshDashboard={this.componentDidMount}
+                    handleIsFailure={this.handleIsFailure}
+                    isFailure={isFailure}
+                    handleIsSuccess={this.handleIsSuccess}
+                    isSuccess={isSuccess}
+                  />
+                )}
             </>
           );
         }
