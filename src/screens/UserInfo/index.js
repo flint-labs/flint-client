@@ -46,9 +46,14 @@ class UserInfo extends Component {
       const {
         data: { user },
       } = await sendRequest('get', `/api/users/${id}`);
-      const amount =
-        user !== null ? totalAmount + Number(user.change) : totalAmount;
-      if (user) this.setState({ user, totalAmount: amount });
+
+      if (user) {
+        const tempTotalAmount =
+          totalAmount === Number(user.amount)
+            ? totalAmount
+            : totalAmount + Number(user.amount);
+        this.setState({ user, totalAmount: tempTotalAmount });
+      }
     } catch (error) {
       AlertIOS.alert(
         '⚠️',

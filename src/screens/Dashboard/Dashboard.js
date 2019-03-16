@@ -94,10 +94,8 @@ class Dashboard extends Component {
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
 
-    const startTime = `${start.getFullYear()}-${start.getMonth() +
-      1}-${start.getDate()}`;
-    const endTime = `${end.getFullYear()}-${end.getMonth() +
-      1}-${end.getDate()}`;
+    const startTime = start.toLocaleString('ko-kr').slice(0, 12);
+    const endTime = end.toLocaleString('ko-kr').slice(0, 12);
 
     const amountHigh = parseInt(recentChallenge.amount / 10000);
     const amountLow = parseInt((recentChallenge.amount % 10000) / 1000);

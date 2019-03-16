@@ -29,6 +29,7 @@ class Referee extends Component {
     isLogin: null,
     requestReportId: null,
     nickname: '',
+    end: null,
   };
 
   goToScreen = screenName => {
@@ -50,8 +51,11 @@ class Referee extends Component {
     }
   };
 
-  renderRefereeModal = (image, description, id, nickname) => {
+  renderRefereeModal = (image, description, id, nickname, createdAt) => {
     const { isVisible } = this.state;
+    const start = new Date(createdAt);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 1);
 
     this.setState({
       isVisible: !isVisible,
@@ -59,6 +63,7 @@ class Referee extends Component {
       modalMessage: description,
       requestReportId: id,
       nickname,
+      end,
     });
   };
 
@@ -113,7 +118,9 @@ class Referee extends Component {
   };
 
   renderModal = () => {
-    const { isVisible, image, modalMessage, nickname } = this.state;
+    const { isVisible, image, modalMessage, nickname, end } = this.state;
+    const dateView = end ? end.toLocaleString('ko-kr') : '';
+
     return (
       <Overlay
         isVisible={isVisible}
@@ -150,10 +157,7 @@ class Referee extends Component {
               <Text> 님의 요청입니다.</Text>
             </View>
             <View style={{ marginTop: 5, marginLeft: 5 }}>
-              <Text style={{ color: '#999' }}>
-                {' '}
-                마감 기간 | 2019-07-10(데이터연결){' '}
-              </Text>
+              <Text style={{ color: '#999' }}>{`마감 기간 | ${dateView}`}</Text>
             </View>
           </View>
           <View

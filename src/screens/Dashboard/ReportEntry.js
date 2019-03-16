@@ -5,13 +5,14 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import styles from './style';
 
 const ReportEntry = ({ data }) => {
-  const time = data.updatedAt.split('').slice(0, 19);
-  time[10] = '  ';
+  const time = new Date(data.updatedAt).toLocaleString('ko-kr');
 
   return (
     <ImageBackground
       source={{
-        uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${data.challengeId}-${data.id}`,
+        uri: `https://s3.ap-northeast-2.amazonaws.com/flint-s3/s3/${
+          data.challengeId
+        }-${data.id}`,
       }}
       style={styles.reportEntryBackgroundImg}
       imageStyle={{ borderRadius: 5 }}
@@ -21,7 +22,10 @@ const ReportEntry = ({ data }) => {
         style={[
           styles.reportImgBlur,
           {
-            backgroundColor: data.isConfirmed === 'true' ? 'rgba(0,0,0,0.5)' : 'rgba(0,0,0,0.8)',
+            backgroundColor:
+              data.isConfirmed === 'true'
+                ? 'rgba(0,0,0,0.5)'
+                : 'rgba(0,0,0,0.8)',
           },
         ]}
       >
@@ -33,8 +37,10 @@ const ReportEntry = ({ data }) => {
                 justifyContent: 'flex-start',
               }}
             >
-              <Text style={styles.reportEntryTitle}>{`${data.index}th Record`}</Text>
-              <Text style={{ color: 'white' }}>{`| ${time.join('')}`}</Text>
+              <Text style={styles.reportEntryTitle}>{`${
+                data.index
+              }th Record`}</Text>
+              <Text style={{ color: 'white' }}>{`| ${time}`}</Text>
             </View>
 
             <View style={{ flex: 2, justifyContent: 'center' }}>
@@ -56,12 +62,18 @@ const ReportEntry = ({ data }) => {
                 justifyContent: 'flex-end',
               }}
             >
-              <Icon name="ios-checkmark-circle" size={30} style={{ color: 'white' }} />
+              <Icon
+                name="ios-checkmark-circle"
+                size={30}
+                style={{ color: 'white' }}
+              />
             </View>
           </View>
         ) : (
           <View style={styles.pendingMessageContainer}>
-            <Text style={styles.pendingMessage}>심판의 응답을 기다리는 중...</Text>
+            <Text style={styles.pendingMessage}>
+              심판의 응답을 기다리는 중...
+            </Text>
           </View>
         )}
       </View>
