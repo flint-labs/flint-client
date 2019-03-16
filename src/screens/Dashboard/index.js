@@ -94,9 +94,9 @@ class component extends React.Component {
       if (!isSuccess) {
         const successOnGoing = await sendRequest(
           'get',
-          `/api/reports/getSuccessOneShot/${user.id}`,
+          `/api/reports/getSuccessOnGoing/${user.id}`,
         );
-        if (successOnGoing.data.length) {
+        if (successOnGoing.data) {
           this.setState({
             recentChallenge: successOnGoing.data,
             isSuccess: true,
