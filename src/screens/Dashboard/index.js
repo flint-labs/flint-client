@@ -256,13 +256,16 @@ class component extends React.Component {
     this.setState({ isLoaded: true });
   };
 
+  componentBlur = () => {
+    // this.setState({ recentChallenge: null });
+  }
+
   handleChallenges = challenges => {
     this.setState({ challenges });
   };
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    console.log(typeof recentChallenge.isOnGoing);
     if (recentChallenge.isOnGoing) {
       const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
       / (86400000 * 7);
@@ -404,7 +407,7 @@ class component extends React.Component {
       <>
         <NavigationEvents
           onWillFocus={this.componentDidMount}
-          onWillBlur={this.componentBlur}
+          onDidBlur={this.componentBlur}
         />
         {this.renderMethod()}
       </>
