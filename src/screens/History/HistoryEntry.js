@@ -8,6 +8,8 @@ const HistoryEntry = ({ data, handlePress }) => {
   const start = new Date(data.startAt);
   const period = parseInt((end.getTime() - start.getTime()) / 604800000);
 
+  const isOneShot = data.isOnGoing;
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -17,7 +19,12 @@ const HistoryEntry = ({ data, handlePress }) => {
       <View style={styles.historyEntry}>
         <View style={styles.bodyContainer}>
           <Text style={styles.titleText}>{data.title}</Text>
-          <Text style={styles.descriptionText}>{period}주 도전</Text>
+
+          {data.isOnGoing ? (
+            <Text style={styles.descriptionText}>{period}주 도전</Text>
+          ) : (
+            <Text style={styles.descriptionText}>One Shot</Text>
+          )}
         </View>
         <View style={{ flex: 1 }}>
           {data.state === 'success' ? (

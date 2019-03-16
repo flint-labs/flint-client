@@ -40,6 +40,7 @@ class HistoryDetail extends Component {
     reportList: [],
     isLoading: false,
     progress: 0,
+    challenge: null,
   };
 
   calculateProgress = async () => {
@@ -77,7 +78,7 @@ class HistoryDetail extends Component {
     }
   };
 
-  headerComponent = (title, period, progress) => (
+  headerComponent = (title, period, progress, challenge) => (
     <View
       style={{
         flex: 1,
@@ -106,7 +107,13 @@ class HistoryDetail extends Component {
         >
           <View style={styles.subContainerEntry}>
             <Text>도전기간</Text>
-            <Text style={{ fontSize: 30, fontWeight: '600' }}>{period} 주</Text>
+            {challenge.isOnGoing ? (
+              <Text style={{ fontSize: 30, fontWeight: '600' }}>
+                {period}주
+              </Text>
+            ) : (
+              <Text style={{ fontSize: 25, fontWeight: '600' }}>One Shot</Text>
+            )}
           </View>
         </View>
         <View style={styles.subContainerEntry}>
@@ -120,7 +127,7 @@ class HistoryDetail extends Component {
   );
 
   render = () => {
-    const { isLoading, reportList, progress } = this.state;
+    const { isLoading, reportList, progress, challenge } = this.state;
     const { navigation } = this.props;
     const { title } = navigation.getParam('detail');
     const period = navigation.getParam('period');
@@ -133,7 +140,12 @@ class HistoryDetail extends Component {
             data={reportList}
             stickyHeaderIndices={[0]}
             keyExtractor={(item, index) => index.toString()}
-            ListHeaderComponent={this.headerComponent(title, period, progress)}
+            ListHeaderComponent={this.headerComponent(
+              title,
+              period,
+              progress,
+              challenge,
+            )}
             renderItem={({ item }) => <HistoryReportEntry data={item} />}
           />
         </View>
