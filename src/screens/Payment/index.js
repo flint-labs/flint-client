@@ -72,13 +72,13 @@ class Payment extends Component {
       } else {
         Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
           text: '보러가기',
-          onPress: () => navigation.goBack(),
+          onPress: () => navigation.popToTop(),
         }]);
       }
     } catch (error) {
       Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
         text: '보러가기',
-        onPress: () => navigation.goBack(),
+        onPress: () => navigation.popToTop(),
       }]);
     }
   }
@@ -153,7 +153,7 @@ class Payment extends Component {
         } else {
           Alert.alert('결제실패 :(', '문제가 발생했습니다. 다시 시도해주세요!', [{
             text: '보러가기',
-            onPress: () => navigation.goBack(),
+            onPress: () => navigation.popToTop(),
           }]);
         }
       } catch (error) {
