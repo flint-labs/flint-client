@@ -98,7 +98,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  resetChallenge: dispatch({ type: RESET_CHALLENGE }),
+  resetChallenge: () => dispatch({ type: RESET_CHALLENGE }),
 });
 
 export default createStackNavigator(
