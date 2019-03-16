@@ -15,6 +15,7 @@ import styles from './style';
 import DoIt from './DoIt';
 import { OrangeButton } from '../../components';
 import ReportEntry from './ReportEntry';
+import sendRequest from '../../modules/sendRequest';
 
 const { width } = Dimensions.get('window');
 // const runIcon = require('../../../assets/images/Dashboard/run.png');
@@ -24,9 +25,22 @@ class Dashboard extends Component {
   state = {
     modalVisible: false,
     isLoaded: false,
+    refereeNickname: '',
   };
 
   componentDidMount = async () => {
+    const { recentChallenge } = this.props;
+
+    try {
+      const {
+        data: { user },
+      } = await sendRequest('get', `/api/users/${recentChallenge.refereeId}`);
+
+      this.setState({ refereeNickname: user.nickname });
+    } catch (err) {
+      console.log('err');
+    }
+
     this.setState({ isLoaded: true });
   };
 
@@ -60,7 +74,8 @@ class Dashboard extends Component {
       if (start <= today && end > today) {
         if (
           reports.filter(
-            el => new Date(el.createdAt) >= start && new Date(el.createdAt) < end,
+            el =>
+              new Date(el.createdAt) >= start && new Date(el.createdAt) < end,
           ).length >= recentChallenge.checkingPeriod
         ) {
           return 'thisWeekWasDoIt';
@@ -75,19 +90,14 @@ class Dashboard extends Component {
 
   render() {
     const { modalVisible, isLoaded } = this.state;
-    const {
-      recentChallenge,
-      reports,
-      progress,
-      refreshDashboard,
-    } = this.props;
+    const { recentChallenge, reports, progress, refreshDashboard } = this.props;
     const start = new Date(recentChallenge.startAt);
     const end = new Date(recentChallenge.endAt);
 
-    const startTime = `${start.getFullYear()}-${start.getMonth()
-      + 1}-${start.getDate()}`;
-    const endTime = `${end.getFullYear()}-${end.getMonth()
-      + 1}-${end.getDate()}`;
+    const startTime = `${start.getFullYear()}-${start.getMonth() +
+      1}-${start.getDate()}`;
+    const endTime = `${end.getFullYear()}-${end.getMonth() +
+      1}-${end.getDate()}`;
 
     const amountHigh = parseInt(recentChallenge.amount / 10000);
     const amountLow = parseInt((recentChallenge.amount % 10000) / 1000);
@@ -137,27 +147,43 @@ class Dashboard extends Component {
                     <View style={styles.statusBox}>
                       <View style={styles.statusEntry}>
                         <Text style={{ color: '#888' }}>체크 횟수</Text>
-                        <View
-                          style={{ justifyContent: 'center', marginTop: 5 }}
-                        >
+
+                        {recentChallenge.isOnGoing ? (
+                          <View
+                            style={{ justifyContent: 'center', marginTop: 5 }}
+                          >
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'flex-end',
+                              }}
+                            >
+                              <Text style={{ fontSize: 23, fontWeight: '500' }}>
+                                {recentChallenge.checkingPeriod}
+                              </Text>
+                              <Text style={{ fontSize: 22, color: '#ccc' }}>
+                                /
+                              </Text>
+                              <Text style={{ fontSize: 15, color: '#aaa' }}>
+                                주
+                              </Text>
+                            </View>
+                          </View>
+                        ) : (
                           <View
                             style={{
-                              flexDirection: 'row',
-                              alignItems: 'flex-end',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              marginTop: 10,
                             }}
                           >
-                            <Text style={{ fontSize: 23, fontWeight: '500' }}>
-                              {recentChallenge.checkingPeriod}
-                            </Text>
-                            <Text style={{ fontSize: 22, color: '#ccc' }}>
-                              /
-                            </Text>
-                            <Text style={{ fontSize: 15, color: '#aaa' }}>
-                              회
+                            <Text style={{ fontSize: 17, fontWeight: '500' }}>
+                              One Shot
                             </Text>
                           </View>
-                        </View>
+                        )}
                       </View>
+
                       <View
                         style={[
                           styles.statusEntry,
@@ -171,7 +197,7 @@ class Dashboard extends Component {
                         <Text style={{ color: '#888' }}>금액</Text>
                         <View style={styles.statusEntryBody}>
                           <Text
-                            style={{ fontSize: 22, fontWeight: '500' }}
+                            style={{ fontSize: 20, fontWeight: '500' }}
                             adjustsFontSizeToFit
                             allowFontScaling
                             numberOfLines={1}
@@ -183,13 +209,26 @@ class Dashboard extends Component {
                       <View style={styles.statusEntry}>
                         <Text style={{ color: '#888' }}>카테고리</Text>
                         <View style={styles.statusEntryBody}>
-                          <Text style={{ fontSize: 22, fontWeight: '500' }}>
+                          <Text style={{ fontSize: 20, fontWeight: '500' }}>
                             {recentChallenge.category}
                           </Text>
                         </View>
                       </View>
                     </View>
                   </View>
+
+                  {recentChallenge.refereeId !== recentChallenge.userId ? (
+                    <View style={styles.refereeBox}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <Text style={{ marginLeft: 10, color: '#333' }}>
+                          {this.state.refereeNickname}
+                        </Text>
+                        <Text style={{ color: '#999' }}> 님이 심판입니다.</Text>
+                      </View>
+                    </View>
+                  ) : (
+                    <View />
+                  )}
 
                   <View style={{}}>
                     <Text
@@ -199,9 +238,7 @@ class Dashboard extends Component {
                         marginLeft: 20,
                       }}
                     >
-                      진행 상황 |
-                      {(progress * 100).toFixed(1)}
-                      %
+                      진행 상황 | {(progress * 100).toFixed(1)}%
                     </Text>
                     <View style={{ marginLeft: 20 }}>
                       <Progress.Bar
@@ -221,8 +258,8 @@ class Dashboard extends Component {
                     swipeThreshold={5}
                     data={reports}
                     renderItem={({ item }) => <ReportEntry data={item} />}
-                    sliderWidth={width - 40}
-                    itemWidth={width - 40}
+                    sliderWidth={width - 20}
+                    itemWidth={width - 50}
                     sliderHeight={270}
                     style={{ transform: [{ scaleY: -1 }] }}
                   />

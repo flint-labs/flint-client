@@ -39,16 +39,19 @@ const styles = StyleSheet.create({
   },
   refereeRequestImage: {
     flex: 1,
-    width: width - 90,
+    width: width - 75,
     height: (height - 80) / 2,
     resizeMode: 'cover',
     borderRadius: 5,
   },
   refereeRequestMessage: {
-    flex: 3,
+    flex: 2.5,
+    marginLeft: 5,
+    marginTop: 15,
     backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'center',
+
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
 });
 
