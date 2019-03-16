@@ -19,6 +19,9 @@ import EndChallenge from '../EndChallenge';
 import sendRequest from '../../modules/sendRequest';
 import SignIn from '../SignIn';
 import SignUp from '../SignUp';
+import { challengeAction } from '../../actions';
+
+const { RESET_NEW_CHALLENGE } = challengeAction;
 
 class component extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -63,11 +66,12 @@ class component extends React.Component {
 
   componentDidMount = async () => {
     this.setState({ isLoaded: false });
-    const { navigation, newChallenge } = this.props;
+    const { navigation, newChallenge, resetNewChallenge } = this.props;
     this.setState({ user: JSON.parse(await AsyncStorage.getItem('userInfo')) });
     const { user } = this.state;
     if (JSON.stringify(newChallenge) !== '{}') {
       this.setState({ recentChallenge: newChallenge, isNew: true });
+      resetNewChallenge();
     }
     if (user) {
       const response = await sendRequest(
@@ -151,8 +155,8 @@ class component extends React.Component {
         } else {
           this.setState({
             recentChallenge:
-              JSON.parse(await AsyncStorage.getItem('recentChallenge')) ||
-              challenges[0],
+              JSON.parse(await AsyncStorage.getItem('recentChallenge'))
+              || challenges[0],
           });
         }
       }
@@ -167,8 +171,8 @@ class component extends React.Component {
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
         if (
-          el.isConfirmed === 'pending' &&
-          new Date() - new Date(el.createdAt) > 86400000
+          el.isConfirmed === 'pending'
+          && new Date() - new Date(el.createdAt) > 86400000
         ) {
           shouldConfirmReportsId.push(el.id);
         }
@@ -232,8 +236,8 @@ class component extends React.Component {
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
       if (
-        el.isConfirmed === 'pending' &&
-        new Date() - new Date(el.createdAt) > 86400000
+        el.isConfirmed === 'pending'
+        && new Date() - new Date(el.createdAt) > 86400000
       ) {
         shouldConfirmReportsId.push(el.id);
       }
@@ -267,12 +271,11 @@ class component extends React.Component {
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
     if (recentChallenge.isOnGoing) {
-      const week =
-        (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
-        (86400000 * 7);
+      const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
+        / (86400000 * 7);
       const result = await (reports.filter(el => el.isConfirmed === 'true')
-        .length /
-        (week * recentChallenge.checkingPeriod));
+        .length
+        / (week * recentChallenge.checkingPeriod));
       return result;
     }
     const confirmReport = reports.filter(el => el.isConfirmed === 'true');
@@ -331,9 +334,9 @@ class component extends React.Component {
                   recentChallenge={recentChallenge}
                 />
               </Modal>
-              {new Date(recentChallenge.endAt) - new Date() > 0 &&
-              !isFailure &&
-              !isSuccess ? (
+              {new Date(recentChallenge.endAt) - new Date() > 0
+              && !isFailure
+              && !isSuccess ? (
                 <View
                   style={{
                     flex: 1,
@@ -350,17 +353,17 @@ class component extends React.Component {
                     refreshDashboard={this.componentDidMount}
                   />
                 </View>
-              ) : (
-                <EndChallenge
-                  recentChallenge={recentChallenge}
-                  progress={progress}
-                  refreshDashboard={this.componentDidMount}
-                  handleIsFailure={this.handleIsFailure}
-                  isFailure={isFailure}
-                  handleIsSuccess={this.handleIsSuccess}
-                  isSuccess={isSuccess}
-                />
-              )}
+                ) : (
+                  <EndChallenge
+                    recentChallenge={recentChallenge}
+                    progress={progress}
+                    refreshDashboard={this.componentDidMount}
+                    handleIsFailure={this.handleIsFailure}
+                    isFailure={isFailure}
+                    handleIsSuccess={this.handleIsSuccess}
+                    isSuccess={isSuccess}
+                  />
+                )}
             </>
           );
         }
@@ -423,15 +426,20 @@ component.propTypes = {
   newChallenge: PropTypes.shape({
     id: PropTypes.number,
   }).isRequired,
+  resetNewChallenge: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   newChallenge: state.challenge.newChallenge,
 });
 
+const mapDispatchToProps = dispatch => ({
+  resetNewChallenge: () => dispatch({ type: RESET_NEW_CHALLENGE }),
+});
+
 export default createStackNavigator(
   {
-    component: { screen: connect(mapStateToProps)(component) },
+    component: { screen: connect(mapStateToProps, mapDispatchToProps)(component) },
     SignIn,
     SignUp: {
       screen: SignUp,

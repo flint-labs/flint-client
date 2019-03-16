@@ -57,8 +57,8 @@ class Mode extends Component {
   };
 
   handleNext = async () => {
-    const { isValid, isSolo, isOnGoing } = this.state;
-    const { navigation } = this.props;
+    const { isValid, isSolo } = this.state;
+    const { navigation, isOnGoing } = this.props;
     if ((!isSolo && isValid) || isSolo) {
       if (isOnGoing) {
         navigation.navigate('CheckingPeriod', {
@@ -210,6 +210,7 @@ Mode.propTypes = {
   }).isRequired,
   referee: PropTypes.string.isRequired,
   setReferee: PropTypes.func.isRequired,
+  isOnGoing: PropTypes.bool.isRequired,
 };
 
 export default connect(
