@@ -262,12 +262,18 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
-    / (86400000 * 7);
-    const result = await (reports.filter(el => el.isConfirmed === 'true')
-      .length
-      / (week * recentChallenge.checkingPeriod));
-    return result;
+    console.log(typeof recentChallenge.isOnGoing);
+    if (recentChallenge.isOnGoing) {
+      const week = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt))
+      / (86400000 * 7);
+      const result = await (reports.filter(el => el.isConfirmed === 'true')
+        .length
+        / (week * recentChallenge.checkingPeriod));
+      return result;
+    }
+    const confirmReport = reports.filter(el => el.isConfirmed === 'true');
+    if (confirmReport.length) return 1;
+    return 0;
   };
 
   handleIsFailure = () => {
