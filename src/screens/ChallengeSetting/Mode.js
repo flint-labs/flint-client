@@ -57,12 +57,18 @@ class Mode extends Component {
   };
 
   handleNext = async () => {
-    const { isValid, isSolo } = this.state;
+    const { isValid, isSolo, isOnGoing } = this.state;
     const { navigation } = this.props;
     if ((!isSolo && isValid) || isSolo) {
-      navigation.navigate('CheckingPeriod', {
-        setting: navigation.state.params.setting,
-      });
+      if (isOnGoing) {
+        navigation.navigate('CheckingPeriod', {
+          setting: navigation.state.params.setting,
+        });
+      } else {
+        navigation.navigate('Amount', {
+          setting: navigation.state.params.setting,
+        });
+      }
     }
   };
 
@@ -209,6 +215,7 @@ Mode.propTypes = {
 export default connect(
   state => ({
     referee: state.challenge.referee,
+    isOnGoing: state.challenge.isOnGoing,
   }),
   dispatch => ({
     setReferee: referee => {
