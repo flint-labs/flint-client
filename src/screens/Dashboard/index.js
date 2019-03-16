@@ -89,6 +89,21 @@ class component extends React.Component {
           isSuccess: true,
         });
       }
+      // ongoing인 도전이 성공이 있으면 성공으로 띄워주기
+      const { isSuccess } = this.state;
+      if (!isSuccess) {
+        const successOnGoing = await sendRequest(
+          'get',
+          `/api/reports/getSuccessOneShot/${user.id}`,
+        );
+        if (successOnGoing.data) {
+          this.setState({
+            recentChallenge: successOnGoing.data,
+            isSuccess: true,
+          });
+        }
+      }
+
       // 실패한 reports가 하나라도 있으면 fail
       const failureResponse = await sendRequest(
         'get',
@@ -127,7 +142,7 @@ class component extends React.Component {
       const EndChallengeArray = challenges.filter(
         el => new Date(el.endAt) - new Date() <= 0,
       );
-      const { isFailure, isSuccess } = this.state;
+      const { isFailure } = this.state;
       if (!isNew && !isFailure && !isSuccess) {
         if (EndChallengeArray.length > 0) {
           this.setState({
@@ -136,8 +151,8 @@ class component extends React.Component {
         } else {
           this.setState({
             recentChallenge:
-              JSON.parse(await AsyncStorage.getItem('recentChallenge')) ||
-              challenges[0],
+              JSON.parse(await AsyncStorage.getItem('recentChallenge'))
+              || challenges[0],
           });
         }
       }
@@ -152,8 +167,8 @@ class component extends React.Component {
       const shouldConfirmReportsId = [];
       reports.forEach(el => {
         if (
-          el.isConfirmed === 'pending' &&
-          new Date() - new Date(el.createdAt) > 86400000
+          el.isConfirmed === 'pending'
+          && new Date() - new Date(el.createdAt) > 86400000
         ) {
           shouldConfirmReportsId.push(el.id);
         }
@@ -217,8 +232,8 @@ class component extends React.Component {
     // 하루지나도 심판이 소식없으면 자동 success
     reports.forEach(el => {
       if (
-        el.isConfirmed === 'pending' &&
-        new Date() - new Date(el.createdAt) > 86400000
+        el.isConfirmed === 'pending'
+        && new Date() - new Date(el.createdAt) > 86400000
       ) {
         shouldConfirmReportsId.push(el.id);
       }
@@ -247,8 +262,8 @@ class component extends React.Component {
 
   calculateProgress = async () => {
     const { recentChallenge, reports } = this.state;
-    const week =
-      (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
+    const week
+    = (new Date(recentChallenge.endAt) - new Date(recentChallenge.startAt)) /
       (86400000 * 7);
     const result = await (reports.filter(el => el.isConfirmed === 'true')
       .length /
