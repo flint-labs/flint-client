@@ -11,7 +11,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { OrangeButton } from '../../components';
 import { challengeAction } from '../../actions';
 import styles from './style';
-import { filterList } from '../../modules/util';
+// import { filterList } from '../../modules/util';
 
 const { SET_REFEREE } = challengeAction;
 const BASE_URL = 'http://13.209.19.196:3000';
@@ -22,7 +22,7 @@ class Mode extends Component {
     isValid: false,
     loading: false,
     alerted: false,
-    filteredNicknames: null,
+    // filteredNicknames: null,
   }
 
   userNicknames = null;
@@ -49,7 +49,9 @@ class Mode extends Component {
     }
 
     if (!isSolo && !alerted) {
-      AlertIOS.alert('Referee 모드', 'Referee 모드 선택 시 해당 referee 에게 달성보고를 해야하며 보고가 누락되거나 referee 가 인정하지 않을 경우 도전이 실패할 수 있습니다.');
+      AlertIOS.alert('Referee 모드', 'Referee 모드 선택 시 해당 referee 에게 달성보고를 해야하며 보고가 누락되거나 referee 가 인정하지 않을 경우 도전이 실패할 수 있습니다.', [
+        { text: 'OK', onPress: this.input.focus },
+      ]);
       this.setState({ alerted: true });
     }
   };
@@ -102,21 +104,19 @@ class Mode extends Component {
   )
 
   onRefereeChange = text => {
-    const { userNicknames } = this;
+    // const { userNicknames } = this;
     const { setReferee } = this.props;
     setReferee(text);
-    this.setState({ filteredNicknames: filterList(userNicknames, 'nickname', text) });
+    // this.setState({ filteredNicknames: filterList(userNicknames, 'nickname', text) });
   }
 
   render = () => {
     const {
-      isSolo, isValid, loading, filteredNicknames,
+      isSolo, isValid, loading,
     } = this.state;
     const { referee } = this.props;
 
     if (loading) return this.renderLoading();
-
-    console.log(filteredNicknames);
 
     return (
       <SafeAreaView style={{ flex: 1 }}>
@@ -163,6 +163,7 @@ class Mode extends Component {
                       {'심판을 맡길 유저의 닉네임을 입력해주세요.'}
                     </Text>
                     <TextInput
+                      ref={ref => { this.input = ref; }}
                       style={styles.textInput}
                       onChangeText={text => this.onRefereeChange(text)}
                       blurOnSubmit={false}

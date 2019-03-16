@@ -6,7 +6,6 @@ import {
   AsyncStorage,
   ImageBackground,
   TouchableOpacity,
-  Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -89,16 +88,15 @@ class PaymentMethod extends Component {
     }
   };
 
-  iconStyle = flag =>
-    flag
-      ? {
-          ...styles.paymentIcon,
-          shadowOffset: { width: 0, height: 1.5 },
-          shadowColor: '#47C83E',
-          shadowOpacity: 0.6,
-          elevation: 1,
-        }
-      : styles.paymentIcon;
+  iconStyle = flag => (flag
+    ? {
+      ...styles.paymentIcon,
+      shadowOffset: { width: 0, height: 1.5 },
+      shadowColor: '#47C83E',
+      shadowOpacity: 0.6,
+      elevation: 1,
+    }
+    : styles.paymentIcon);
 
   renderCheck = () => (
     <View
@@ -110,9 +108,7 @@ class PaymentMethod extends Component {
         justifyContent: 'center',
         alignItems: 'center',
       }}
-    >
-      {/* <Image source={CHECK_ICON} style={{ width: 50, height: 50 }} /> */}
-    </View>
+    />
   );
 
   render = () => {
@@ -136,8 +132,7 @@ class PaymentMethod extends Component {
           >
             <View style={styles.paymentMethodBox}>
               <TouchableOpacity
-                onPress={() =>
-                  this.setState({ isKakao: true, isPaypal: false })
+                onPress={() => this.setState({ isKakao: true, isPaypal: false })
                 }
                 style={{ justifyContent: 'center', alignItems: 'center' }}
               >
@@ -149,14 +144,12 @@ class PaymentMethod extends Component {
                     borderWidth: 1,
                     borderRadius: 30,
                   }}
-                  // blurRadius={isKakao ? 3 : 0}
                 >
                   {!isKakao && this.renderCheck()}
                 </ImageBackground>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>
-                  this.setState({ isKakao: false, isPaypal: true })
+                onPress={() => this.setState({ isKakao: false, isPaypal: true })
                 }
                 style={{ justifyContent: 'center', alignItems: 'center' }}
               >
@@ -168,7 +161,6 @@ class PaymentMethod extends Component {
                     borderWidth: 1,
                     borderRadius: 30,
                   }}
-                  // blurRadius={!isKakao ? 3 : 0}
                 >
                   {!isPaypal && this.renderCheck()}
                 </ImageBackground>
@@ -221,10 +213,9 @@ export default connect(
   }),
   dispatch => ({
     resetChallenge: () => dispatch({ type: RESET_CHALLENGE }),
-    setNewChallenge: newChallenge =>
-      dispatch({
-        type: SET_NEW_CHALLENGE,
-        payload: { newChallenge },
-      }),
+    setNewChallenge: newChallenge => dispatch({
+      type: SET_NEW_CHALLENGE,
+      payload: { newChallenge },
+    }),
   }),
 )(PaymentMethod);

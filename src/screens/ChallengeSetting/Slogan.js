@@ -5,6 +5,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { NavigationEvents } from 'react-navigation';
 import sendRequest from '../../modules/sendRequest';
 import { OrangeButton } from '../../components';
 import { challengeAction } from '../../actions';
@@ -77,11 +78,18 @@ class Slogan extends Component {
     this.scroll.props.scrollToFocusedInput(node);
   }
 
+  handleDidFocus = () => {
+    this.input.focus();
+  }
+
   render = () => {
     const { slogan, setSlogan } = this.props;
     const { warn } = this.state;
     return (
       <SafeAreaView style={{ flex: 1 }}>
+        <NavigationEvents
+          onDidFocus={this.handleDidFocus}
+        />
         <KeyboardAwareScrollView
           resetScrollToCoords={{ x: 0, y: 0 }}
           contentContainerStyle={{ flex: 1 }}
@@ -96,6 +104,7 @@ class Slogan extends Component {
             <View style={{ flex: 4, justifyContent: 'center', alignItems: 'center' }}>
               <View>
                 <TextInput
+                  ref={ref => { this.input = ref; }}
                   style={styles.textInput}
                   onChangeText={text => setSlogan(text)}
                   blurOnSubmit={false}
