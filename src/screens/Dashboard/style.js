@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 60,
     marginTop: 10,
+    marginBottom: 10,
   },
   statusEntryBody: {
     flex: 1,
@@ -169,8 +170,28 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'center',
   },
-  pendingMessageContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  pendingMessageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   pendingMessage: { fontSize: 20, color: 'white', fontWeight: '500' },
+  refereeBox: {
+    backgroundColor: 'white',
+    width: width - 40,
+    height: 35,
+    marginTop: 10,
+    marginLeft: 20,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#dcdcdc',
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: 'black',
+    shadowOpacity: 0.1,
+    elevation: 1,
+  },
 });
 
 export default styles;
