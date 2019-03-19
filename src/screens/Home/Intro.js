@@ -18,7 +18,7 @@ const category7 = require('../../../assets/images/Home/cate7.jpg');
 
 const imageArray = [
   [category1, '운동', '더욱 건강해진 자신을 만나보세요.'],
-  [category6, '독서', '독서는 트레바리'],
+  [category6, '독서', '생각의 깊이를 더하기.'],
   [category2, '생활패턴', '작은 변화가 새로운 일상을 가져옵니다.'],
   [category3, '공부', '한 단계 성장한 나를 위해.'],
   [category4, '식습관', '내 몸 알아가기'],
