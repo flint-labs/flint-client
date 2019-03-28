@@ -1,3 +1,3 @@
 # FLINT CLIENT
 
-<iframe src="/home/yugeon/giphy.webp"/>
+<iframe src="giphy.webp"/>
