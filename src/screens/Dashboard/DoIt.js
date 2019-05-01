@@ -1,24 +1,15 @@
 import React from 'react';
 import {
-  TouchableOpacity,
-  View,
-  TextInput,
-  Alert,
-  Image,
-  SafeAreaView,
-  Text,
+  TouchableOpacity, View, TextInput, Alert, Image, SafeAreaView, Text,
 } from 'react-native';
 import PropTypes from 'prop-types';
-// import { createStackNavigator } from 'react-navigation';
 import { ImagePicker, Permissions } from 'expo';
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { RNS3 } from 'react-native-aws3';
 import styles from './style';
 import { OrangeButton } from '../../components';
 import sendRequest from '../../modules/sendRequest';
-import aws from '../../../config.json';
 
 const cameraImage = require('../../../assets/images/Dashboard/camera.png');
 
@@ -39,23 +30,23 @@ class DoIt extends React.Component {
         challengeId: recentChallenge.id,
         image: `${recentChallenge.id}${new Date()}`,
       });
-      const file = {
-        uri: photo.uri,
-        name: `${recentChallenge.id}-${res.data.reported.id}`,
-        type: 'image/png',
-      };
-      const config = {
-        keyPrefix: 's3/',
-        bucket: 'flint-s3',
-        region: 'ap-northeast-2',
-        accessKey: aws.accessKey,
-        secretKey: aws.secretKey,
-        successActionStatus: 201,
-      };
 
-      RNS3.put(file, config).then(response => {
-        console.log(response);
+      const data = new FormData();
+      data.append('name', 'avatar');
+      data.append('fileData', {
+        uri: photo.uri,
+        type: photo.type,
+        name: `${recentChallenge.id}-${res.data.reported.id}`,
       });
+      const config = {
+        method: 'post',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+        body: data,
+      };
+      fetch('http://13.209.19.196:3000/api/reports/imageUpload', config);
 
       Alert.alert('제출되었습니다.', null, [
         {
